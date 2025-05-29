@@ -15,6 +15,10 @@ function App() {
         <Route path="/LoginPage" element={<LoginPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/CompanyRegisterForm" element={<CompanyRegisterForm />} />
+
+        <Route path="/superadminlogin" element={<Superadmin />} />
+
+
         <Route path="/RequestSent/:companyId" element={<RequestSent />} />
       </Routes>
     </BrowserRouter>
