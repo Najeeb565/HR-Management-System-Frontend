@@ -203,8 +203,7 @@ const navigate = useNavigate();
             }}
           >
             LOGIN
-          </button>
-          <button>NEw Button</button>    
+          </button>  
            </form>
       </div>
     </div>
