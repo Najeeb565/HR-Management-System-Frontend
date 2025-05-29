@@ -5,9 +5,13 @@ import * as Yup from 'yup';
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
+import RequestSent from "../register/requestsentpage/requestsentpage";
 
 
 function CompanyRegisterForm() {
+  const navigate = useNavigate(); 
+
   const formik = useFormik({
     initialValues: {
       ownerName: '',
@@ -39,8 +43,9 @@ function CompanyRegisterForm() {
       try {
         const response = await axios.post("http://localhost:5000/api/companies", values);
         console.log("Server Response:", response.data);
-        toast.success("🎉 Company registered successfully!");
+        toast.success("🎉 Registration Request Sent");
         resetForm();
+        navigate('/RequestSent');
       } catch (error) {
         console.error("Submission error:", error);
         toast.error("🚫 Error submitting the form.");
