@@ -15,7 +15,7 @@ function App() {
         <Route path="/LoginPage" element={<LoginPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/CompanyRegisterForm" element={<CompanyRegisterForm />} />
-        <Route path="/superadmin" element={<Superadmin />} />
+        <Route path="/superadminlogin" element={<Superadmin />} />
 
       </Routes>
     </BrowserRouter>
