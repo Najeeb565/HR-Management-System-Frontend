@@ -57,7 +57,7 @@ function CompanyRegisterForm() {
 
  <div className="LeftSide">
           <div className="form-row">
-            <label>Owner name</label>
+            <label>Owner Name:</label>
             <input
               type="text"
               name="ownerName"
@@ -73,7 +73,7 @@ function CompanyRegisterForm() {
           </div>
 
           <div className="form-row">
-            <label>Company Name</label>
+            <label>Company Name:</label>
             <input
               type="text"
               name="companyName"
@@ -89,7 +89,7 @@ function CompanyRegisterForm() {
           </div>
 
           <div className="form-row">
-            <label>Company Email</label>
+            <label>Company Email:</label>
             <input
               type="email"
               name="companyEmail"
@@ -105,7 +105,7 @@ function CompanyRegisterForm() {
           </div>
 
           <div className="form-row">
-            <label>Phone</label>
+            <label>Phone:</label>
             <input
               type="text"
               name="phone"
@@ -121,7 +121,7 @@ function CompanyRegisterForm() {
           </div>
 
           <div className="form-row">
-            <label>Industry</label>
+            <label>Industry:</label>
             <select
               name="industry"
               className="industry-select"

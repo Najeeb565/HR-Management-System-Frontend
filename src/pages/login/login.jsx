@@ -204,7 +204,8 @@ const navigate = useNavigate();
           >
             LOGIN
           </button>
-        </form>
+          <button>NEw Button</button>    
+           </form>
       </div>
     </div>
   );
