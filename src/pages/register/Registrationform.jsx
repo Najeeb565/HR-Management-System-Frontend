@@ -45,7 +45,8 @@ function CompanyRegisterForm() {
         console.log("Server Response:", response.data);
         toast.success("🎉 Registration Request Sent");
         resetForm();
-        navigate('/RequestSent');
+      navigate(`/RequestSent/${response.data.companyId}`);
+
       } catch (error) {
         console.error("Submission error:", error);
         toast.error("🚫 Error submitting the form.");
