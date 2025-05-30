@@ -5,7 +5,6 @@ import * as Yup from "yup";
 // import "bootstrap/dist/css/bootstrap.min.css";
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa"; // 👈 Added Eye Icon
 import { useNavigate } from 'react-router-dom';
-import dashboard from "../landing/dashboard/dashboard";
 
 
 const LoginPage = () => {
