@@ -5,9 +5,13 @@ import * as Yup from 'yup';
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
+import RequestSent from "../register/requestsentpage/requestsentpage";
 
 
 function CompanyRegisterForm() {
+  const navigate = useNavigate(); 
+
   const formik = useFormik({
     initialValues: {
       ownerName: '',
@@ -39,8 +43,10 @@ function CompanyRegisterForm() {
       try {
         const response = await axios.post("http://localhost:5000/api/companies", values);
         console.log("Server Response:", response.data);
-        toast.success("🎉 Company registered successfully!");
+        toast.success("🎉 Registration Request Sent");
         resetForm();
+      navigate(`/RequestSent/${response.data.companyId}`);
+
       } catch (error) {
         console.error("Submission error:", error);
         toast.error("🚫 Error submitting the form.");
@@ -57,7 +63,7 @@ function CompanyRegisterForm() {
 
  <div className="LeftSide">
           <div className="form-row">
-            <label>Owner name</label>
+            <label>Owner Name:</label>
             <input
               type="text"
               name="ownerName"
@@ -73,7 +79,7 @@ function CompanyRegisterForm() {
           </div>
 
           <div className="form-row">
-            <label>Company Name</label>
+            <label>Company Name:</label>
             <input
               type="text"
               name="companyName"
@@ -89,7 +95,7 @@ function CompanyRegisterForm() {
           </div>
 
           <div className="form-row">
-            <label>Company Email</label>
+            <label>Company Email:</label>
             <input
               type="email"
               name="companyEmail"
@@ -105,7 +111,7 @@ function CompanyRegisterForm() {
           </div>
 
           <div className="form-row">
-            <label>Phone</label>
+            <label>Phone:</label>
             <input
               type="text"
               name="phone"
@@ -121,7 +127,7 @@ function CompanyRegisterForm() {
           </div>
 
           <div className="form-row">
-            <label>Industry</label>
+            <label>Industry:</label>
             <select
               name="industry"
               className="industry-select"
