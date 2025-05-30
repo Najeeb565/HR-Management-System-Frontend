@@ -45,10 +45,32 @@ const Dashboard = () => {
     setIsLoading(true);
     try {
       const [statsRes, pendingRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/dashboard'), // Updated endpoint
+        axios.get('http://localhost:5000/api/dashboard'),
         axios.get('http://localhost:5000/api/companies?status=pending')
       ]);
-      setStats(statsRes.data.data || {
+      // Log the API response for debugging
+      console.log('Dashboard API Response:', statsRes.data);
+      const statsData = statsRes.data.data || {
+        totalCompanies: 0,
+        companiesByStatus: { pending: 0, approved: 0, rejected: 0, blocked: 0 },
+        totalAdmins: 0,
+        adminsByRole: { superAdmins: 0, companyAdmins: 0 },
+        totalEmployees: 0,
+        newCompanies: 0,
+        monthlyRegistrations: []
+      };
+      // Ensure monthlyRegistrations is an array
+      if (!Array.isArray(statsData.monthlyRegistrations)) {
+        console.warn('monthlyRegistrations is not an array, setting to empty array:', statsData.monthlyRegistrations);
+        statsData.monthlyRegistrations = [];
+      }
+      setStats(statsData);
+      setPendingCompanies(pendingRes.data.data || []);
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+      toast.error('Failed to fetch dashboard data');
+      // Set fallback state on error
+      setStats({
         totalCompanies: 0,
         companiesByStatus: { pending: 0, approved: 0, rejected: 0, blocked: 0 },
         totalAdmins: 0,
@@ -57,10 +79,7 @@ const Dashboard = () => {
         newCompanies: 0,
         monthlyRegistrations: []
       });
-      setPendingCompanies(pendingRes.data.data || []);
-    } catch (error) {
-      console.error('Error fetching dashboard data:', error);
-      toast.error('Failed to fetch dashboard data');
+      setPendingCompanies([]);
     }
     setIsLoading(false);
   };
@@ -80,12 +99,14 @@ const Dashboard = () => {
     fetchDashboardData();
   }, []);
 
+  // Ensure monthlyRegistrations is an array before mapping
+  const monthlyRegistrations = Array.isArray(stats.monthlyRegistrations) ? stats.monthlyRegistrations : [];
   const lineChartData = {
-    labels: stats.monthlyRegistrations.map(item => item.month),
+    labels: monthlyRegistrations.map(item => item.month || 'Unknown'),
     datasets: [
       {
         label: 'New Companies',
-        data: stats.monthlyRegistrations.map(item => item.count),
+        data: monthlyRegistrations.map(item => item.count || 0),
         fill: false,
         backgroundColor: 'rgba(13, 110, 253, 0.2)',
         borderColor: 'rgba(13, 110, 253, 1)',
@@ -100,10 +121,10 @@ const Dashboard = () => {
       {
         label: 'Companies by Status',
         data: [
-          stats.companiesByStatus.approved,
-          stats.companiesByStatus.pending,
-          stats.companiesByStatus.rejected,
-          stats.companiesByStatus.blocked
+          stats.companiesByStatus?.approved || 0,
+          stats.companiesByStatus?.pending || 0,
+          stats.companiesByStatus?.rejected || 0,
+          stats.companiesByStatus?.blocked || 0
         ],
         backgroundColor: [
           'rgba(25, 135, 84, 0.6)',
@@ -127,7 +148,10 @@ const Dashboard = () => {
     datasets: [
       {
         label: 'Admins by Role',
-        data: [stats.adminsByRole.superAdmins, stats.adminsByRole.companyAdmins],
+        data: [
+          stats.adminsByRole?.superAdmins || 0,
+          stats.adminsByRole?.companyAdmins || 0
+        ],
         backgroundColor: [
           'rgba(13, 110, 253, 0.6)',
           'rgba(102, 16, 242, 0.6)'
@@ -205,10 +229,10 @@ const Dashboard = () => {
               <div className="mt-3 pt-3 border-top">
                 <div className="d-flex align-items-center">
                   <span className="me-2">Super Admins:</span>
-                  <span className="fw-bold">{stats.adminsByRole.superAdmins}</span>
+                  <span className="fw-bold">{stats.adminsByRole?.superAdmins || 0}</span>
                   <span className="mx-2">|</span>
                   <span className="me-2">Company Admins:</span>
-                  <span className="fw-bold">{stats.adminsByRole.companyAdmins}</span>
+                  <span className="fw-bold">{stats.adminsByRole?.companyAdmins || 0}</span>
                 </div>
               </div>
             </div>
@@ -247,7 +271,7 @@ const Dashboard = () => {
                 </div>
                 <div>
                   <h6 className="card-title text-muted mb-0">Pending Approvals</h6>
-                  <h2 className="mt-2 mb-0">{stats.companiesByStatus.pending}</h2>
+                  <h2 className="mt-2 mb-0">{stats.companiesByStatus?.pending || 0}</h2>
                 </div>
               </div>
               <div className="mt-3 pt-3 border-top">

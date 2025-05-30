@@ -10,7 +10,6 @@ const Sidebar = ({ collapsed }) => {
   useEffect(() => {
     setActiveMenu(location.pathname);
     
-    // Get user info from localStorage
     const userInfo = localStorage.getItem('userInfo');
     if (userInfo) {
       const parsed = JSON.parse(userInfo);
@@ -45,8 +44,8 @@ const Sidebar = ({ collapsed }) => {
         <ul className="nav flex-column">
           <li className="nav-item">
             <Link 
-              to="/dashboard" 
-              className={`nav-link ${activeMenu === '/dashboard' ? 'active' : ''}`}
+              to="/superadmin/dashboard" 
+              className={`nav-link ${location.pathname.includes('/dashboard') ? 'active' : ''}`}
             >
               <i className="bi bi-speedometer2"></i>
               <span>Dashboard</span>
@@ -55,8 +54,8 @@ const Sidebar = ({ collapsed }) => {
           
           <li className="nav-item">
             <Link 
-              to="/companies" 
-              className={`nav-link ${activeMenu.includes('/companies') ? 'active' : ''}`}
+              to="/superadmin/companies" 
+              className={`nav-link ${location.pathname.includes('/companies') ? 'active' : ''}`}
             >
               <i className="bi bi-building"></i>
               <span>Companies</span>
@@ -65,8 +64,8 @@ const Sidebar = ({ collapsed }) => {
           
           <li className="nav-item">
             <Link 
-              to="/admins" 
-              className={`nav-link ${activeMenu.includes('/admins') ? 'active' : ''}`}
+              to="/superadmin/admins" 
+              className={`nav-link ${location.pathname.includes('/admins') ? 'active' : ''}`}
             >
               <i className="bi bi-people"></i>
               <span>Admins</span>
@@ -75,8 +74,8 @@ const Sidebar = ({ collapsed }) => {
           
           <li className="nav-item">
             <Link 
-              to="/analytics" 
-              className={`nav-link ${activeMenu === '/analytics' ? 'active' : ''}`}
+              to="/superadmin/analytics" 
+              className={`nav-link ${location.pathname.includes('/analytics') ? 'active' : ''}`}
             >
               <i className="bi bi-bar-chart"></i>
               <span>Analytics</span>
@@ -85,8 +84,8 @@ const Sidebar = ({ collapsed }) => {
           
           <li className="nav-item">
             <Link 
-              to="/settings" 
-              className={`nav-link ${activeMenu === '/settings' ? 'active' : ''}`}
+              to="/superadmin/settings" 
+              className={`nav-link ${location.pathname.includes('/settings') ? 'active' : ''}`}
             >
               <i className="bi bi-gear"></i>
               <span>Settings</span>
@@ -95,8 +94,8 @@ const Sidebar = ({ collapsed }) => {
           
           <li className="nav-item">
             <Link 
-              to="/security-logs" 
-              className={`nav-link ${activeMenu === '/security-logs' ? 'active' : ''}`}
+              to="/superadmin/security-logs" 
+              className={`nav-link ${location.pathname.includes('/security-logs') ? 'active' : ''}`}
             >
               <i className="bi bi-shield-lock"></i>
               <span>Security Logs</span>

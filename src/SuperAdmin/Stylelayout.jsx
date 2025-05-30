@@ -1,20 +1,20 @@
-import React from 'react'
-import Layout from './Layout/Layout'
-import Header from './Layout/Header'
-import Sidebar from './Layout/Sidebar'
-import Dashboard from './Dashboard'
+import { Outlet } from 'react-router-dom';
+import Header from './Layout/Header';
+import Sidebar from './Layout/Sidebar';
+import "./Stylelayout.css";
 
-import "./Stylelayout.css"
-
-const stylelayout = () => {
+const SuperAdminLayout = () => {
   return (
     <div>
-      <Header></Header>
+      <Header />
       <div className="handle">
-        <Sidebar></Sidebar><Dashboard></Dashboard>
+        <Sidebar />
+        <div className="content">
+          <Outlet />
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default stylelayout
+export default SuperAdminLayout;
