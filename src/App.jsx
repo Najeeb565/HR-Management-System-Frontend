@@ -1,32 +1,36 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Landing from "./pages/landing/landing";
-import LoginPage from "./pages/login/login";
-import Dashboard from "./SuperAdmin/Dashboard";
+import Login from "./pages/login/login";
+import Dashboard from "./pages/SuperAdmin/Dashboard";
 import CompanyRegisterForm from "./pages/register/Registrationform";
-import SuperAdmin from "./SuperAdmin/Stylelayout";
-import Analytics from "./SuperAdmin/Analytics";
-import Superadmin from './pages/superadmin/Superadmin';
-import RequestSent from './pages/register/RequestSent'; // Assuming this path is correct
+import SuperAdmin from "./pages/SuperAdmin/Stylelayout";
+import Analytics from "./pages/SuperAdmin/Analytics";
+import Superadminlogin from './pages/superadminlogin/superAdminLogin';
+import RequestSent from './pages/register/requestsentpage/requestsentpage'; 
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<CompanyRegisterForm />} />
-        <Route path="/CompanyRegisterForm" element={<Navigate to="/register" replace />} />
+   <BrowserRouter>
+  <Routes>
+    {/* Public Pages */}
+    <Route path="/" element={<Landing />} />
+    <Route path="/Login" element={<Login />} />
+    <Route path="/register" element={<CompanyRegisterForm />} />
+    <Route path="/CompanyRegisterForm" element={<Navigate to="/register" replace />} />
+    <Route path="/RequestSent/:companyId" element={<RequestSent />} />
+    
+    {/* Super Admin Login */}
+    <Route path="/superadminlogin" element={<Superadminlogin />} />
 
-        <Route path="/superadmin/*" element={<SuperAdmin />}>
-          <Route index element={<Dashboard />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="analytics" element={<Analytics />} />
-        </Route>
+    {/* Super Admin Dashboard Layout with Nested Routes */}
+    <Route path="/superadmin/*" element={<SuperAdmin />}>
+      <Route index element={<Dashboard />} />
+      <Route path="dashboard" element={<Dashboard />} />
+      <Route path="analytics" element={<Analytics />} />
+    </Route>
+  </Routes>
+</BrowserRouter>
 
-        <Route path="/superadminlogin" element={<Superadmin />} />
-        <Route path="/RequestSent/:companyId" element={<RequestSent />} />
-      </Routes>
-    </BrowserRouter>
   );
 }
 

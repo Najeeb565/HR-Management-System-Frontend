@@ -1,9 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import herosection from '../../assets/herosect.jpg';
 import styles from './landing.module.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import LoginPage from '../login/login.jsx';
+import Login from '../login/login.jsx';
 import CompanyRegisterForm from '../register/Registrationform.jsx';
 
 
@@ -101,7 +101,7 @@ const Landing = () => {
             <a href="#testimonials" className={styles.navlinks}>Testimonials</a>
             <div className={styles.navbutton}>
 
-              <Link to="./LoginPage" className={styles.getstarted}>Login</Link>
+              <Link to="./Login" className={styles.getstarted}>Login</Link>
 
             </div>
           </div>
