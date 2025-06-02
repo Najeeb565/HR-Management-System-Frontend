@@ -28,15 +28,28 @@ ChartJS.register(
   ArcElement
 );
 
+const API_URL = 'http://localhost:5000/api';
+
 const Dashboard = () => {
   const [stats, setStats] = useState({
-    totalCompanies: 0,
-    companiesByStatus: { pending: 0, approved: 0, rejected: 0, blocked: 0 },
-    totalAdmins: 0,
-    adminsByRole: { superAdmins: 0, companyAdmins: 0 },
-    totalEmployees: 0,
-    newCompanies: 0,
-    monthlyRegistrations: []
+    companyStats: {
+      total: 0,
+      active: 0,
+      pending: 0,
+      blocked: 0
+    },
+    userStats: {
+      total: 0,
+      active: 0,
+      inactive: 0,
+      newThisMonth: 0
+    },
+    monthlyData: {
+      labels: [],
+      companies: [],
+      users: [],
+      revenue: []
+    }
   });
   const [pendingCompanies, setPendingCompanies] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -45,50 +58,31 @@ const Dashboard = () => {
     setIsLoading(true);
     try {
       const [statsRes, pendingRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/dashboard'),
-        axios.get('http://localhost:5000/api/companies?status=pending')
+        axios.get(`${API_URL}/dashboard`),
+        axios.get(`${API_URL}/companies?status=pending`)
       ]);
-      // Log the API response for debugging
-      console.log('Dashboard API Response:', statsRes.data);
-      const statsData = statsRes.data.data || {
-        totalCompanies: 0,
-        companiesByStatus: { pending: 0, approved: 0, rejected: 0, blocked: 0 },
-        totalAdmins: 0,
-        adminsByRole: { superAdmins: 0, companyAdmins: 0 },
-        totalEmployees: 0,
-        newCompanies: 0,
-        monthlyRegistrations: []
-      };
-      // Ensure monthlyRegistrations is an array
-      if (!Array.isArray(statsData.monthlyRegistrations)) {
-        console.warn('monthlyRegistrations is not an array, setting to empty array:', statsData.monthlyRegistrations);
-        statsData.monthlyRegistrations = [];
+
+      if (statsRes.data.success) {
+        setStats(statsRes.data.data);
       }
-      setStats(statsData);
-      setPendingCompanies(pendingRes.data.data || []);
+
+      if (pendingRes.data.success) {
+        setPendingCompanies(pendingRes.data.data);
+      }
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
       toast.error('Failed to fetch dashboard data');
-      // Set fallback state on error
-      setStats({
-        totalCompanies: 0,
-        companiesByStatus: { pending: 0, approved: 0, rejected: 0, blocked: 0 },
-        totalAdmins: 0,
-        adminsByRole: { superAdmins: 0, companyAdmins: 0 },
-        totalEmployees: 0,
-        newCompanies: 0,
-        monthlyRegistrations: []
-      });
-      setPendingCompanies([]);
     }
     setIsLoading(false);
   };
 
   const handleStatusChange = async (companyId, status) => {
     try {
-      await axios.put(`http://localhost:5000/api/companies/${companyId}/status`, { status });
-      toast.success(`Company status updated to ${status}`);
-      fetchDashboardData(); // Refresh data
+      const response = await axios.put(`${API_URL}/companies/${companyId}/status`, { status });
+      if (response.data.success) {
+        toast.success(`Company status updated to ${status}`);
+        fetchDashboardData();
+      }
     } catch (error) {
       console.error('Error updating company status:', error);
       toast.error('Failed to update company status');
@@ -99,14 +93,12 @@ const Dashboard = () => {
     fetchDashboardData();
   }, []);
 
-  // Ensure monthlyRegistrations is an array before mapping
-  const monthlyRegistrations = Array.isArray(stats.monthlyRegistrations) ? stats.monthlyRegistrations : [];
   const lineChartData = {
-    labels: monthlyRegistrations.map(item => item.month || 'Unknown'),
+    labels: stats.monthlyData?.labels || [],
     datasets: [
       {
         label: 'New Companies',
-        data: monthlyRegistrations.map(item => item.count || 0),
+        data: stats.monthlyData?.companies || [],
         fill: false,
         backgroundColor: 'rgba(13, 110, 253, 0.2)',
         borderColor: 'rgba(13, 110, 253, 1)',
@@ -115,16 +107,15 @@ const Dashboard = () => {
     ]
   };
 
-  const barChartData = {
+  const doughnutChartData = {
     labels: ['Approved', 'Pending', 'Rejected', 'Blocked'],
     datasets: [
       {
-        label: 'Companies by Status',
         data: [
-          stats.companiesByStatus?.approved || 0,
-          stats.companiesByStatus?.pending || 0,
-          stats.companiesByStatus?.rejected || 0,
-          stats.companiesByStatus?.blocked || 0
+          stats.companyStats?.active || 0,
+          stats.companyStats?.pending || 0,
+          0, // Rejected (not provided in current stats)
+          stats.companyStats?.blocked || 0
         ],
         backgroundColor: [
           'rgba(25, 135, 84, 0.6)',
@@ -137,28 +128,6 @@ const Dashboard = () => {
           'rgba(255, 193, 7, 1)',
           'rgba(220, 53, 69, 1)',
           'rgba(108, 117, 125, 1)'
-        ],
-        borderWidth: 1
-      }
-    ]
-  };
-
-  const doughnutChartData = {
-    labels: ['Super Admins', 'Company Admins'],
-    datasets: [
-      {
-        label: 'Admins by Role',
-        data: [
-          stats.adminsByRole?.superAdmins || 0,
-          stats.adminsByRole?.companyAdmins || 0
-        ],
-        backgroundColor: [
-          'rgba(13, 110, 253, 0.6)',
-          'rgba(102, 16, 242, 0.6)'
-        ],
-        borderColor: [
-          'rgba(13, 110, 253, 1)',
-          'rgba(102, 16, 242, 1)'
         ],
         borderWidth: 1
       }
@@ -199,15 +168,15 @@ const Dashboard = () => {
                 </div>
                 <div>
                   <h6 className="card-title text-muted mb-0">Total Companies</h6>
-                  <h2 className="mt-2 mb-0">{stats.totalCompanies}</h2>
+                  <h2 className="mt-2 mb-0">{stats.companyStats.total}</h2>
                 </div>
               </div>
               <div className="mt-3 pt-3 border-top">
                 <div className="d-flex align-items-center">
                   <span className="badge bg-success me-2">
-                    <i className="bi bi-arrow-up"></i> {stats.newCompanies}
+                    <i className="bi bi-arrow-up"></i> {stats.companyStats.active}
                   </span>
-                  <span className="text-muted small">new in last 30 days</span>
+                  <span className="text-muted small">active companies</span>
                 </div>
               </div>
             </div>
@@ -223,16 +192,16 @@ const Dashboard = () => {
                 </div>
                 <div>
                   <h6 className="card-title text-muted mb-0">Total Admins</h6>
-                  <h2 className="mt-2 mb-0">{stats.totalAdmins}</h2>
+                  <h2 className="mt-2 mb-0">{stats.userStats.total}</h2>
                 </div>
               </div>
               <div className="mt-3 pt-3 border-top">
                 <div className="d-flex align-items-center">
-                  <span className="me-2">Super Admins:</span>
-                  <span className="fw-bold">{stats.adminsByRole?.superAdmins || 0}</span>
+                  <span className="me-2">Active:</span>
+                  <span className="fw-bold">{stats.userStats.active}</span>
                   <span className="mx-2">|</span>
-                  <span className="me-2">Company Admins:</span>
-                  <span className="fw-bold">{stats.adminsByRole?.companyAdmins || 0}</span>
+                  <span className="me-2">Inactive:</span>
+                  <span className="fw-bold">{stats.userStats.inactive}</span>
                 </div>
               </div>
             </div>
@@ -247,14 +216,14 @@ const Dashboard = () => {
                   <i className="bi bi-person-badge"></i>
                 </div>
                 <div>
-                  <h6 className="card-title text-muted mb-0">Total Employees</h6>
-                  <h2 className="mt-2 mb-0">{stats.totalEmployees}</h2>
+                  <h6 className="card-title text-muted mb-0">New This Month</h6>
+                  <h2 className="mt-2 mb-0">{stats.userStats.newThisMonth}</h2>
                 </div>
               </div>
               <div className="mt-3 pt-3 border-top">
                 <div className="d-flex align-items-center">
                   <span className="text-muted small">
-                    Avg. {(stats.totalEmployees / (stats.totalCompanies || 1)).toFixed(1)} employees per company
+                    New registrations in the last 30 days
                   </span>
                 </div>
               </div>
@@ -271,7 +240,7 @@ const Dashboard = () => {
                 </div>
                 <div>
                   <h6 className="card-title text-muted mb-0">Pending Approvals</h6>
-                  <h2 className="mt-2 mb-0">{stats.companiesByStatus?.pending || 0}</h2>
+                  <h2 className="mt-2 mb-0">{stats.companyStats.pending}</h2>
                 </div>
               </div>
               <div className="mt-3 pt-3 border-top">
@@ -313,7 +282,7 @@ const Dashboard = () => {
             <div className="card-body d-flex justify-content-center align-items-center">
               <div style={{ maxHeight: '250px', width: '100%' }}>
                 <Doughnut
-                  data={barChartData}
+                  data={doughnutChartData}
                   options={{
                     responsive: true,
                     maintainAspectRatio: false,

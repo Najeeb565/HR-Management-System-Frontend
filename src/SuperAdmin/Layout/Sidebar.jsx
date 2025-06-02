@@ -84,8 +84,8 @@ const Sidebar = ({ collapsed }) => {
           
           <li className="nav-item">
             <Link 
-              to="/superadmin/settings" 
-              className={`nav-link ${location.pathname.includes('/settings') ? 'active' : ''}`}
+              to="/superadmin/SuperAdminSetting" 
+              className={`nav-link ${location.pathname.includes('/SuperAdminSetting') ? 'active' : ''}`}
             >
               <i className="bi bi-gear"></i>
               <span>Settings</span>

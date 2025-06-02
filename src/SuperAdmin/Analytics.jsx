@@ -62,11 +62,11 @@ const Analytics = () => {
     try {
       // Fetch dashboard data
       const dashboardResponse = await axios.get('http://localhost:5000/api/dashboard');
-      const dashboardData = dashboardResponse.data;
+      const dashboardData = dashboardResponse.data.data;
 
       // Fetch pending companies
       const pendingCompaniesResponse = await axios.get('http://localhost:5000/api/companies?status=pending');
-      const pendingCompaniesCount = pendingCompaniesResponse.data.length;
+      const pendingCompaniesCount = pendingCompaniesResponse.data.count;
 
       // Structure the data to match the state
       setData({
