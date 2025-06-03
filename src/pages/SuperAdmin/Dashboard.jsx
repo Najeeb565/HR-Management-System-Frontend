@@ -152,9 +152,9 @@ const Dashboard = () => {
           <button className="btn btn-outline-secondary me-2">
             <i className="bi bi-download me-1"></i> Export Report
           </button>
-          <Link to="/register" className="btn btn-primary">
+          {/* <Link to="/register" className="btn btn-primary">
             <i className="bi bi-plus-circle me-1"></i> New Company
-          </Link>
+          </Link> */}
         </div>
       </div>
 

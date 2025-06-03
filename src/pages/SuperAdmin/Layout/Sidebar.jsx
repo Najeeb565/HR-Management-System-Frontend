@@ -4,18 +4,15 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 const Sidebar = ({ collapsed }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [activeMenu, setActiveMenu] = useState('');
   const [adminName, setAdminName] = useState('Admin User');
   
   useEffect(() => {
-    setActiveMenu(location.pathname);
-    
     const userInfo = localStorage.getItem('userInfo');
     if (userInfo) {
       const parsed = JSON.parse(userInfo);
       setAdminName(parsed.name || 'Admin User');
     }
-  }, [location]);
+  }, []);
   
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -84,21 +81,11 @@ const Sidebar = ({ collapsed }) => {
           
           <li className="nav-item">
             <Link 
-              to="/superadmin/SuperAdminSetting" 
-              className={`nav-link ${location.pathname.includes('/SuperAdminSetting') ? 'active' : ''}`}
+              to="/superadmin/settings" 
+              className={`nav-link ${location.pathname.includes('/settings') ? 'active' : ''}`}
             >
               <i className="bi bi-gear"></i>
               <span>Settings</span>
-            </Link>
-          </li>
-          
-          <li className="nav-item">
-            <Link 
-              to="/superadmin/security-logs" 
-              className={`nav-link ${location.pathname.includes('/security-logs') ? 'active' : ''}`}
-            >
-              <i className="bi bi-shield-lock"></i>
-              <span>Security Logs</span>
             </Link>
           </li>
         </ul>
