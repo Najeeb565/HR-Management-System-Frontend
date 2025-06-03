@@ -5,9 +5,13 @@ import * as Yup from 'yup';
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
+import RequestSent from "../register/requestsentpage/requestsentpage";
 
 
 function CompanyRegisterForm() {
+  const navigate = useNavigate(); 
+
   const formik = useFormik({
     initialValues: {
       ownerName: '',
@@ -39,9 +43,11 @@ function CompanyRegisterForm() {
       try {
         const response = await axios.post("http://localhost:5000/api/companies", values);
         console.log("Server Response:", response.data);
-        toast.success("🎉 Company registered successfully!");
+        toast.success("🎉 Registration Request Sent");
         resetForm();
+      navigate(`/RequestSent/${response.data.companyId}`);
       } catch (error) {
+
         console.error("Submission error:", error);
         toast.error("🚫 Error submitting the form.");
       }
@@ -55,102 +61,110 @@ function CompanyRegisterForm() {
       <form  onSubmit={formik.handleSubmit}>
         <div className="CompanyForm">
 
- <div className="LeftSide">
-          <div className="form-row">
-            <label>Owner Name:</label>
-            <input
-              type="text"
-              name="ownerName"
-              placeholder="Enter owner name"
-              className="form-input"
-              value={formik.values.ownerName}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            {formik.touched.ownerName && formik.errors.ownerName && (
-              <div className="error">{formik.errors.ownerName}</div>
-            )}
-          </div>
+<div className="LeftSide form-flex">
+  {/* Left column: All labels */}
+  <div className="form-labels">
+    <label>Owner Name:</label>
+    <label>Company Name:</label>
+    <label>Company Email:</label>
+    <label>Phone:</label>
+    <label>Industry:</label>
+  </div>
 
-          <div className="form-row">
-            <label>Company Name:</label>
-            <input
-              type="text"
-              name="companyName"
-              placeholder="Enter company Name"
-              className="form-input"
-              value={formik.values.companyName}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            {formik.touched.companyName && formik.errors.companyName && (
-              <div className="error">{formik.errors.companyName}</div>
-            )}
-          </div>
+  {/* Right column: All input fields + errors */}
+  <div className="form-inputs">
+    <div className="form-field">
+      <input
+        type="text"
+        name="ownerName"
+        placeholder="Enter owner name"
+        className="form-input"
+        value={formik.values.ownerName}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+      />
+      {formik.touched.ownerName && formik.errors.ownerName && (
+        <div className="error">{formik.errors.ownerName}</div>
+      )}
+    </div>
 
-          <div className="form-row">
-            <label>Company Email:</label>
-            <input
-              type="email"
-              name="companyEmail"
-              placeholder="Enter company Email"
-              className="form-input"
-              value={formik.values.companyEmail}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            {formik.touched.companyEmail && formik.errors.companyEmail && (
-              <div className="error">{formik.errors.companyEmail}</div>
-            )}
-          </div>
+    <div className="form-field">
+      <input
+        type="text"
+        name="companyName"
+        placeholder="Enter company name"
+        className="form-input"
+        value={formik.values.companyName}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+      />
+      {formik.touched.companyName && formik.errors.companyName && (
+        <div className="error">{formik.errors.companyName}</div>
+      )}
+    </div>
 
-          <div className="form-row">
-            <label>Phone:</label>
-            <input
-              type="text"
-              name="phone"
-              placeholder="Enter your Phone Number"
-              className="form-input"
-              value={formik.values.phone}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            {formik.touched.phone && formik.errors.phone && (
-              <div className="error">{formik.errors.phone}</div>
-            )}
-          </div>
+    <div className="form-field">
+      <input
+        type="email"
+        name="companyEmail"
+        placeholder="Enter company email"
+        className="form-input"
+        value={formik.values.companyEmail}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+      />
+      {formik.touched.companyEmail && formik.errors.companyEmail && (
+        <div className="error">{formik.errors.companyEmail}</div>
+      )}
+    </div>
 
-          <div className="form-row">
-            <label>Industry:</label>
-            <select
-              name="industry"
-              className="industry-select"
-              value={formik.values.industry}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            >
-              <option value="">Select Industry</option>
-              <option value="Information Technology">Information Technology</option>
-              <option value="Healthcare">Healthcare</option>
-              <option value="Finance">Finance</option>
-              <option value="Education">Education</option>
-              <option value="Manufacturing">Manufacturing</option>
-              <option value="Retail">Retail</option>
-              <option value="Construction">Construction</option>
-              <option value="Hospitality">Hospitality</option>
-              <option value="Transportation">Transportation</option>
-              <option value="Media & Entertainment">Media & Entertainment</option>
-              <option value="Telecommunications">Telecommunications</option>
-              <option value="Energy">Energy</option>
-              <option value="Agriculture">Agriculture</option>
-              <option value="Real Estate">Real Estate</option>
-              <option value="Other">Other</option>
-            </select>
-            {formik.touched.industry && formik.errors.industry && (
-              <div className="error">{formik.errors.industry}</div>
-            )}
-          </div>
-        </div>
+    <div className="form-field">
+      <input
+        type="number"
+        name="phone"
+        placeholder="Enter your phone number"
+        className="form-input"
+        value={formik.values.phone}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+      />
+      {formik.touched.phone && formik.errors.phone && (
+        <div className="error">{formik.errors.phone}</div>
+      )}
+    </div>
+
+    <div className="form-field">
+      <select
+        name="industry"
+        className="industry-select"
+        value={formik.values.industry}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+      >
+        <option value="">Select Industry</option>
+        <option value="Information Technology">Information Technology</option>
+        <option value="Healthcare">Healthcare</option>
+        <option value="Finance">Finance</option>
+        <option value="Education">Education</option>
+        <option value="Manufacturing">Manufacturing</option>
+        <option value="Retail">Retail</option>
+        <option value="Construction">Construction</option>
+        <option value="Hospitality">Hospitality</option>
+        <option value="Transportation">Transportation</option>
+        <option value="Media & Entertainment">Media & Entertainment</option>
+        <option value="Telecommunications">Telecommunications</option>
+        <option value="Energy">Energy</option>
+        <option value="Agriculture">Agriculture</option>
+        <option value="Real Estate">Real Estate</option>
+        <option value="Other">Other</option>
+      </select>
+      {formik.touched.industry && formik.errors.industry && (
+        <div className="error">{formik.errors.industry}</div>
+      )}
+    </div>
+  </div>
+</div>
+
 
         <div className="address-container">
           <input
@@ -191,6 +205,9 @@ function CompanyRegisterForm() {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
             />
+              {formik.touched.state && formik.errors.state && (
+            <div className="error">{formik.errors.state}</div>
+          )}
             <input
               type="text"
               name="state"
@@ -204,13 +221,11 @@ function CompanyRegisterForm() {
           {formik.touched.city && formik.errors.city && (
             <div className="error">{formik.errors.city}</div>
           )}
-          {formik.touched.state && formik.errors.state && (
-            <div className="error">{formik.errors.state}</div>
-          )}
+        
 
           <div className="form-row">
             <input
-              type="text"
+              type="number"
               name="zip"
               placeholder="Postal / Zip Code"
               className="form-input"
@@ -218,6 +233,9 @@ function CompanyRegisterForm() {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
             />
+             {formik.touched.country && formik.errors.country && (
+            <div className="error">{formik.errors.country}</div>
+          )}
             <select
               name="country"
               className="form-input"
@@ -234,16 +252,15 @@ function CompanyRegisterForm() {
           </div>
           {formik.touched.zip && formik.errors.zip && (
             <div className="error">{formik.errors.zip}</div>
-          )}
-          {formik.touched.country && formik.errors.country && (
-            <div className="error">{formik.errors.country}</div>
-          )}
+          )}       
         </div>
 
       
         </div>
-               <button type="submit" className="submit-btn">Submit</button>
+               <div className="d-flex justify-content-center">
+                <button type="submit" className="submitbtn">Submit</button>
 
+               </div>
       </form>
     </div>
   );

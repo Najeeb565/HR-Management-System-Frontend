@@ -3,6 +3,7 @@ import Landing from "./pages/landing/landing";
 import LoginPage from "./pages/login/login";
 import Dashboard from "./pages/landing/dashboard/dashboard";
 import CompanyRegisterForm from "./pages/register/Registrationform";
+
 import Superadmin from './pages/superadmin/Superadmin';
 
 
