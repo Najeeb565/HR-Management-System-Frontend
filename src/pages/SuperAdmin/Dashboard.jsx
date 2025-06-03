@@ -148,14 +148,7 @@ const Dashboard = () => {
     <div className="fade-in">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1 className="h3">Super Admin Dashboard</h1>
-        <div>
-          <button className="btn btn-outline-secondary me-2">
-            <i className="bi bi-download me-1"></i> Export Report
-          </button>
-          <Link to="/register" className="btn btn-primary">
-            <i className="bi bi-plus-circle me-1"></i> New Company
-          </Link>
-        </div>
+    
       </div>
 
       <div className="row g-4 mb-4">
