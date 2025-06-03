@@ -53,7 +53,7 @@ const SuperAdminLogin = () => {
             />
           </div>
 
-          <button type="submit" className="btn">Login</button>
+          <button type="submit" className="loginbtn">Login</button>
         </form>
       </div>
       {/* Toast container */}
