@@ -13,8 +13,6 @@ import RequestSent from "../register/requestsentpage/requestsentpage";
 function CompanyRegisterForm() {
   const navigate = useNavigate(); 
 
-  const navigate = useNavigate(); 
-
   const formik = useFormik({
     initialValues: {
       ownerName: '',
