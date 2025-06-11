@@ -63,7 +63,7 @@ const navigate = useNavigate();
         style={{
           width: "100%",
           maxWidth: "400px",
-          marginLeft: "470px",
+
           fontSize: "14px",
         }}
       >

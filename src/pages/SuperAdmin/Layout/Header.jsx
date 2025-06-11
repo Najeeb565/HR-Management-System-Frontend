@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { useNavigate, Link } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const Header = ({ toggleSidebar }) => {
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [adminName, setAdminName] = useState('Admin');
+
+  const navigate = useNavigate();
   
   useEffect(() => {
     // Get user info from localStorage
@@ -45,6 +49,7 @@ const Header = ({ toggleSidebar }) => {
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
+      
     <header className="bg-white shadow-sm">
       <div className="container-fluid">
         <div className="row py-3">
@@ -136,7 +141,10 @@ const Header = ({ toggleSidebar }) => {
                   <button className="dropdown-item" onClick={() => {
                     localStorage.removeItem('token');
                     localStorage.removeItem('userInfo');
-                    window.location.href = '/login';
+                    toast.success('Logging out...');
+                    setTimeout(() => {
+                      navigate('/superadminlogin');
+                    }, 2500);
                   }}>
                     <i className="bi bi-box-arrow-right me-2"></i> Logout
                   </button>
@@ -146,6 +154,7 @@ const Header = ({ toggleSidebar }) => {
           </div>
         </div>
       </div>
+      <ToastContainer position="top-right" autoClose={3000} />
     </header>
   );
 };

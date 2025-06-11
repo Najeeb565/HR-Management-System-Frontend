@@ -2,10 +2,16 @@ import React, { useState } from 'react';
 import './superadmin.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
+import superadmin from '../SuperAdmin/Dashboard'
+
 
 const SuperAdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const navigate = useNavigate();
+
 
 
   const handleSubmit = (e) => {
@@ -19,6 +25,9 @@ const SuperAdminLogin = () => {
       toast.success("✅ Superadmin Login Successful!");
       setEmail('');
       setPassword('');
+      setTimeout(() => {
+        navigate('/superadmin');
+      }, 1500);
     } else {
       toast.error("❌ Invalid email or password.");
     }
@@ -53,7 +62,7 @@ const SuperAdminLogin = () => {
             />
           </div>
 
-          <button type="submit" className="btn">Login</button>
+          <button type="submit" className="loginbtn">Login</button>
         </form>
       </div>
       {/* Toast container */}
