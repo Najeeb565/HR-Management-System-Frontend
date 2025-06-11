@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-// import "bootstrap/dist/css/bootstrap.min.css";
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa"; // 👈 Added Eye Icon
 import { useNavigate } from 'react-router-dom';
 
@@ -129,14 +128,6 @@ const navigate = useNavigate();
               </div>
             )}
           </div>
-
-          {/* Forgot Password Link
-          <div className="text-end mb-3">
-            <a href="#" className="small text-decoration-none">
-              Forgot Password?
-            </a>
-          </div> */}
-
 
           {showForgotPassword && (
             <div className="text-end mb-3">

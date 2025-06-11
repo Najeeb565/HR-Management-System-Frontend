@@ -10,7 +10,7 @@ const SuperAdminLogin = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+ 
     // Dummy credentials
     const correctEmail = "admin@super.com";
     const correctPassword = "admin123";
