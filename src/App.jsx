@@ -11,7 +11,8 @@ import RequestSent from './pages/register/requestsentpage/requestsentpage';
 import SuperAdminSetting from './pages/SuperAdmin/SuperAdminSetting';
 import CompanyList from './pages/SuperAdmin/companies/CompanyList';
 import AdminList from './pages/SuperAdmin/Admin/AdminList';
-// import CompanyDashboard from './pages/CompanyDashboard/CompanyDashboard';
+import CompanyDashboard from './pages/CompanyDashboard/CompanyDashboard';
+import SetCompanyAdmin from './pages/CompanyDashboard/setadmin/setadmin';
 
 function App() {
   return (
@@ -24,7 +25,9 @@ function App() {
         <Route path="/register" element={<CompanyRegisterForm />} />
         <Route path="/CompanyRegisterForm" element={<Navigate to="/register" replace />} />
         <Route path="/RequestSent/:companyId" element={<RequestSent />} />
-        {/* <Route path="/company/dashboard" element={<CompanyDashboard />} /> */}
+        <Route path="/company-dashboard" element={<CompanyDashboard />} />
+        <Route path="/company-dashboard/set-admin/:companyId" element={<SetCompanyAdmin />} />
+
 
         {/* Super Admin Login */}
         <Route path="/superadminlogin" element={<Superadminlogin />} />

@@ -18,37 +18,52 @@ const RequestSent = () => {
     };
 
     checkStatus();
-
-    // Optional: keep checking every 10 seconds
     const interval = setInterval(checkStatus, 10000);
     return () => clearInterval(interval);
   }, [companyId]);
 
   const goToDashboard = () => {
-    navigate('/company-dashboard'); // update with your actual dashboard route
+   navigate(`/company-dashboard/set-admin/${companyId}`);
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="bg-white p-10 rounded-xl shadow-md text-center">
-        <h2 className="text-2xl font-bold text-green-600 mb-4">Request Sent!</h2>
-        <p className="text-gray-700 mb-6">
-          Your company registration request has been sent to the SuperAdmin.
-          <br />
-          Please wait for final approval. You will receive an email once approved.
-        </p>
-
-        {status === "approved" && (
-          <button
-            onClick={goToDashboard}
-            className="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-          >
-            Go to Dashboard
-          </button>
+    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+      <div className="bg-white p-5 rounded shadow text-center" style={{ maxWidth: '500px' }}>
+        {status === "pending" && (
+          <>
+            <h2 className="text-warning mb-3">Request Pending</h2>
+            <p className="text-secondary mb-1">
+              Your company registration request has been sent to the SuperAdmin.
+            </p>
+            <p className="text-muted mb-4">
+              Please wait for final approval. You’ll receive an email once it’s approved.
+            </p>
+            <div className="text-warning small">
+              <div className="spinner-border spinner-border-sm me-2" role="status"></div>
+              Checking status every 10 seconds...
+            </div>
+          </>
         )}
 
-        {status === "pending" && (
-          <p className="text-yellow-500 mt-2">Waiting for approval...</p>
+        {status === "approved" && (
+          <>
+            <h2 className="text-success mb-3">Company Approved!</h2>
+            <p className="text-secondary mb-4">
+              Congratulations! Your company has been approved. You can now access your dashboard.
+            </p>
+            <button onClick={goToDashboard} className="btn-secondary btn-outline btn ">
+              Go to Dashboard
+            </button>
+          </>
+        )}
+
+        {status === "rejected" && (
+          <>
+            <h2 className="text-danger mb-3">Request Rejected</h2>
+            <p className="text-secondary">
+              Sorry, your company request has been rejected. Please contact support for more details.
+            </p>
+          </>
         )}
       </div>
     </div>

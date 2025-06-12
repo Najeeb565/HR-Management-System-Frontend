@@ -2,15 +2,22 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+<<<<<<< HEAD
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa"; // 👈 Added Eye Icon
+=======
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa"; 
+>>>>>>> 2eeda7dee582f34ff3ba054271a1d9adc95981fe
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 const LoginPage = () => {
   // const [showPassword, setShowPassword] = useState(false); // 👈 Show/hide password state
 const navigate = useNavigate(); 
   const [showPassword, setShowPassword] = useState(false);
-  const [showForgotPassword, setShowForgotPassword] = useState(false); // 👈 Add this
+  const [showForgotPassword, setShowForgotPassword] = useState(false); 
 
   const formik = useFormik({
     initialValues: {
@@ -27,31 +34,41 @@ const navigate = useNavigate();
         .required("Password is required"),
       role: Yup.string().required("Please select a role"),
     }),
-    onSubmit: async (values, { resetForm }) => {
-      try {
-        const response = await fetch("http://localhost:5000/api/auth/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-        });
+   onSubmit: async (values, { resetForm }) => {
+  try {
+    const response = await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
 
-        const data = await response.json();
+    const data = await response.json();
 
-        if (data.success) {
-          alert(`Login as ${values.role} successful!`);
-          resetForm();
-          setShowForgotPassword(false);
-            navigate("/dashboard");
-        } else {
-          alert(data.message);
-        }
-      } catch (error) {
-        console.error("Login error:", error);
-        alert("Something went wrong!");
+    if (data.success) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      toast.success(`Login as ${values.role} successful!`);
+      resetForm();
+      setShowForgotPassword(false);
+
+      if (values.role === "admin") {
+        // navigate("/admin-dashboard");
+      } else {
+        navigate("/employee-dashboard");
       }
-    },
+
+    } else {
+      toast.error(data.message);
+    }
+  } catch (error) {
+    console.error("Login error:", error);
+    toast.error("Something went wrong!");
+  }
+}
+
   });
 
 
@@ -102,7 +119,7 @@ const navigate = useNavigate();
                 <FaLock />
               </span>
               <input
-                type={showPassword ? "text" : "password"} // 👈 Show/hide toggle
+                type={showPassword ? "text" : "password"} 
                 name="password"
                 className={`form-control border-0 border-bottom ${formik.touched.password && formik.errors.password
                     ? "is-invalid"
@@ -195,6 +212,8 @@ const navigate = useNavigate();
             LOGIN
           </button>  
            </form>
+           <ToastContainer position="top-right" autoClose={3000} />
+
       </div>
     </div>
   );
