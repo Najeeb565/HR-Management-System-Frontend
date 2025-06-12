@@ -22,17 +22,27 @@ const SetCompanyAdmin = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMessage('');
-    setError('');
+  e.preventDefault();
+  setMessage('');
+  setError('');
 
-    try {
-      const res = await axios.post(`http://localhost:5000/api/company/set-admin/${companyId}`, formData);
-      setMessage(res.data.message);
-    } catch (err) {
-      setError(err.response?.data?.message || 'Something went wrong.');
+  try {
+    const res = await axios.post(
+      `http://localhost:5000/api/companies/set-admin/${companyId}`,
+      formData
+    );
+
+    if (res.status === 201) {
+      setMessage(res.data.message || 'Admin created successfully');
+    } else {
+      setError('Unexpected response from server.');
     }
-  };
+
+  } catch (err) {
+    setError(err.response?.data?.message || 'Something went wrong.');
+  }
+};
+
 
   return (
     <div className="container mt-5">
