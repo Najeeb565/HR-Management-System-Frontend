@@ -6,6 +6,7 @@ import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import CompanyDashboard from "../CompanyDashboard/CompanyDashboard";
 
 
 
@@ -51,7 +52,7 @@ const navigate = useNavigate();
       setShowForgotPassword(false);
 
       if (values.role === "admin") {
-        // navigate("/admin-dashboard");
+        navigate("/company-dashboard")
       } else {
         navigate("/employee-dashboard");
       }
