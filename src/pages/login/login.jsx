@@ -2,11 +2,7 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-<<<<<<< HEAD
-import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa"; // 👈 Added Eye Icon
-=======
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa"; 
->>>>>>> 2eeda7dee582f34ff3ba054271a1d9adc95981fe
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
