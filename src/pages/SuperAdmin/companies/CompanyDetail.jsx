@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import PageHeader from '../Layout/PageHeader';
 
+
 const CompanyDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
