@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams , useNavigate } from 'react-router-dom';
+
 
 const SetCompanyAdmin = () => {
   const { companyId } = useParams();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -22,26 +24,30 @@ const SetCompanyAdmin = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setMessage('');
-  setError('');
+    e.preventDefault();
+    setMessage('');
+    setError('');
 
-  try {
-    const res = await axios.post(
-      `http://localhost:5000/api/companies/set-admin/${companyId}`,
-      formData
-    );
+    try {
+      const res = await axios.post(
+        `http://localhost:5000/api/companies/set-admin/${companyId}`,
+        formData
+      );
 
-    if (res.status === 201) {
-      setMessage(res.data.message || 'Admin created successfully');
-    } else {
-      setError('Unexpected response from server.');
+      if (res.status === 201) {
+        setMessage(res.data.message || 'Admin created successfully');
+        setTimeout(() => {
+          navigate('/login');
+        }, 2000);
+
+      } else {
+        setError('Unexpected response from server.');
+      }
+
+    } catch (err) {
+      setError(err.response?.data?.message || 'Something went wrong.');
     }
-
-  } catch (err) {
-    setError(err.response?.data?.message || 'Something went wrong.');
-  }
-};
+  };
 
 
   return (
