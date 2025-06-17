@@ -7,14 +7,18 @@ const CompanyProvider = ({ children }) => {
   const [company, setCompany] = useState(null);
   const [companyId, setCompanyId] = useState(null); // ✅ Add this
 
-  useEffect(() => {
-    const storedCompany = localStorage.getItem("user");
-    if (storedCompany) {
-      const parsedCompany = JSON.parse(storedCompany);
-      setCompany(parsedCompany);
-      setCompanyId(parsedCompany.companyId); // ✅ Set companyId from user
-    }
-  }, []);
+useEffect(() => {
+  const storedCompany = localStorage.getItem("user");
+  if (storedCompany) {
+    const parsedCompany = JSON.parse(storedCompany);
+    setCompany(parsedCompany);
+    setCompanyId(parsedCompany.companyId); // ✅ This should now work
+  }
+}, []);
+
+
+
+
 
   return (
     <CompanyContext.Provider value={{ company, setCompany, companyId }}>
