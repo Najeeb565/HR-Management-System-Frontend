@@ -2,19 +2,24 @@
 import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa"; 
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import CompanyDashboard from "../CompanyDashboard/CompanyDashboard";
+import { useContext } from 'react';
+import  {CompanyContext}  from '../../context/CompanyContext';
+// import CompanyDashboard from "../CompanyDashboard/CompanyDashboard";
+
 
 
 
 const LoginPage = () => {
   // const [showPassword, setShowPassword] = useState(false); // 👈 Show/hide password state
-const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [showForgotPassword, setShowForgotPassword] = useState(false); 
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+
+  const { setCompany } = useContext(CompanyContext);
 
   const formik = useFormik({
     initialValues: {
@@ -31,40 +36,51 @@ const navigate = useNavigate();
         .required("Password is required"),
       role: Yup.string().required("Please select a role"),
     }),
-   onSubmit: async (values, { resetForm }) => {
-  try {
-    const response = await fetch("http://localhost:5000/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    });
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        const response = await fetch("http://localhost:5000/api/auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        });
 
-    const data = await response.json();
+        const data = await response.json();
 
-    if (data.success) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+        if (data.success) {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
 
-      toast.success(`Login as ${values.role} successful!`);
-      resetForm();
-      setShowForgotPassword(false);
+          toast.success(`Login as ${values.role} successful!`);
+          resetForm();
+          setShowForgotPassword(false);
 
-      if (values.role === "admin") {
-        navigate("/company-dashboard")
-      } else {
-        navigate("/employee-dashboard");
+          if (values.role === "admin") {
+            const companyName = data.user?.companyName;
+            console.log("Login response:", data);
+
+
+            if (companyName) {
+              const companySlug = companyName.toLowerCase().replace(/\s+/g, '-');
+              navigate(`/${companySlug}/company-dashboard`);
+            } else {
+              toast.error("Company name not found. Please contact support.");
+            }
+
+          } else {
+            navigate("/employee-dashboard");
+          }
+
+
+        } else {
+          toast.error(data.message);
+        }
+      } catch (error) {
+        console.error("Login error:", error);
+        toast.error("Something went wrong!");
       }
-
-    } else {
-      toast.error(data.message);
     }
-  } catch (error) {
-    console.error("Login error:", error);
-    toast.error("Something went wrong!");
-  }
-}
 
   });
 
@@ -94,8 +110,8 @@ const navigate = useNavigate();
                 type="email"
                 name="email"
                 className={`form-control border-0 border-bottom ${formik.touched.email && formik.errors.email
-                    ? "is-invalid"
-                    : ""
+                  ? "is-invalid"
+                  : ""
                   }`}
                 placeholder="Type your email"
                 onChange={formik.handleChange}
@@ -116,11 +132,11 @@ const navigate = useNavigate();
                 <FaLock />
               </span>
               <input
-                type={showPassword ? "text" : "password"} 
+                type={showPassword ? "text" : "password"}
                 name="password"
                 className={`form-control border-0 border-bottom ${formik.touched.password && formik.errors.password
-                    ? "is-invalid"
-                    : ""
+                  ? "is-invalid"
+                  : ""
                   }`}
                 placeholder="Type your password"
                 onChange={formik.handleChange}
@@ -142,14 +158,6 @@ const navigate = useNavigate();
               </div>
             )}
           </div>
-
-          {/* Forgot Password Link
-          <div className="text-end mb-3">
-            <a href="#" className="small text-decoration-none">
-              Forgot Password?
-            </a>
-          </div> */}
-
 
           {showForgotPassword && (
             <div className="text-end mb-3">
@@ -215,9 +223,9 @@ const navigate = useNavigate();
             }}
           >
             LOGIN
-          </button>  
-           </form>
-           <ToastContainer position="top-right" autoClose={3000} />
+          </button>
+        </form>
+        <ToastContainer position="top-right" autoClose={3000} />
 
       </div>
     </div>

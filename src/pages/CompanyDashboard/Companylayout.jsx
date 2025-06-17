@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, Outlet } from 'react-router-dom';
+import { useContext } from 'react';
+import { CompanyContext } from '../../context/CompanyContext';
+import { useParams } from 'react-router-dom';
 
 const Companylayout = () => {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const { company } = useContext(CompanyContext);
+  const { companySlug } = useParams();
+
+
+
 
   // Debug: Log current route to verify navigation
   useEffect(() => {
@@ -11,11 +20,9 @@ const Companylayout = () => {
   }, [location.pathname]);
 
   const menuItems = [
-    { path: '/company-dashboard', icon: 'bi-speedometer2', label: 'Dashboard' },
-    { path: '/company-dashboard/employees', icon: 'bi-people', label: 'All Employees' },
-    { path: '/company-dashboard/employees/add', icon: 'bi-person-plus', label: 'Add Employee' },
-    { path: '/company-dashboard/Taskmanagement', icon: 'bi-person-plus', label: 'Task Management' }
-
+    { path: `/${companySlug}/company-dashboard`, icon: 'bi-speedometer2', label: 'Dashboard' },
+    { path: `/${companySlug}/company-dashboard/employees`, icon: 'bi-people', label: 'All Employees' },
+    { path: `/${companySlug}/company-dashboard/employees/add`, icon: 'bi-person-plus', label: 'Add Employee' }
   ];
 
   const toggleSidebar = () => {
@@ -25,22 +32,21 @@ const Companylayout = () => {
   return (
     <div className="container-fluid" style={{ display: 'flex', minHeight: '100vh', overflow: 'hidden' }}>
       {/* Sidebar */}
-      <div 
-        className="sidebar" 
-        style={{ 
-          width: '20%', 
-          backgroundColor: '#343a40', 
-          color: '#fff', 
-          position: 'fixed', 
-          height: '100vh', 
+      <div
+        className="sidebar"
+        style={{
+          width: '20%',
+          backgroundColor: '#343a40',
+          color: '#fff',
+          position: 'fixed',
+          height: '100vh',
           overflowY: 'auto'
         }}
       >
         <div className="p-3">
-          <Link to="/" className="brand-logo text-white text-decoration-none">
-            <i className="bi bi-building me-2"></i>
-            CompanyHub
-          </Link>
+          <Link to={`/${companySlug}/company-dashboard`} className="brand-logo text-white text-decoration-none">
+            <h4>Welcome, {company?.name}</h4>
+          </Link> 
         </div>
 
         <nav className="nav flex-column mt-4">
@@ -52,7 +58,7 @@ const Companylayout = () => {
               style={{ color: '#fff', padding: '0.5rem 1rem' }}
               onClick={() => setSidebarOpen(false)}
             >
-              <i className={`${item.icon} me-2`}></i>
+              <i className={`${item.icon} me-2`}></i> 
               {item.label}
             </Link>
           ))}
@@ -60,13 +66,13 @@ const Companylayout = () => {
       </div>
 
       {/* Main Content */}
-      <div 
+      <div
         className="main-content"
-        style={{ 
-          width: '80%', 
-          marginLeft: '20%', 
-          backgroundColor: '#f8f9fa', 
-          minHeight: '100vh', 
+        style={{
+          width: '80%',
+          marginLeft: '20%',
+          backgroundColor: '#f8f9fa',
+          minHeight: '100vh',
           padding: '20px'
         }}
       >

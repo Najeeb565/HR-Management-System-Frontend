@@ -86,6 +86,7 @@ const Landing = () => {
       isPopular: false
     }
   ];
+  // const navigate = useNavigate();
 
   return (
     <div>
@@ -110,6 +111,12 @@ const Landing = () => {
 
 
       {/* Hero Section */}
+
+      {/* Urls */}
+         <Link to="/login">login</Link> <br />
+         <Link to="/CompanyRegisterForm">CompanyRegisterForm</Link> <br />
+         <Link to="/superadmin">superadmin</Link>
+
       <section className={styles.herosection}>
         <h1>Empower Your HR with HRMPro</h1>
         <p>Streamline employee management, boost productivity, and simplify HR tasks with our all-in-one solution.</p>
