@@ -159,14 +159,6 @@ const LoginPage = () => {
             )}
           </div>
 
-          {/* Forgot Password Link
-          <div className="text-end mb-3">
-            <a href="#" className="small text-decoration-none">
-              Forgot Password?
-            </a>
-          </div> */}
-
-
           {showForgotPassword && (
             <div className="text-end mb-3">
               <a href="#" className="small text-decoration-none text-danger">
