@@ -50,7 +50,7 @@ const Companylayout = () => {
               style={{ color: '#fff', padding: '0.5rem 1rem' }}
               onClick={() => setSidebarOpen(false)}
             >
-              <i className={`${item.icon} me-2`}></i>
+              <i className={`${item.icon} me-2`}></i> 
               {item.label}
             </Link>
           ))}
