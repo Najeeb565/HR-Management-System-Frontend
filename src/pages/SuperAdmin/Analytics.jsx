@@ -21,7 +21,7 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
-  BarElement,
+  BarElement, 
   ArcElement,
   Title,
   Tooltip,
