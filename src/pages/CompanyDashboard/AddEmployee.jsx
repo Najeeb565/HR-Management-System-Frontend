@@ -36,7 +36,7 @@ const AddEmployee = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setLoading(true);   
 
     const payload = {
       ...formData,
