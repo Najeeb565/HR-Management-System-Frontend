@@ -1,20 +1,23 @@
+// CompanyProvider.jsx
 import { createContext, useState, useEffect } from 'react';
 
 export const CompanyContext = createContext();
 
 const CompanyProvider = ({ children }) => {
   const [company, setCompany] = useState(null);
+  const [companyId, setCompanyId] = useState(null); // ✅ Add this
 
-  // Load from localStorage if available (on page refresh)
   useEffect(() => {
     const storedCompany = localStorage.getItem("user");
     if (storedCompany) {
-      setCompany(JSON.parse(storedCompany));
+      const parsedCompany = JSON.parse(storedCompany);
+      setCompany(parsedCompany);
+      setCompanyId(parsedCompany.companyId); // ✅ Set companyId from user
     }
   }, []);
 
   return (
-    <CompanyContext.Provider value={{ company, setCompany }}>
+    <CompanyContext.Provider value={{ company, setCompany, companyId }}>
       {children}
     </CompanyContext.Provider>
   );
