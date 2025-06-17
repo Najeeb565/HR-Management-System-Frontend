@@ -13,7 +13,9 @@ const Companylayout = () => {
   const menuItems = [
     { path: '/company-dashboard', icon: 'bi-speedometer2', label: 'Dashboard' },
     { path: '/company-dashboard/employees', icon: 'bi-people', label: 'All Employees' },
-    { path: '/company-dashboard/employees/add', icon: 'bi-person-plus', label: 'Add Employee' }
+    { path: '/company-dashboard/employees/add', icon: 'bi-person-plus', label: 'Add Employee' },
+    { path: '/company-dashboard/Taskmanagement', icon: 'bi-person-plus', label: 'Task Management' }
+
   ];
 
   const toggleSidebar = () => {
@@ -85,7 +87,6 @@ const Companylayout = () => {
           {/* Show debug text only if no route content is rendered */}
           {!React.Children.count(React.Children.toArray(Outlet).find(child => child)) && (
             <div className="mt-2 text-muted">
-              [Debug: Main content area should display route content above]
             </div>
           )}
         </div>

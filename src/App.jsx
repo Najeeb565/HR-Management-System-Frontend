@@ -18,6 +18,7 @@ import EditEmployee from "./pages/CompanyDashboard/EditEmployee";
 import EmployeeList from "./pages/CompanyDashboard/EmployeeList";
 import EmployeeProfile from "./pages/CompanyDashboard/EmployeeProfile";
 import Companylayout from "./pages/CompanyDashboard/Companylayout";
+import Taskmanagement from "./pages/CompanyDashboard/taskmanagement";
 
 function App() {
   return (
@@ -49,11 +50,11 @@ function App() {
         <Route path="/company-dashboard" element={<Companylayout />}>
           <Route index element={<CompanyDashboard />} />
           <Route path="employees" element={<EmployeeList />} />
-          <Route path="employees/add" element={<AddEmployee />} /> {/* Ensure this matches navigation */}
+          <Route path="employees/add" element={<AddEmployee />} />
           <Route path="employees/edit/:id" element={<EditEmployee />} />
           <Route path="employees/profile/:id" element={<EmployeeProfile />} />
+          <Route path="Taskmanagement" element={<Taskmanagement />} />
         </Route>
-
         {/* Catch-all */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
