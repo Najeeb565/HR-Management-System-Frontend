@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { useContext } from 'react';
-import  {CompanyContext}  from '../../context/CompanyContext';
+import { CompanyContext } from '../../context/CompanyContext';
 // import CompanyDashboard from "../CompanyDashboard/CompanyDashboard";
 
 
@@ -58,24 +58,19 @@ const LoginPage = () => {
 
           if (values.role === "admin") {
             const companyName = data.user?.companyName;
-            console.log("Login response:", data);
-
-
             if (companyName) {
               const companySlug = companyName.toLowerCase().replace(/\s+/g, '-');
               navigate(`/${companySlug}/company-dashboard`);
             } else {
               toast.error("Company name not found. Please contact support.");
             }
-
-          } else {
+          } else if (values.role === "employee") {
+            // ✅ Redirect employee
             navigate("/employee-dashboard");
+            alert("Login as employee successful!");
           }
-
-
-        } else {
-          toast.error(data.message);
         }
+
       } catch (error) {
         console.error("Login error:", error);
         toast.error("Something went wrong!");

@@ -18,6 +18,9 @@ import EditEmployee from "./pages/CompanyDashboard/EditEmployee";
 import EmployeeList from "./pages/CompanyDashboard/EmployeeList";
 import EmployeeProfile from "./pages/CompanyDashboard/EmployeeProfile";
 import Companylayout from "./pages/CompanyDashboard/Companylayout";
+import AdminProfile from "./pages/CompanyDashboard/profilepage/profilepage";
+
+
 function App() {
   return (
 
@@ -31,6 +34,7 @@ function App() {
         <Route path="/CompanyRegisterForm" element={<Navigate to="/register" replace />} />
         <Route path="/RequestSent/:companyId" element={<RequestSent />} />
         <Route path="/company-dashboard/set-admin/:companyId" element={<SetCompanyAdmin />} />
+     
 
         {/* Super Admin Login */}
         <Route path="/superadminlogin" element={<Superadminlogin />} />
@@ -52,6 +56,7 @@ function App() {
           <Route path="employees/add" element={<AddEmployee />} />
           <Route path="employees/edit/:id" element={<EditEmployee />} />
           <Route path="employees/profile/:id" element={<EmployeeProfile />} />
+          <Route path="AdminProfile" element={<AdminProfile />} />
         </Route>
 
         {/* Catch-all */}
