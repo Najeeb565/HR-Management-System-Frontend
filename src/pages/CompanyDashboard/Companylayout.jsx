@@ -95,7 +95,6 @@ const Companylayout = () => {
           {/* Show debug text only if no route content is rendered */}
           {!React.Children.count(React.Children.toArray(Outlet).find(child => child)) && (
             <div className="mt-2 text-muted">
-              [Debug: Main content area should display route content above]
             </div>
           )}
         </div>
