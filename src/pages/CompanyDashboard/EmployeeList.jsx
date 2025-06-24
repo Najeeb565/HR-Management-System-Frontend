@@ -49,24 +49,32 @@ const EmployeeList = () => {
       setLoading(false);
     }
   };
+
 const filterEmployees = () => {
   const term = searchTerm.toLowerCase().trim();
-
-  // Agar search term khali hai, toh sab dikhado
-  if (term === '') {
-    setFilteredEmployees([...employees]);
-    return;
-  }
 
   const filtered = employees.filter(emp => {
     const firstName = emp.firstName?.toLowerCase() || '';
     const lastName = emp.lastName?.toLowerCase() || '';
-    return firstName.startsWith(term) || lastName.startsWith(term);
+    const roleMatch = selectedRole ? emp.role === selectedRole : true;
+    const statusMatch = selectedStatus ? emp.status === selectedStatus : true;
+    const searchMatch = term === '' || firstName.startsWith(term) || lastName.startsWith(term);
+
+    return roleMatch && statusMatch && searchMatch;
   });
 
   setFilteredEmployees(filtered);
 };
-  const handleDeleteClick = (employee) => {
+
+
+
+
+
+
+
+
+
+const handleDeleteClick = (employee) => {
     setEmployeeToDelete(employee);
     setShowDeleteModal(true);
   };
