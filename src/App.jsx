@@ -98,8 +98,7 @@ const EmployeeList = lazy(() => import("./pages/CompanyDashboard/EmployeeList"))
 const EmployeeProfile = lazy(() => import("./pages/CompanyDashboard/EmployeeProfile"));
 const Companylayout = lazy(() => import("./pages/CompanyDashboard/Companylayout"));
 const Taskmanagement = lazy(() => import("./pages/CompanyDashboard/taskmanagement"));
-// const Adminprofile = lazy(() => import ("./pages/CompanyDashboard/profilepage/profilepage")) 
-import Adminprofile from "./pages/CompanyDashboard/profilepage/profilepage"; 
+const Adminprofile = lazy(() => import('./pages/CompanyDashboard/profilepage/profilepage'));
 
 function App() {
   return (
