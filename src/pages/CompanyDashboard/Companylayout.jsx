@@ -3,32 +3,24 @@ import { Link, useLocation, Outlet } from 'react-router-dom';
 import { useContext } from 'react';
 import { CompanyContext } from '../../context/CompanyContext';
 import { useParams } from 'react-router-dom';
-
 const Companylayout = () => {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
   const { company } = useContext(CompanyContext);
   const { companySlug } = useParams();
-
-
-
-
   // Debug: Log current route to verify navigation
   useEffect(() => {
     console.log('Current route:', location.pathname);
   }, [location.pathname]);
-
   const menuItems = [
     { path: `/${companySlug}/company-dashboard`, icon: 'bi-speedometer2', label: 'Dashboard' },
     { path: `/${companySlug}/company-dashboard/employees`, icon: 'bi-people', label: 'All Employees' },
-    { path: `/${companySlug}/company-dashboard/employees/add`, icon: 'bi-person-plus', label: 'Add Employee' }
+    { path: `/${companySlug}/company-dashboard/employees/add`, icon: 'bi-person-plus', label: 'Add Employee' },
+    { path: `/${companySlug}/company-dashboard/Taskmanagement/`, icon: 'bi-person-plus', label: 'Task Managment' }
   ];
-
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
-
   return (
     <div className="container-fluid" style={{ display: 'flex', minHeight: '100vh', overflow: 'hidden' }}>
       {/* Sidebar */}
@@ -36,7 +28,7 @@ const Companylayout = () => {
         className="sidebar"
         style={{
           width: '20%',
-          backgroundColor: '#343a40',
+          backgroundColor: '#343A40',
           color: '#fff',
           position: 'fixed',
           height: '100vh',
@@ -46,9 +38,8 @@ const Companylayout = () => {
         <div className="p-3">
           <Link to={`/${companySlug}/company-dashboard`} className="brand-logo text-white text-decoration-none">
             <h4>Welcome, {company?.name}</h4>
-          </Link> 
+          </Link>
         </div>
-
         <nav className="nav flex-column mt-4">
           {menuItems.map((item) => (
             <Link
@@ -58,20 +49,19 @@ const Companylayout = () => {
               style={{ color: '#fff', padding: '0.5rem 1rem' }}
               onClick={() => setSidebarOpen(false)}
             >
-              <i className={`${item.icon} me-2`}></i> 
+              <i className={`${item.icon} me-2`}></i>
               {item.label}
             </Link>
           ))}
         </nav>
       </div>
-
       {/* Main Content */}
       <div
         className="main-content"
         style={{
           width: '80%',
           marginLeft: '20%',
-          backgroundColor: '#f8f9fa',
+          backgroundColor: '#F8F9FA',
           minHeight: '100vh',
           padding: '20px'
         }}
@@ -86,7 +76,6 @@ const Companylayout = () => {
           </button>
           <span className="ms-3 fw-bold">CompanyHub</span>
         </div>
-
         {/* Page Content */}
         <div>
           <Outlet />
@@ -97,7 +86,6 @@ const Companylayout = () => {
           )}
         </div>
       </div>
-
       {/* Sidebar Overlay for Mobile */}
       {sidebarOpen && (
         <div
@@ -109,5 +97,4 @@ const Companylayout = () => {
     </div>
   );
 };
-
 export default Companylayout;
