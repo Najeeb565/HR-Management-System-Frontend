@@ -98,12 +98,55 @@
 
 
 .delete-button {
- padding: 0 10%;
  color: rgb(235, 68, 68);
  border: 1px solid rgb(235, 68, 68);
  background-color: transparent;
  font-size: 14px; 
  border-radius: 2px;
+ /* margin-top: 5px; */
 
+}
+.edit-button{
+
+  color: rgb(68, 85, 235);
+  border: 1px solid rgb(68, 85, 235);
+  background-color: transparent;
+  font-size: 14px;
+  border-radius: 2px;
+
+}
+
+
+
+ .edit-button, .delete-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+
+.edit-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.cancel-button {
+  background-color: #6c757d;
+  color: white;
+}
+.task-list .task-item {
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.task-item.pending {
+  border-left: 4px solid #ffc107;
 }
 

@@ -11,6 +11,8 @@ const Taskmanagement = () => {
   const [description, setDescription] = useState('');
   const [tasks, setTasks] = useState([]);
   const [expandedTaskId, setExpandedTaskId] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [editTaskId, setEditTaskId] = useState(null);
 
   useEffect(() => {
     axios.get('http://localhost:5000/api/tasks')
@@ -23,32 +25,61 @@ const Taskmanagement = () => {
 
   const handleAddTask = () => {
     setShowCard(true);
+    setEditMode(false);
+    setEmail('');
+    setTaskTitle('');
+    setDescription('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newTask = {
+    const taskData = {
       email,
       taskTitle,
       description,
       status: 'pending'
     };
 
-    try {
-      const res = await axios.post('http://localhost:5000/api/tasks', newTask);
-      setTasks([...tasks, res.data]);
-
-      setEmail('');
-      setTaskTitle('');
-      setDescription('');
-      setShowCard(false);
-
-      toast.success("✅ Task Added Successfully!");
-    } catch (err) {
-      console.error('Task POST error:', err.message);
-      toast.error("❌ Failed to add task!");
+    if (editMode) {
+      try {
+        const res = await axios.put(`http://localhost:5000/api/tasks/${editTaskId}`, taskData);
+        const updatedTasks = tasks.map(task =>
+          task._id === editTaskId ? res.data : task
+        );
+        setTasks(updatedTasks);
+        toast.success("✏️ Task Updated Successfully!");
+      } catch (err) {
+        console.error('Task UPDATE error:', err.message);
+        toast.error("❌ Failed to update task!");
+      }
+    } else {
+      try {
+        const res = await axios.post('http://localhost:5000/api/tasks', taskData);
+        setTasks([...tasks, res.data]);
+        toast.success("✅ Task Added Successfully!");
+      } catch (err) {
+        console.error('Task POST error:', err.message);
+        toast.error("❌ Failed to add task!");
+      }
     }
+
+    setEmail('');
+    setTaskTitle('');
+    setDescription('');
+    setShowCard(false);
+    setEditMode(false);
+    setEditTaskId(null);
+  };
+
+  const handleEdit = (task) => {
+    setEmail(task.email);
+    setTaskTitle(task.taskTitle);
+    setDescription(task.description);
+    setEditTaskId(task._id);
+    setEditMode(true);
+    setShowCard(true);
+    setExpandedTaskId(null);
   };
 
   const toggleDetails = (id) => {
@@ -74,9 +105,9 @@ const Taskmanagement = () => {
       </div>
 
       {showCard && (
-        <div className="task-container" >
+        <div className="task-container">
           <div className="task-card">
-            <h2>Add New Task</h2>
+            <h2>{editMode ? 'Edit Task' : 'Add New Task'}</h2>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label>Employee Email:</label><br />
@@ -108,7 +139,9 @@ const Taskmanagement = () => {
                 ></textarea>
               </div>
               <div className="button-group">
-                <button type="submit" className="submit-button">Add Task</button>
+                <button type="submit" className="submit-button">
+                  {editMode ? 'Update Task' : 'Add Task'}
+                </button>
               </div>
             </form>
           </div>
@@ -120,24 +153,37 @@ const Taskmanagement = () => {
           <p>No tasks added yet.</p>
         ) : (
           tasks.map((task) => (
-            <div>
-              <div style={{display:'flex',justifyContent:'space-between', marginBottom: '10px'}}>
-            <div key={task._id} className={`task-item ${task.status === 'pending' ? 'pending' : ''}`}>
-              <h5
-                onClick={() => toggleDetails(task._id)}
-                style={{ cursor: 'pointer', color: 'gray' }}
-              >
-                <strong>tasked</strong> assigned to <strong>{task.email}</strong>
-              </h5>
-              </div>
-              <div>
-              <button className='delete-button'
-                onClick={() => handleDelete(task._id)}
-            
-              >
-                Delete
-              </button>
-              </div>
+            <div key={task._id}>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '10px',
+                width: '100%',
+              }}>
+                <div className={`task-item ${task.status === 'pending' ? 'pending' : ''}`}>
+                  <h5
+                    onClick={() => toggleDetails(task._id)}
+                    style={{ cursor: 'pointer', color: 'gray', margin: 0 }}
+                  >
+                    <strong>tasked</strong> assigned to <strong>{task.email}</strong>
+                  </h5>
+                </div>
+                <div>
+                  <button
+                    className='edit-button'
+                    onClick={() => handleEdit(task)}
+                    style={{ marginRight: '10px' }}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className='delete-button'
+                    onClick={() => handleDelete(task._id)}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
               {expandedTaskId === task._id && (
                 <>
@@ -153,8 +199,7 @@ const Taskmanagement = () => {
         )}
       </div>
 
-      {/* Toast container for all toasts */}
-      <ToastContainer position="top-center" autoClose={3000} />
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };
