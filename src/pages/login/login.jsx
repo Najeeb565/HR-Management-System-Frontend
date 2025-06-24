@@ -51,6 +51,7 @@ const LoginPage = () => {
         if (data.success) {
           localStorage.setItem("token", data.token);
           localStorage.setItem("user", JSON.stringify(data.user));
+          setCompany(data.user);
 
           toast.success(`Login as ${values.role} successful!`);
           resetForm();

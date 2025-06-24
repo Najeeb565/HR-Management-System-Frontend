@@ -5,16 +5,17 @@ export const CompanyContext = createContext();
 
 const CompanyProvider = ({ children }) => {
   const [company, setCompany] = useState(null);
-  const [companyId, setCompanyId] = useState(null); // ✅ Add this
+  const [companyId, setCompanyId] = useState(null)
 
 useEffect(() => {
   const storedCompany = localStorage.getItem("user");
   if (storedCompany) {
     const parsedCompany = JSON.parse(storedCompany);
     setCompany(parsedCompany);
-    setCompanyId(parsedCompany.companyId); // ✅ This should now work
+    setCompanyId(parsedCompany.companyId); 
   }
 }, []);
+
 
 
 
