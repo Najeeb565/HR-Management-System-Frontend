@@ -1,15 +1,16 @@
-
-
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { useContext } from 'react';
+import { toast } from 'react-hot-toast';
 import { CompanyContext } from '../../context/CompanyContext';
-
 const AddEmployee = () => {
   const navigate = useNavigate();
+  const { companySlug } = useParams();
+  const { id } = useParams();
+  const isEditMode = !!id;
   const { companyId } = useContext(CompanyContext);
   const [loading, setLoading] = useState(false);
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -26,6 +27,34 @@ const AddEmployee = () => {
   const statuses = ['Active', 'Inactive'];
   const departments = ['IT', 'HR', 'Finance', 'Marketing', 'Sales', 'Operations', 'Admin'];
 
+  useEffect(() => {
+    if (isEditMode) {
+      const fetchEmployee = async () => {
+        try {
+          const response = await axios.get(`http://localhost:5000/api/employees/${id}`);
+          const data = response.data;
+
+          setFormData({
+            firstName: data.firstName || '',
+            lastName: data.lastName || '',
+            email: data.email || '',
+            phone: data.phone || '',
+            role: data.role || 'Employee',
+            department: data.department || '',
+            salary: data.salary || '',
+            status: data.status || 'Active',
+            joiningDate: data.joiningDate ? data.joiningDate.split('T')[0] : new Date().toISOString().split('T')[0],
+          });
+        } catch (err) {
+          console.error('Error fetching employee:', err);
+          toast.error('Error loading employee data');
+        }
+      };
+
+      fetchEmployee();
+    }
+  }, [id, isEditMode]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -36,22 +65,36 @@ const AddEmployee = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);   
+    setLoading(true);
+    const payload = { ...formData, companyId };
 
-    const payload = {
-      ...formData,
-      companyId,
-    };
-    
-    console.log('Payload:', payload);
     try {
-      await axios.post('http://localhost:5000/api/employees', payload, {
-        headers: { 'Content-Type': 'application/json' }
-      });
-      // navigate('/login');
+      if (isEditMode) {
+        await axios.put(`http://localhost:5000/api/employees/${id}`, payload, {
+          headers: { 'Content-Type': 'application/json' }
+        });
+        toast.success('Employee updated successfully!');
+      } else {
+        await axios.post('http://localhost:5000/api/employees', payload, {
+          headers: { 'Content-Type': 'application/json' }
+        });
+        toast.success('Employee created successfully!');
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          role: 'Employee',
+          department: '',
+          salary: '',
+          status: 'Active',
+          joiningDate: new Date().toISOString().split('T')[0],
+        });
+      }
+      // navigate('/employees');
     } catch (error) {
-      console.error('Error creating employee:', error);
-      alert('Error creating employee. Please try again.');
+      console.error('Error submitting form:', error);
+      toast.error(isEditMode ? 'Error updating employee' : 'Error creating employee');
     } finally {
       setLoading(false);
     }
@@ -60,8 +103,8 @@ const AddEmployee = () => {
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1 className="h3 mb-0">Add New Employee</h1>
-        <button type="button" className="btn btn-outline-secondary" onClick={() => navigate('/employees')}>
+        <h1 className="h3 mb-0">{isEditMode ? 'Edit Employee' : 'Add New Employee'}</h1>
+        <button type="button" className="btn btn-outline-secondary" onClick={() => navigate(`/${companySlug}/company-dashboard/employees`)}>
           <i className="bi bi-arrow-left me-2"></i> Back to List
         </button>
       </div>
@@ -70,7 +113,9 @@ const AddEmployee = () => {
         <div className="col-lg-8">
           <div className="card dashboard-card">
             <div className="card-header bg-white">
-              <h5 className="card-title mb-0"><i className="bi bi-person-plus me-2"></i>Employee Information</h5>
+              <h5 className="card-title mb-0">
+                <i className="bi bi-person-plus me-2"></i>Employee Information
+              </h5>
             </div>
             <div className="card-body">
               <form onSubmit={handleSubmit}>
@@ -122,7 +167,7 @@ const AddEmployee = () => {
 
                 <div className="d-flex gap-2 mt-4">
                   <button type="submit" className="btn btn-primary" disabled={loading}>
-                    {loading ? 'Creating...' : 'Create Employee'}
+                    {loading ? (isEditMode ? 'Updating...' : 'Creating...') : (isEditMode ? 'Update Employee' : 'Create Employee')}
                   </button>
                   <button type="button" className="btn btn-outline-secondary" onClick={() => navigate('/employees')}>
                     Cancel
