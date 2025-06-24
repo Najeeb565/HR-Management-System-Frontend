@@ -22,7 +22,11 @@ const Companylayout = () => {
   const menuItems = [
     { path: `/${companySlug}/company-dashboard`, icon: 'bi-speedometer2', label: 'Dashboard' },
     { path: `/${companySlug}/company-dashboard/employees`, icon: 'bi-people', label: 'All Employees' },
-    { path: `/${companySlug}/company-dashboard/employees/add`, icon: 'bi-person-plus', label: 'Add Employee' }
+    { path: `/${companySlug}/company-dashboard/employees/add`, icon: 'bi-person-plus', label: 'Add Employee' },
+  { path: `/${companySlug}/company-dashboard/taskmanagement`, icon: 'bi-person-plus', label: 'Task Management' }
+
+    
+
   ];
 
   const toggleSidebar = () => {

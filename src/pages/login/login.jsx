@@ -69,7 +69,7 @@ const LoginPage = () => {
             }
 
           } else {
-            navigate("/employee-dashboard");
+            navigate("/employees-dashboard");
           }
 
 
