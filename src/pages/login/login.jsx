@@ -66,9 +66,10 @@ const LoginPage = () => {
               toast.error("Company name not found. Please contact support.");
             }
           } else if (values.role === "employee") {
-            // ✅ Redirect employee
-            navigate("/employee-dashboard");
-            alert("Login as employee successful!");
+          
+          toast.success(`Login as ${values.role} successful!`);
+            navigate("/:companySlug/employees-dashboard");
+            
           }
         }
 

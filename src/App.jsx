@@ -27,6 +27,7 @@ const Taskmanagement = lazy(() => import("./pages/CompanyDashboard/taskmanagemen
 const Adminprofile = lazy(() => import('./pages/CompanyDashboard/profilepage/profilepage'));
 const Employeeslayout = lazy(() => import("./pages/EmployeesDashborad/EmployeesLayout")); 
 const Employeestask = lazy(() => import("./pages/EmployeesDashborad/employeestask"));
+const EmployeeDashboard = lazy(() => import("./pages/EmployeesDashborad/Dashboard"));
 
 function App() {
   return (
@@ -69,7 +70,8 @@ function App() {
 
            
             <Route path="/:companySlug/employees-dashboard" element={<Employeeslayout />}>
-            <Route index element={<Employeestask />} />
+            <Route index element={<EmployeeDashboard />} />
+            <Route path="employeestask" element={<Employeestask />} />
           </Route>
 
           {/* Catch-all */}
