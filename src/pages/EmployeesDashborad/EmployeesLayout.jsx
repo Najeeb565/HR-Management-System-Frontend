@@ -1,15 +1,19 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, useLocation, Outlet, useParams } from 'react-router-dom';
 import { CompanyContext } from '../../context/CompanyContext';
+import { EmployeeContext } from '../../context/EmployeeContext';
 
 const EmployeesLayout = () => {
   const location = useLocation();
   const { companySlug } = useParams();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { company } = useContext(CompanyContext);
+  const { employee } = useContext(EmployeeContext);
+  console.log("EMPLOYEE CONTEXT:", employee);
+
 
   useEffect(() => {
-    console.log('Current route:', location.pathname);
+    // console.log('Current route:', location.pathname);
   }, [location.pathname]);
 
   const menuItems = [
@@ -33,7 +37,7 @@ const EmployeesLayout = () => {
       >
         <h5 className="text-white mb-4">
           Welcome, <br />
-          <span style={{ wordBreak: 'break-word' }}>{company?.name || 'Company'}</span>
+          <span>{employee?.name || "Employee"}</span>
         </h5>
 
         <nav className="nav flex-column">

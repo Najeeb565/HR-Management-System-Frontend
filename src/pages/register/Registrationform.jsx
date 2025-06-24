@@ -44,10 +44,11 @@ function CompanyRegisterForm() {
       try {
         const response = await axios.post("http://localhost:5000/api/companies", values);
         console.log("Server Response:", response.data);
-        const companyId = response.data._id; 
+        const companyId = response.data.companyId;
         toast.success("🎉 Registration Request Sent");
         resetForm();
         navigate(`/RequestSent/${companyId}`);
+
 
       } catch (error) {
 
