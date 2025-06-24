@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const TaskManagementemployees = () => {
+const Employeestask = () => {
   const [tasks, setTasks] = useState([]);
   const [userEmail, setUserEmail] = useState('');
 
@@ -107,4 +107,4 @@ const TaskManagementemployees = () => {
   );
 };
 
-export default TaskManagementemployees;
+export default Employeestask;
