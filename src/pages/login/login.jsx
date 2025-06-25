@@ -8,7 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { useContext } from 'react';
 import { CompanyContext } from '../../context/CompanyContext';
-import { EmployeeContext } from '../../context/EmployeeContext';
+// import CompanyDashboard from "../CompanyDashboard/CompanyDashboard";
 
 
 
@@ -20,8 +20,6 @@ const LoginPage = () => {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   const { setCompany } = useContext(CompanyContext);
-  const { setEmployee } = useContext(EmployeeContext);
-
 
   const formik = useFormik({
     initialValues: {
@@ -50,31 +48,30 @@ const LoginPage = () => {
 
         const data = await response.json();
 
-        if (values.role === "admin") {
-  localStorage.setItem("user", JSON.stringify(data.user));
-  setCompany(data.user);
+        if (data.success) {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
+          setCompany(data.user);
 
-  const companyName = data.user?.companyName;
-  if (companyName) {
-    const companySlug = companyName.toLowerCase().replace(/\s+/g, '-');
-    navigate(`/${companySlug}/company-dashboard`);
-  } else {
-    toast.error("Company name not found. Please contact support.");
-  }
+          toast.success(`Login as ${values.role} successful!`);
+          resetForm();
+          setShowForgotPassword(false);
 
-} else if (values.role === "employee") {
-  localStorage.setItem("employee", JSON.stringify(data.user));
-  setEmployee(data.user);
-
-  const companyName = data.user?.companyName;
-  if (companyName) {
-    const companySlug = companyName.toLowerCase().replace(/\s+/g, '-');
-    navigate(`/${companySlug}/employees-dashboard`);
-  } else {
-    toast.error("Company name not found. Please contact support.");
-  }
-}
-
+          if (values.role === "admin") {
+            const companyName = data.user?.companyName;
+            if (companyName) {
+              const companySlug = companyName.toLowerCase().replace(/\s+/g, '-');
+              navigate(`/${companySlug}/company-dashboard`);
+            } else {
+              toast.error("Company name not found. Please contact support.");
+            }
+          } else if (values.role === "employee") {
+          
+          toast.success(`Login as ${values.role} successful!`);
+            navigate("/:companySlug/employees-dashboard");
+            
+          }
+        }
 
       } catch (error) {
         console.error("Login error:", error);
