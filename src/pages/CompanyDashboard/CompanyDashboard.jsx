@@ -16,15 +16,15 @@ const CompanyDashboard = () => {
   }, []);
 
   useEffect(() => {
-    console.log('Dashboard stats:', stats); // Debug: Log stats
+    // console.log('Dashboard stats:', stats);
   }, [stats]);
 
   const fetchStats = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/employees/stats');
-      setStats(response.data);
+      // const response = await axios.get('http://localhost:5000/api/employees/stats');
+      // setStats(response.data);
     } catch (error) {
-      console.error('Error fetching stats:', error);
+      // console.error('Error fetching stats:', error);
       setError('Failed to load dashboard data. Using mock data.');
       // Fallback mock data
       setStats({
