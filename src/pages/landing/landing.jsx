@@ -49,7 +49,7 @@ const Landing = () => {
       name: "John Doe",
       role: "HR Manager",
       quote: "HRMPro has transformed our team management. It's intuitive and saves us hours weekly!",
-    
+
     },
     {
       name: "Sarah Lee",
@@ -60,7 +60,7 @@ const Landing = () => {
       name: "Michael Chen",
       role: "Team Lead",
       quote: "Task and attendance tracking keep our team aligned and productive. Highly recommend!",
-      }
+    }
   ];
 
   const pricingPlans = [
@@ -110,13 +110,8 @@ const Landing = () => {
       </nav>
 
 
+
       {/* Hero Section */}
-
-      {/* Urls */}
-         <Link to="/login">login</Link> <br />
-         <Link to="/CompanyRegisterForm">CompanyRegisterForm</Link> <br />
-         <Link to="/superadmin">superadmin</Link>
-
       <section className={styles.herosection}>
         <h1>Empower Your HR with HRMPro</h1>
         <p>Streamline employee management, boost productivity, and simplify HR tasks with our all-in-one solution.</p>
