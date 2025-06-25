@@ -5,19 +5,22 @@ const Employeestask = () => {
   const [tasks, setTasks] = useState([]);
   const [userEmail, setUserEmail] = useState('');
 
+  // Step 1: Get logged-in user's email from localStorage
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (userData) {
       const user = JSON.parse(userData);
-      setUserEmail(user.email);
+      setUserEmail(user.email); // set employee email
     }
   }, []);
 
+  // Step 2: Fetch tasks when userEmail is available
   useEffect(() => {
     if (!userEmail) return;
-    fetchTasks();
+    fetchTasks(); // fetch only tasks assigned to that email
   }, [userEmail]);
 
+  // Step 3: API call to backend to get tasks for specific email
   const fetchTasks = () => {
     axios
       .get(`http://localhost:5000/api/tasks?email=${userEmail}`)
@@ -25,12 +28,13 @@ const Employeestask = () => {
       .catch((err) => console.error('Error fetching tasks:', err));
   };
 
+  // Step 4: Update task status (done / pending)
   const updateStatus = async (taskId, newStatus) => {
     try {
       await axios.put(`http://localhost:5000/api/tasks/${taskId}`, {
         status: newStatus,
       });
-      fetchTasks(); // Refresh the task list
+      fetchTasks(); // refresh task list after update
     } catch (err) {
       console.error('Error updating task status:', err);
     }
@@ -39,6 +43,7 @@ const Employeestask = () => {
   return (
     <div style={{ padding: 20 }}>
       <h2>My Tasks</h2>
+
       {tasks.length === 0 ? (
         <p>No tasks assigned to you.</p>
       ) : (
@@ -54,7 +59,6 @@ const Employeestask = () => {
               backgroundColor: '#fff',
             }}
           >
-            {/* FLEX CONTAINER WITH CONTENT ON LEFT AND BUTTONS ON RIGHT */}
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <div>
                 <p><strong>Title:</strong> {task.taskTitle}</p>
@@ -78,11 +82,12 @@ const Employeestask = () => {
                     border: 'none',
                     borderRadius: 4,
                     cursor: task.status === 'done' ? 'not-allowed' : 'pointer',
-                    minWidth: 80
+                    minWidth: 80,
                   }}
                 >
                   Done
                 </button>
+
                 <button
                   onClick={() => updateStatus(task._id, 'pending')}
                   disabled={task.status === 'pending'}
@@ -93,7 +98,7 @@ const Employeestask = () => {
                     border: 'none',
                     borderRadius: 4,
                     cursor: task.status === 'pending' ? 'not-allowed' : 'pointer',
-                    minWidth: 80
+                    minWidth: 80,
                   }}
                 >
                   Pending
