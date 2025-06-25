@@ -9,7 +9,7 @@ const CompanyProvider = ({ children }) => {
 
 useEffect(() => {
   const storedCompany = localStorage.getItem("user");
-  if (storedCompany) {
+  if (storedCompany !== "undefined") {
     const parsedCompany = JSON.parse(storedCompany);
     setCompany(parsedCompany);
     setCompanyId(parsedCompany.companyId); 
