@@ -32,7 +32,13 @@ const EmployeeList = () => {
   const fetchEmployees = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:5000/api/employees');
+      // const response = await axios.get('http://localhost:5000/api/employees');
+       const token = JSON.parse(localStorage.getItem('user'))?.token;
+      const response = await axios.get('http://localhost:5000/api/employees', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       if (Array.isArray(response.data)) {
         setEmployees(response.data);
         setFilteredEmployees(response.data); // ✅ ensure initial list shown
@@ -84,17 +90,39 @@ const handleDeleteClick = (employee) => {
     setShowViewModal(true);
   };
 
+  // const handleDeleteConfirm = async () => {
+  //   try {
+  //     await axios.delete(`http://localhost:5000/api/employees/${employeeToDelete._id}`);
+  //     setEmployees(employees.filter(emp => emp._id !== employeeToDelete._id));
+  //     setShowDeleteModal(false);
+  //     setEmployeeToDelete(null);
+  //   } catch (error) {
+  //     console.error('Error deleting employee:', error);
+  //     alert('Error deleting employee');
+  //   }
+  // };
+
+
+
   const handleDeleteConfirm = async () => {
-    try {
-      await axios.delete(`http://localhost:5000/api/employees/${employeeToDelete._id}`);
-      setEmployees(employees.filter(emp => emp._id !== employeeToDelete._id));
-      setShowDeleteModal(false);
-      setEmployeeToDelete(null);
-    } catch (error) {
-      console.error('Error deleting employee:', error);
-      alert('Error deleting employee');
-    }
-  };
+  const token = JSON.parse(localStorage.getItem("user"))?.token;
+
+  try {
+    await axios.delete(`http://localhost:5000/api/employees/${employeeToDelete._id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    setEmployees(employees.filter(emp => emp._id !== employeeToDelete._id));
+    setShowDeleteModal(false);
+    setEmployeeToDelete(null);
+  } catch (error) {
+    console.error('Error deleting employee:', error);
+    alert('Error deleting employee');
+  }
+};
+
 
   const getRoleBadgeClass = (role) => {
     const classes = {

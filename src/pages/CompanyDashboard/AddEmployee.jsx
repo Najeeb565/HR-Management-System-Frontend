@@ -2,13 +2,14 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
-import { CompanyContext } from '../../context/CompanyContext';
+import { CompanyContext } from '../../context/CompanyContext'
 const AddEmployee = () => {
   const navigate = useNavigate();
   const { companySlug } = useParams();
   const { id } = useParams();
   const isEditMode = !!id;
-  const { companyId } = useContext(CompanyContext);
+  // const { companyId } = useContext(CompanyContext);
+    const { companyId } = useContext(CompanyContext) || {}; 
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -63,42 +64,100 @@ const AddEmployee = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    const payload = { ...formData, companyId };
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   const payload = { ...formData, companyId };
+    
 
-    try {
-      if (isEditMode) {
-        await axios.put(`http://localhost:5000/api/employees/${id}`, payload, {
-          headers: { 'Content-Type': 'application/json' }
-        });
-        toast.success('Employee updated successfully!');
-      } else {
-        await axios.post('http://localhost:5000/api/employees', payload, {
-          headers: { 'Content-Type': 'application/json' }
-        });
-        toast.success('Employee created successfully!');
-        setFormData({
-          firstName: '',
-          lastName: '',
-          email: '',
-          phone: '',
-          role: 'Employee',
-          department: '',
-          salary: '',
-          status: 'Active',
-          joiningDate: new Date().toISOString().split('T')[0],
-        });
-      }
-      // navigate('/employees');
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      toast.error(isEditMode ? 'Error updating employee' : 'Error creating employee');
-    } finally {
-      setLoading(false);
+  //   try {
+  //     if (isEditMode) {
+  //       await axios.put(`http://localhost:5000/api/employees/${id}`, payload, {
+  //         headers: { 'Content-Type': 'application/json' }
+  //       });
+  //       toast.success('Employee updated successfully!');
+  //     } else {
+  //       await axios.post('http://localhost:5000/api/employees', payload, {
+  //         headers: { 'Content-Type': 'application/json' }
+          
+  //       });
+  //       toast.success('Employee created successfully!');
+  //       setFormData({
+  //         firstName: '',
+  //         lastName: '',
+  //         email: '',
+  //         phone: '',
+  //         role: 'Employee',
+  //         department: '',
+  //         salary: '',
+  //         status: 'Active',
+  //         joiningDate: new Date().toISOString().split('T')[0],
+  //       });
+  //     }
+  //     // navigate('/employees');
+  //   } catch (error) {
+  //     console.error('Error submitting form:', error);
+  //     toast.error(isEditMode ? 'Error updating employee' : 'Error creating employee');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
+
+
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  const payload = { ...formData, companyId };
+  const token = JSON.parse(localStorage.getItem("user"))?.token;
+  
+
+  try {
+    if (isEditMode) {
+      await axios.put(`http://localhost:5000/api/employees/${id}`, payload, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      });
+      toast.success('Employee updated successfully!');
+    } else {
+      await axios.post('http://localhost:5000/api/employees', payload, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        }
+      });
+      toast.success('Employee created successfully!');
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        role: 'Employee',
+        department: '',
+        salary: '',
+        status: 'Active',
+        joiningDate: new Date().toISOString().split('T')[0],
+      });
     }
-  };
+  } catch (error) {
+    console.error('Error submitting form:', error);
+    toast.error(isEditMode ? 'Error updating employee' : 'Error creating employee');
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
+
+
+
+
+
 
   return (
     <div>

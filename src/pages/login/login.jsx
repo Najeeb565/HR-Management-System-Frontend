@@ -48,185 +48,214 @@ const LoginPage = () => {
 
         const data = await response.json();
 
-        if (data.success) {
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("user", JSON.stringify(data.user));
-          setCompany(data.user);
+      //   if (data.success) {
+      //     localStorage.setItem("token", data.token);
+      //     localStorage.setItem("user", JSON.stringify(data.user));
+      //     setCompany(data.user);
 
-          toast.success(`Login as ${values.role} successful!`);
-          resetForm();
-          setShowForgotPassword(false);
+       
 
-          if (values.role === "admin") {
-            const companyName = data.user?.companyName;
-            if (companyName) {
-              const companySlug = companyName.toLowerCase().replace(/\s+/g, '-');
-              navigate(`/${companySlug}/company-dashboard`);
-            } else {
-              toast.error("Company name not found. Please contact support.");
-            }
-          } else if (values.role === "employee") {
-          
-          toast.success(`Login as ${values.role} successful!`);
-            navigate("/:companySlug/employees-dashboard");
-            
-          }
-        }
+      //   toast.success(`Login as ${values.role} successful!`);
+      //   resetForm();
+      //   setShowForgotPassword(false);
 
-      } catch (error) {
-        console.error("Login error:", error);
-        toast.error("Something went wrong!");
-      }
+      //   if (values.role === "admin") {
+      //     const companyName = data.user?.companyName;
+      //     if (companyName) {
+      //       const companySlug = companyName.toLowerCase().replace(/\s+/g, '-');
+      //       navigate(`/${companySlug}/company-dashboard`);
+      //     } else {
+      //       toast.error("Company name not found. Please contact support.");
+      //     }
+      //   } else if (values.role === "employee") {
+
+      //     toast.success(`Login as ${values.role} successful!`);
+      //     navigate("/:companySlug/employees-dashboard");
+
+      //   }
+      // } 
+
+      if (data.success) {
+  // ✅ Save token inside user object
+  localStorage.setItem("user", JSON.stringify({
+    ...data.user,
+    token: data.token
+  }));
+
+  setCompany(data.user);
+
+  toast.success(`Login as ${values.role} successful!`);
+  resetForm();
+  setShowForgotPassword(false);
+
+  if (values.role === "admin") {
+    const companyName = data.user?.companyName;
+    if (companyName) {
+      const companySlug = companyName.toLowerCase().replace(/\s+/g, '-');
+      navigate(`/${companySlug}/company-dashboard`);
+    } else {
+      toast.error("Company name not found. Please contact support.");
     }
+  } else if (values.role === "employee") {
+    navigate("/:companySlug/employees-dashboard");
+  }
+}
+
+
+      } catch(error) {
+      console.error("Login error:", error);
+      toast.error("Something went wrong!");
+    }
+  }
 
   });
 
 
 
-  return (
-    <div className="min-vh-100 d-flex justify-content-center align-items-center">
-      <div
-        className="bg-white p-5 rounded shadow"
-        style={{
-          width: "100%",
-          maxWidth: "400px",
+return (
+  <div className="min-vh-100 d-flex justify-content-center align-items-center">
+    <div
+      className="bg-white p-5 rounded shadow"
+      style={{
+        width: "100%",
+        maxWidth: "400px",
 
-          fontSize: "14px",
-        }}
-      >
-        <h2 className="text-center mb-4">Login</h2>
-        <form onSubmit={formik.handleSubmit}>
-          {/* Email Field */}
-          <div className="mb-3">
-            <label className="form-label">Email</label>
-            <div className="input-group">
-              <span className="input-group-text bg-white border-0">
-                <FaEnvelope />
-              </span>
-              <input
-                type="email"
-                name="email"
-                className={`form-control border-0 border-bottom ${formik.touched.email && formik.errors.email
-                  ? "is-invalid"
-                  : ""
-                  }`}
-                placeholder="Type your email"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.email}
-              />
-            </div>
-            {formik.touched.email && formik.errors.email && (
-              <div className="text-danger small">{formik.errors.email}</div>
-            )}
+        fontSize: "14px",
+      }}
+    >
+      <h2 className="text-center mb-4">Login</h2>
+      <form onSubmit={formik.handleSubmit}>
+        {/* Email Field */}
+        <div className="mb-3">
+          <label className="form-label">Email</label>
+          <div className="input-group">
+            <span className="input-group-text bg-white border-0">
+              <FaEnvelope />
+            </span>
+            <input
+              type="email"
+              name="email"
+              className={`form-control border-0 border-bottom ${formik.touched.email && formik.errors.email
+                ? "is-invalid"
+                : ""
+                }`}
+              placeholder="Type your email"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.email}
+            />
           </div>
+          {formik.touched.email && formik.errors.email && (
+            <div className="text-danger small">{formik.errors.email}</div>
+          )}
+        </div>
 
-          {/* Password Field */}
-          <div className="mb-1">
-            <label className="form-label">Password</label>
-            <div className="input-group">
-              <span className="input-group-text bg-white border-0">
-                <FaLock />
-              </span>
-              <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                className={`form-control border-0 border-bottom ${formik.touched.password && formik.errors.password
-                  ? "is-invalid"
-                  : ""
-                  }`}
-                placeholder="Type your password"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.password}
-              />
-              {/* 👇 Eye Icon */}
-              <span
-                className="input-group-text bg-white border-0"
-                style={{ cursor: "pointer" }}
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </span>
-            </div>
-            {formik.touched.password && formik.errors.password && (
-              <div className="text-danger small">
-                {formik.errors.password}
-              </div>
-            )}
+        {/* Password Field */}
+        <div className="mb-1">
+          <label className="form-label">Password</label>
+          <div className="input-group">
+            <span className="input-group-text bg-white border-0">
+              <FaLock />
+            </span>
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              className={`form-control border-0 border-bottom ${formik.touched.password && formik.errors.password
+                ? "is-invalid"
+                : ""
+                }`}
+              placeholder="Type your password"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.password}
+            />
+            {/* 👇 Eye Icon */}
+            <span
+              className="input-group-text bg-white border-0"
+              style={{ cursor: "pointer" }}
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
           </div>
-
-          {showForgotPassword && (
-            <div className="text-end mb-3">
-              <a href="#" className="small text-decoration-none text-danger">
-                Forgot Password?
-              </a>
+          {formik.touched.password && formik.errors.password && (
+            <div className="text-danger small">
+              {formik.errors.password}
             </div>
           )}
+        </div>
 
-          {/* Radio Buttons */}
-          <div className="mb-3">
-            <label className="form-label">Select Role</label>
-            <div className="form-check">
-              <input
-                type="radio"
-                name="role"
-                id="admin"
-                value="admin"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                className="form-check-input"
-                checked={formik.values.role === "admin"}
-              />
-              <label
-                htmlFor="admin"
-                className="form-check-label"
-                style={{ fontSize: "14px" }}
-              >
-                Admin
-              </label>
-            </div>
-            <div className="form-check">
-              <input
-                type="radio"
-                name="role"
-                id="employee"
-                value="employee"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                className="form-check-input"
-                checked={formik.values.role === "employee"}
-              />
-              <label
-                htmlFor="employee"
-                className="form-check-label"
-                style={{ fontSize: "14px" }}
-              >
-                Employee
-              </label>
-            </div>
-            {formik.touched.role && formik.errors.role && (
-              <div className="text-danger small">{formik.errors.role}</div>
-            )}
+        {showForgotPassword && (
+          <div className="text-end mb-3">
+            <a href="#" className="small text-decoration-none text-danger">
+              Forgot Password?
+            </a>
           </div>
+        )}
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="btn btn-primary w-100"
-            style={{
-              background: "linear-gradient(to right, #00c6ff, #0072ff)",
-              border: "none",
-            }}
-          >
-            LOGIN
-          </button>
-        </form>
-        <ToastContainer position="top-right" autoClose={3000} />
+        {/* Radio Buttons */}
+        <div className="mb-3">
+          <label className="form-label">Select Role</label>
+          <div className="form-check">
+            <input
+              type="radio"
+              name="role"
+              id="admin"
+              value="admin"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className="form-check-input"
+              checked={formik.values.role === "admin"}
+            />
+            <label
+              htmlFor="admin"
+              className="form-check-label"
+              style={{ fontSize: "14px" }}
+            >
+              Admin
+            </label>
+          </div>
+          <div className="form-check">
+            <input
+              type="radio"
+              name="role"
+              id="employee"
+              value="employee"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className="form-check-input"
+              checked={formik.values.role === "employee"}
+            />
+            <label
+              htmlFor="employee"
+              className="form-check-label"
+              style={{ fontSize: "14px" }}
+            >
+              Employee
+            </label>
+          </div>
+          {formik.touched.role && formik.errors.role && (
+            <div className="text-danger small">{formik.errors.role}</div>
+          )}
+        </div>
 
-      </div>
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className="btn btn-primary w-100"
+          style={{
+            background: "linear-gradient(to right, #00c6ff, #0072ff)",
+            border: "none",
+          }}
+        >
+          LOGIN
+        </button>
+      </form>
+      <ToastContainer position="top-right" autoClose={3000} />
+
     </div>
-  );
+  </div>
+);
 };
 
 export default LoginPage;
