@@ -72,21 +72,17 @@ const CompanyProvider = ({ children }) => {
   useEffect(() => {
     const storedCompany = localStorage.getItem("user");
 
-    try {
-      if (storedCompany) {
+    if (storedCompany && storedCompany !== "undefined") {
+      try {
         const parsedCompany = JSON.parse(storedCompany);
-
-        if (parsedCompany && parsedCompany.companyId) {
-          setCompany(parsedCompany);
-          setCompanyId(parsedCompany.companyId);
-        } else {
-          console.warn("Invalid company object in localStorage:", parsedCompany);
-          setCompany(null);
-          setCompanyId(null);
-        }
+        setCompany(parsedCompany);
+        setCompanyId(parsedCompany.companyId || null);
+      } catch (error) {
+        console.error("❌ Failed to parse company from localStorage:", error);
+        setCompany(null);
+        setCompanyId(null);
       }
-    } catch (error) {
-      console.error("Error parsing stored company:", error);
+    } else {
       setCompany(null);
       setCompanyId(null);
     }

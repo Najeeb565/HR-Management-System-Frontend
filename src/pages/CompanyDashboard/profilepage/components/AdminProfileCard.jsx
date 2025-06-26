@@ -2,36 +2,47 @@ import React, { useEffect, useState , useContext} from 'react';
 import axios from 'axios';
 import { User, Mail, Phone, MapPin, Upload, Edit2, Save } from 'lucide-react';
 import { CompanyContext } from "../../../../context/CompanyContext";
+import { toast } from 'react-hot-toast';
+
+
+
 
 
 const AdminProfilePage = () => {
-  const { setCompany } = useContext(CompanyContext);
+  const { company, setCompany } = useContext(CompanyContext);
+  
   const [admin, setAdmin] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
   const [preview, setPreview] = useState(null);
 
-  useEffect(() => {
+
+
+
+useEffect(() => {
+  if (!company) return;
+
+  if (company?.email) {
     fetchProfile();
-  }, []);
-
+  } else {
+    console.warn("⚠️ Admin email is missing from context.");
+  }
+}, [company]);
   const fetchProfile = async () => {
-    try {
-      const user = JSON.parse(localStorage.getItem("user"));
-      const email = user?.email;
-      if (!email) return console.error("Admin email not found in localStorage");
+  try {
+    const email = company?.email;
+    if (!email) return console.error("Admin email not found in context");
 
-      const res = await axios.get(`/api/admin/profile/${email}`); // ✅ fix here
-      setAdmin(res.data);
-      setFormData(res.data);
-      setPreview(res.data.profilePic);
-      console.log("Fetched admin:", res.data);
+    const res = await axios.get(`/api/admin/profile/${email}`);
+    setAdmin(res.data);
+    setFormData(res.data);
+    setPreview(res.data.profilePic);
+    
 
-    } catch (err) {
-      console.error('Failed to fetch profile:', err);
-    }
-  };
-
+  } catch (err) {
+    console.error('Failed to fetch profile:', err);
+  }
+};
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -67,7 +78,8 @@ const AdminProfilePage = () => {
 
     setAdmin(updatedUser);
     setEditMode(false);
-    alert('Profile updated successfully');
+
+    toast.success("Profile updated successfully!");
 
   } catch (err) {
     console.error('Failed to update:', err);
@@ -197,7 +209,10 @@ const AdminProfilePage = () => {
           </div>
         </div>
       </div>
+      
     </div>
+
+
   );
 
 };

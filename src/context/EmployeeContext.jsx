@@ -1,4 +1,4 @@
-// src/context/EmployeeContext.js
+
 import { createContext, useEffect, useState } from "react";
 
 export const EmployeeContext = createContext();
@@ -11,9 +11,10 @@ useEffect(() => {
   if (storedEmployee && storedEmployee !== "undefined") {
     try {
       setEmployee(JSON.parse(storedEmployee));
+      console.log("Parsed employee:", employee);
     } catch (error) {
       console.error("Failed to parse stored employee:", error);
-      setEmployee(null); // fallback in case of error
+      setEmployee(null); 
     }
   }
 }, []);

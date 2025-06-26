@@ -8,7 +8,8 @@ import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { useContext } from 'react';
 import { CompanyContext } from '../../context/CompanyContext';
-// import CompanyDashboard from "../CompanyDashboard/CompanyDashboard";
+import { EmployeeContext } from "../../context/EmployeeContext";
+
 
 
 
@@ -20,6 +21,7 @@ const LoginPage = () => {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   const { setCompany } = useContext(CompanyContext);
+  const { setEmployee } = useContext(EmployeeContext);
 
   const formik = useFormik({
     initialValues: {
@@ -48,58 +50,34 @@ const LoginPage = () => {
 
         const data = await response.json();
 
-      //   if (data.success) {
-      //     localStorage.setItem("token", data.token);
-      //     localStorage.setItem("user", JSON.stringify(data.user));
-      //     setCompany(data.user);
+        if (data.success) {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
 
-       
-
-      //   toast.success(`Login as ${values.role} successful!`);
-      //   resetForm();
-      //   setShowForgotPassword(false);
-
-      //   if (values.role === "admin") {
-      //     const companyName = data.user?.companyName;
-      //     if (companyName) {
-      //       const companySlug = companyName.toLowerCase().replace(/\s+/g, '-');
-      //       navigate(`/${companySlug}/company-dashboard`);
-      //     } else {
-      //       toast.error("Company name not found. Please contact support.");
-      //     }
-      //   } else if (values.role === "employee") {
-
-      //     toast.success(`Login as ${values.role} successful!`);
-      //     navigate("/:companySlug/employees-dashboard");
-
-      //   }
-      // } 
-
-      if (data.success) {
-  // ✅ Save token inside user object
-  localStorage.setItem("user", JSON.stringify({
-    ...data.user,
-    token: data.token
-  }));
-
-  setCompany(data.user);
+          // 🔥 Set the correct context
+          if (values.role === "admin") {
+            setCompany(data.user);
+          } else if (values.role === "employee") {
+            setEmployee(data.user);
+          }
 
   toast.success(`Login as ${values.role} successful!`);
   resetForm();
   setShowForgotPassword(false);
 
-  if (values.role === "admin") {
-    const companyName = data.user?.companyName;
-    if (companyName) {
-      const companySlug = companyName.toLowerCase().replace(/\s+/g, '-');
-      navigate(`/${companySlug}/company-dashboard`);
-    } else {
-      toast.error("Company name not found. Please contact support.");
-    }
-  } else if (values.role === "employee") {
-    navigate("/:companySlug/employees-dashboard");
-  }
-}
+          const companySlug = data.user.companyName?.toLowerCase().replace(/\s+/g, "-");
+
+          if (companySlug) {
+            if (values.role === "admin") {
+              navigate(`/${companySlug}/company-dashboard`);
+            } else if (values.role === "employee") {
+              navigate(`/${companySlug}/employees-dashboard`);
+            }
+          } else {
+            toast.error("Company name not found. Please contact support.");
+          }
+        }
+
 
 
       } catch(error) {
