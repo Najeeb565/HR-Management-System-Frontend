@@ -15,9 +15,8 @@ const Sidebar = ({ collapsed }) => {
   }, []);
   
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userInfo');
-    navigate('/login');
+    localStorage.removeItem('superadmin');
+    navigate('/superadminlogin');
   };
   
   const getInitials = (name) => {

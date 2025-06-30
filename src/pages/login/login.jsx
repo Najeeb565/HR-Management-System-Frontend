@@ -38,57 +38,57 @@ const LoginPage = () => {
         .required("Password is required"),
       role: Yup.string().required("Please select a role"),
     }),
-   onSubmit: async (values, { resetForm }) => {
-  try {
-    const response = await fetch("http://localhost:5000/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    });
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        const response = await fetch("http://localhost:5000/api/auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+        });
 
-    const data = await response.json();
+        const data = await response.json();
 
-    if (data.success) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+        if (data.success) {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
 
-      // 🔥 Set the correct context
-     if (values.role === "admin") {
-  localStorage.setItem("admin", JSON.stringify(data.user)); // for admin
-  setCompany(data.user);
-} else if (values.role === "employee") {
-  localStorage.setItem("employee", JSON.stringify(data.user)); // ✅ for employee
-  setEmployee(data.user);
-}
-
-
-      resetForm();
-      setShowForgotPassword(false);
-
-      const companySlug = data.user.companyName?.toLowerCase().replace(/\s+/g, "-");
-
-      if (companySlug) {
-        toast.success(`Login as ${values.role} successful!`);
-
-        setTimeout(() => {
+          // 🔥 Set the correct context
           if (values.role === "admin") {
-            navigate(`/${companySlug}/company-dashboard`);
+            localStorage.setItem("admin", JSON.stringify(data.user));
+            setCompany(data.user);
           } else if (values.role === "employee") {
-            navigate(`/${companySlug}/employees-dashboard`);
+            localStorage.setItem("employee", JSON.stringify(data.user)); 
+            setEmployee(data.user);
           }
-        }, 1500); // 1.5s delay to allow toast display
-      } else {
-        toast.error("Company name not found. Please contact support.");
+
+
+          resetForm();
+          setShowForgotPassword(false);
+
+          const companySlug = data.user.companyName?.toLowerCase().replace(/\s+/g, "-");
+
+          if (companySlug) {
+            toast.success(`Login as ${values.role} successful!`);
+
+            setTimeout(() => {
+              if (values.role === "admin") {
+                navigate(`/${companySlug}/company-dashboard`);
+              } else if (values.role === "employee") {
+                navigate(`/${companySlug}/employees-dashboard`);
+              }
+            }, 1500); // 1.5s delay to allow toast display
+          } else {
+            toast.error("Company name not found. Please contact support.");
+          }
+        }
+
+      } catch (error) {
+        console.error("Login error:", error);
+        toast.error("Something went wrong!");
       }
     }
-
-  } catch (error) {
-    console.error("Login error:", error);
-    toast.error("Something went wrong!");
-  }
-}
 
 
   });
