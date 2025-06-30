@@ -8,8 +8,10 @@ const AddEmployee = () => {
   const { companySlug } = useParams();
   const { id } = useParams();
   const isEditMode = !!id;
-  // const { companyId } = useContext(CompanyContext);
-    const { companyId } = useContext(CompanyContext) || {}; 
+  const { companyId } = useContext(CompanyContext)
+    // console.log(companyId)
+
+  console.log(CompanyContext)
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -107,12 +109,12 @@ const AddEmployee = () => {
 
 
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  const payload = { ...formData, companyId };
-  const token = JSON.parse(localStorage.getItem("user"))?.token;
-  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const payload = { ...formData, companyId };
+    console.log("companyId from context:", companyId);
+
 
   try {
     if (isEditMode) {

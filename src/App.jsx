@@ -1,10 +1,8 @@
-
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from 'react';
 import { Toaster } from 'react-hot-toast';
-import TaskManagementemployees from "./pages/EmployeesDashborad/employeestask";
 
-// Lazy imports
+// Lazy imports (same as before)
 const Landing = lazy(() => import("./pages/landing/landing"));
 const Login = lazy(() => import("./pages/login/login"));
 const Dashboard = lazy(() => import("./pages/SuperAdmin/Dashboard"));
@@ -31,11 +29,10 @@ const EmployeeDashboard = lazy(() => import("./pages/EmployeesDashborad/Dashboar
 
 function App() {
   return (
-    <BrowserRouter>
+    <>
       <Toaster position="top-right" />
       <Suspense fallback={<div style={{ textAlign: "center", paddingTop: "50px" }}>Loading...</div>}>
         <Routes>
-
           {/* Public Pages */}
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
@@ -68,8 +65,8 @@ function App() {
             <Route path="AdminProfile" element={<Adminprofile />} />
           </Route>
 
-           
-            <Route path="/:companySlug/employees-dashboard" element={<Employeeslayout />}>
+          {/* Employee Dashboard */}
+          <Route path="/:companySlug/employees-dashboard" element={<Employeeslayout />}>
             <Route index element={<EmployeeDashboard />} />
             <Route path="employeestask" element={<Employeestask />} />
           </Route>
@@ -78,7 +75,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
-    </BrowserRouter>
+    </>
   );
 }
 
