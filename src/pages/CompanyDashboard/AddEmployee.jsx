@@ -121,7 +121,7 @@ const AddEmployee = () => {
       await axios.put(`http://localhost:5000/api/employees/${id}`, payload, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+
         }
       });
       toast.success('Employee updated successfully!');
@@ -129,7 +129,7 @@ const AddEmployee = () => {
       await axios.post('http://localhost:5000/api/employees', payload, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+      
         }
       });
       toast.success('Employee created successfully!');
