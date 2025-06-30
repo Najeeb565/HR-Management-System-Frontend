@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../../axios';
 
 const Employeestask = () => {
   const [tasks, setTasks] = useState([]);
@@ -24,7 +24,7 @@ useEffect(() => {
   }
 }, [user]);
 
-  // Step 3: API call to backend to get tasks for specific email
+
   const fetchTasks = (userId) => {
   axios
     .get(`http://localhost:5000/api/tasks?assignedTo=${userId}`)
@@ -33,13 +33,13 @@ useEffect(() => {
 };
 
 
-  // Step 4: Update task status (done / pending)
+
   const updateStatus = async (taskId, newStatus) => {
     try {
       await axios.put(`http://localhost:5000/api/tasks/${taskId}`, {
         status: newStatus,
       });
-     fetchTasks(user._id); // refresh task list after update
+     fetchTasks(user._id); 
     } catch (err) {
       console.error('Error updating task status:', err);
     }

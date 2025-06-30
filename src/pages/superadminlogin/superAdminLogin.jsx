@@ -16,18 +16,23 @@ const SuperAdminLogin = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
- 
+
     // Dummy credentials
     const correctEmail = "admin@super.com";
-    const correctPassword = "admin123";
+    const correctPassword = "123456";
 
     if (email === correctEmail && password === correctPassword) {
       toast.success("✅ Superadmin Login Successful!");
       setEmail('');
       setPassword('');
-      setTimeout(() => {
-        navigate('/superadmin');
-      }, 1500);
+
+      localStorage.setItem("superadmin", JSON.stringify({
+        email: "superadmin@example.com",
+        role: "superadmin"
+      }));
+
+      navigate('/superadmin');
+
     } else {
       toast.error("❌ Invalid email or password.");
     }
