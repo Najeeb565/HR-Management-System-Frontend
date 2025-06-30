@@ -10,14 +10,16 @@ useEffect(() => {
   const storedEmployee = localStorage.getItem("employee");
   if (storedEmployee && storedEmployee !== "undefined") {
     try {
-      setEmployee(JSON.parse(storedEmployee));
-      console.log("Parsed employee:", employee);
+      const parsed = JSON.parse(storedEmployee);
+      setEmployee(parsed);
+      console.log("Parsed employee:", parsed);
     } catch (error) {
       console.error("Failed to parse stored employee:", error);
-      setEmployee(null); 
+      setEmployee(null);
     }
   }
 }, []);
+
 
 
   return (

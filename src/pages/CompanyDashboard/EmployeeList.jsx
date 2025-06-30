@@ -30,25 +30,37 @@ const EmployeeList = () => {
     filterEmployees();
   }, [employees, searchTerm, selectedRole, selectedStatus]);
   const fetchEmployees = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get('http://localhost:5000/api/employees');
-      if (Array.isArray(response.data)) {
-        setEmployees(response.data);
-        setFilteredEmployees(response.data); // ✅ ensure initial list shown
-      } else {
-        console.error('Unexpected response format:', response.data);
-        setEmployees([]);
-        setFilteredEmployees([]);
-      }
-    } catch (error) {
-      console.error('Error fetching employees:', error);
+  try {
+    setLoading(true);
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    const companyId = user?.companyId;
+
+    if (!companyId) {
+      console.error("Company ID not found in localStorage");
+      return;
+    }
+
+    // ✅ Send companyId in query params
+    const response = await axios.get(`http://localhost:5000/api/employees?companyId=${companyId}`);
+
+    if (Array.isArray(response.data)) {
+      setEmployees(response.data);
+      setFilteredEmployees(response.data);
+    } else {
+      console.error('Unexpected response format:', response.data);
       setEmployees([]);
       setFilteredEmployees([]);
-    } finally {
-      setLoading(false);
     }
-  };
+  } catch (error) {
+    console.error('Error fetching employees:', error);
+    setEmployees([]);
+    setFilteredEmployees([]);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
 const filterEmployees = () => {
   const term = searchTerm.toLowerCase().trim();
@@ -65,14 +77,6 @@ const filterEmployees = () => {
 
   setFilteredEmployees(filtered);
 };
-
-
-
-
-
-
-
-
 
 const handleDeleteClick = (employee) => {
     setEmployeeToDelete(employee);

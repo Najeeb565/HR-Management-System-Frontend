@@ -9,7 +9,7 @@ const EmployeesLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { company } = useContext(CompanyContext);
   const { employee } = useContext(EmployeeContext);
-  console.log("EMPLOYEE CONTEXT:", employee);
+  // console.log("EMPLOYEE CONTEXT:", employee);
 
 
   useEffect(() => {

@@ -1,11 +1,12 @@
-// CompanyProvider.jsx
 import { createContext, useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 export const CompanyContext = createContext();
 
 const CompanyProvider = ({ children }) => {
   const [company, setCompany] = useState(null);
   const [companyId, setCompanyId] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
     const storedCompany = localStorage.getItem("user");
@@ -24,7 +25,7 @@ const CompanyProvider = ({ children }) => {
       setCompany(null);
       setCompanyId(null);
     }
-  }, []);
+  }, [location]);
 
   return (
     <CompanyContext.Provider value={{ company, setCompany, companyId }}>
