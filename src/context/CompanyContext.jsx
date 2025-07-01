@@ -35,3 +35,4 @@ const CompanyProvider = ({ children }) => {
 };
 
 export default CompanyProvider;
+
