@@ -6,6 +6,7 @@ import ProtectedRoute from './components/ProtectedRoute'; // ✅ Import here
 // Lazy Imports
 const Landing = lazy(() => import("./pages/landing/landing"));
 const Login = lazy(() => import("./pages/login/login"));
+const ForgotPassword = lazy(() => import("./pages/login/forgetpassword"));
 const Dashboard = lazy(() => import("./pages/SuperAdmin/Dashboard"));
 const CompanyRegisterForm = lazy(() => import("./pages/register/Registrationform"));
 const SuperAdmin = lazy(() => import("./pages/SuperAdmin/Stylelayout"));
@@ -39,6 +40,7 @@ function App() {
           {/* Public Pages */}
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/register" element={<CompanyRegisterForm />} />
           <Route path="/CompanyRegisterForm" element={<Navigate to="/register" replace />} />
           <Route path="/RequestSent/:companyId" element={<RequestSent />} />

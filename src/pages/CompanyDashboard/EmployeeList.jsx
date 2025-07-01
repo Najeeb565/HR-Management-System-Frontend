@@ -30,55 +30,55 @@ const EmployeeList = () => {
     filterEmployees();
   }, [employees, searchTerm, selectedRole, selectedStatus]);
   const fetchEmployees = async () => {
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const user = JSON.parse(localStorage.getItem("user"));
-    const companyId = user?.companyId;
+      const user = JSON.parse(localStorage.getItem("user"));
+      const companyId = user?.companyId;
 
-    if (!companyId) {
-      console.error("Company ID not found in localStorage");
-      return;
-    }
+      if (!companyId) {
+        console.error("Company ID not found in localStorage");
+        return;
+      }
 
-    // ✅ Send companyId in query params
-    const response = await axios.get(`http://localhost:5000/api/employees?companyId=${companyId}`);
+      // ✅ Send companyId in query params
+      const response = await axios.get(`http://localhost:5000/api/employees?companyId=${companyId}`);
 
-    if (Array.isArray(response.data)) {
-      setEmployees(response.data);
-      setFilteredEmployees(response.data);
-    } else {
-      console.error('Unexpected response format:', response.data);
+      if (Array.isArray(response.data)) {
+        setEmployees(response.data);
+        setFilteredEmployees(response.data);
+      } else {
+        console.error('Unexpected response format:', response.data);
+        setEmployees([]);
+        setFilteredEmployees([]);
+      }
+    } catch (error) {
+      console.error('Error fetching employees:', error);
       setEmployees([]);
       setFilteredEmployees([]);
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error('Error fetching employees:', error);
-    setEmployees([]);
-    setFilteredEmployees([]);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
 
-const filterEmployees = () => {
-  const term = searchTerm.toLowerCase().trim();
+  const filterEmployees = () => {
+    const term = searchTerm.toLowerCase().trim();
 
-  const filtered = employees.filter(emp => {
-    const firstName = emp.firstName?.toLowerCase() || '';
-    const lastName = emp.lastName?.toLowerCase() || '';
-    const roleMatch = selectedRole ? emp.role === selectedRole : true;
-    const statusMatch = selectedStatus ? emp.status === selectedStatus : true;
-    const searchMatch = term === '' || firstName.startsWith(term) || lastName.startsWith(term);
+    const filtered = employees.filter(emp => {
+      const firstName = emp.firstName?.toLowerCase() || '';
+      const lastName = emp.lastName?.toLowerCase() || '';
+      const roleMatch = selectedRole ? emp.role === selectedRole : true;
+      const statusMatch = selectedStatus ? emp.status === selectedStatus : true;
+      const searchMatch = term === '' || firstName.startsWith(term) || lastName.startsWith(term);
 
-    return roleMatch && statusMatch && searchMatch;
-  });
+      return roleMatch && statusMatch && searchMatch;
+    });
 
-  setFilteredEmployees(filtered);
-};
+    setFilteredEmployees(filtered);
+  };
 
-const handleDeleteClick = (employee) => {
+  const handleDeleteClick = (employee) => {
     setEmployeeToDelete(employee);
     setShowDeleteModal(true);
   };
@@ -88,38 +88,25 @@ const handleDeleteClick = (employee) => {
     setShowViewModal(true);
   };
 
-  // const handleDeleteConfirm = async () => {
-  //   try {
-  //     await axios.delete(`http://localhost:5000/api/employees/${employeeToDelete._id}`);
-  //     setEmployees(employees.filter(emp => emp._id !== employeeToDelete._id));
-  //     setShowDeleteModal(false);
-  //     setEmployeeToDelete(null);
-  //   } catch (error) {
-  //     console.error('Error deleting employee:', error);
-  //     alert('Error deleting employee');
-  //   }
-  // };
-
-
 
   const handleDeleteConfirm = async () => {
-  const token = JSON.parse(localStorage.getItem("user"))?.token;
+    const token = JSON.parse(localStorage.getItem("user"))?.token;
 
-  try {
-    await axios.delete(`http://localhost:5000/api/employees/${employeeToDelete._id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    try {
+      await axios.delete(`http://localhost:5000/api/employees/${employeeToDelete._id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    setEmployees(employees.filter(emp => emp._id !== employeeToDelete._id));
-    setShowDeleteModal(false);
-    setEmployeeToDelete(null);
-  } catch (error) {
-    console.error('Error deleting employee:', error);
-    alert('Error deleting employee');
-  }
-};
+      setEmployees(employees.filter(emp => emp._id !== employeeToDelete._id));
+      setShowDeleteModal(false);
+      setEmployeeToDelete(null);
+    } catch (error) {
+      console.error('Error deleting employee:', error);
+      alert('Error deleting employee');
+    }
+  };
 
 
   const getRoleBadgeClass = (role) => {

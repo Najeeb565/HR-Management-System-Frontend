@@ -18,38 +18,44 @@ const CompanyDashboard = () => {
     // console.log('Dashboard stats:', stats);
   }, [stats]);
 
+
   const fetchStats = async () => {
     try {
-      // const response = await axios.get('http://localhost:5000/api/employees/stats');
-      // setStats(response.data);
-    } catch (error) {
-      // console.error('Error fetching stats:', error);
-      setError('Failed to load dashboard data. Using mock data.');
-      // Fallback mock data
-      setStats({
-        totalEmployees: 100,
-        activeEmployees: 80,
-        inactiveEmployees: 20,
-        departments: [
-          { _id: 'IT', count: 30 },
-          { _id: 'HR', count: 20 },
-          { _id: 'Finance', count: 15 }
-        ]
+      const user = JSON.parse(localStorage.getItem("user"));
+      const token = localStorage.getItem("token"); // ✅ Add this line
+      const companyId = user?.companyId;
+      console.log("Company ID:", companyId);
+
+      if (!companyId) {
+        setError("Company ID missing");
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch(`http://localhost:5000/api/employees/stats?companyId=${user.companyId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // ✅ Add token here
+        }
       });
+
+
+      const data = await response.json();
+
+      if (data) {
+        setStats(data);
+      } else {
+        setError("No data returned from server");
+      }
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+      setError('Failed to load dashboard data');
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="d-flex justify-content-center align-items-center" style={{ height: '400px' }}>
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div style={{ minHeight: '600px' }}>
