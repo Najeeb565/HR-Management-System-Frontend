@@ -18,7 +18,8 @@ const EmployeesLayout = () => {
 
   const menuItems = [
     { path: `/${companySlug}/employees-dashboard`, icon: 'bi-speedometer2', label: 'Employees Dashboard' },
-    { path: `/${companySlug}/employees-dashboard/Employeestask`, icon: 'bi-person-plus', label: 'Task Management' }
+    { path: `/${companySlug}/employees-dashboard/Employeestask`, icon: 'bi-person-plus', label: 'Task Management' },
+    { path: `/${companySlug}/employees-dashboard/Attendancehistory`, icon: 'bi-person-plus', label: 'Attendance History' },
   ];
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);

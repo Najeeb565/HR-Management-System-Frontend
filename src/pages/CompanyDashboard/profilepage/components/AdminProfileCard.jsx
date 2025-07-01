@@ -1,5 +1,5 @@
 import React, { useEffect, useState , useContext} from 'react';
-import axios from 'axios';
+import axios from '../../../../axios';
 import { User, Mail, Phone, MapPin, Upload, Edit2, Save } from 'lucide-react';
 import { CompanyContext } from "../../../../context/CompanyContext";
 import { toast } from 'react-hot-toast';
@@ -33,7 +33,7 @@ useEffect(() => {
     const email = company?.email;
     if (!email) return console.error("Admin email not found in context");
 
-    const res = await axios.get(`/api/admin/profile/${email}`);
+    const res = await axios.get(`/admin/profile/${email}`);
     setAdmin(res.data);
     setFormData(res.data);
     setPreview(res.data.profilePic);
@@ -65,10 +65,10 @@ useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     const email = user?.email;
 
-    const res = await axios.put(`/api/admin/profile/${email}`, formData);
-    const updatedUser = res.data.updatedUser || formData; // whatever your backend sends
+    const res = await axios.put(`admin/profile/${email}`, formData);
+    const updatedUser = res.data.updatedUser || formData; 
 
-    // ✅ Update localStorage
+
     localStorage.setItem("user", JSON.stringify(updatedUser));
 
     // ✅ Update context/state globally
