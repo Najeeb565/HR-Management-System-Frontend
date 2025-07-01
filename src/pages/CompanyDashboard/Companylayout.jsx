@@ -18,6 +18,7 @@ const Companylayout = () => {
     { path: `/${companySlug}/company-dashboard/employees/add`, icon: 'bi-person-plus', label: 'Add Employee' },
     { path: `/${companySlug}/company-dashboard/AdminProfile`, icon: 'bi-person-plus', label: 'Profile' },
     { path: `/${companySlug}/company-dashboard/taskmanagement`, icon: 'bi-person-plus', label: 'Task Management' },
+    { path: `/${companySlug}/company-dashboard/leavemangement`, icon: 'bi-person-plus', label: 'Leave Management' },
     { path: '/logout', icon: 'bi-box-arrow-right', label: 'Logout' }
 
 

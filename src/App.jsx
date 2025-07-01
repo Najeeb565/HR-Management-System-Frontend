@@ -23,11 +23,13 @@ const EmployeeList = lazy(() => import("./pages/CompanyDashboard/EmployeeList"))
 const EmployeeProfile = lazy(() => import("./pages/CompanyDashboard/EmployeeProfile"));
 const Companylayout = lazy(() => import("./pages/CompanyDashboard/Companylayout"));
 const Taskmanagement = lazy(() => import("./pages/CompanyDashboard/taskmanagement"));
+import AdminLeaveList from './pages/CompanyDashboard/adminleave';
 const Adminprofile = lazy(() => import('./pages/CompanyDashboard/profilepage/profilepage'));
 const Employeeslayout = lazy(() => import("./pages/EmployeesDashborad/EmployeesLayout"));
 const Employeestask = lazy(() => import("./pages/EmployeesDashborad/employeestask"));
 const EmployeeDashboard = lazy(() => import("./pages/EmployeesDashborad/Dashboard"));
 const Logout = lazy(() => import("./components/logout"));
+import Leavemangement from './pages/EmployeesDashborad/leavemangement';
 
 function App() {
   return (
@@ -80,6 +82,7 @@ function App() {
             <Route path="employees/edit/:id" element={<EditEmployee />} />
             <Route path="employees/profile/:id" element={<EmployeeProfile />} />
             <Route path="taskmanagement" element={<Taskmanagement />} />
+            <Route path="leavemangement" element={<AdminLeaveList />} />
             <Route path="AdminProfile" element={<Adminprofile />} />
           </Route>
 
@@ -94,6 +97,7 @@ function App() {
           >
             <Route index element={<EmployeeDashboard />} />
             <Route path="employeestask" element={<Employeestask />} />
+            <Route path="leavemangement" element={<Leavemangement />} />
           </Route>
 
           {/* Catch-all */}
