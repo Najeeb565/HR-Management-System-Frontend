@@ -6,6 +6,7 @@ import ProtectedRoute from './components/ProtectedRoute'; // ✅ Import here
 // Lazy Imports
 const Landing = lazy(() => import("./pages/landing/landing"));
 const Login = lazy(() => import("./pages/login/login"));
+const ForgotPassword = lazy(() => import("./pages/login/forgetpassword"));
 const Dashboard = lazy(() => import("./pages/SuperAdmin/Dashboard"));
 const CompanyRegisterForm = lazy(() => import("./pages/register/Registrationform"));
 const SuperAdmin = lazy(() => import("./pages/SuperAdmin/Stylelayout"));
@@ -29,7 +30,10 @@ const Employeeslayout = lazy(() => import("./pages/EmployeesDashborad/EmployeesL
 const Employeestask = lazy(() => import("./pages/EmployeesDashborad/employeestask"));
 const EmployeeDashboard = lazy(() => import("./pages/EmployeesDashborad/Dashboard"));
 const Logout = lazy(() => import("./components/logout"));
+const AttendancePage = lazy(() => import("./pages/EmployeesDashborad/attendance/AttendancePage"));
+const AtttendanceHistory = lazy(() => import("./pages/EmployeesDashborad/attendance/AttendanceHistory"));
 import Leavemangement from './pages/EmployeesDashborad/leavemangement';
+
 
 function App() {
   return (
@@ -41,6 +45,7 @@ function App() {
           {/* Public Pages */}
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/register" element={<CompanyRegisterForm />} />
           <Route path="/CompanyRegisterForm" element={<Navigate to="/register" replace />} />
           <Route path="/RequestSent/:companyId" element={<RequestSent />} />
@@ -97,7 +102,10 @@ function App() {
           >
             <Route index element={<EmployeeDashboard />} />
             <Route path="employeestask" element={<Employeestask />} />
-            <Route path="leavemangement" element={<Leavemangement />} />
+            <Route path="attendance" element={<AttendancePage />} />
+            <Route path="attendancehistory" element={<AtttendanceHistory />} />
+                        <Route path="leavemangement" element={<Leavemangement />} />
+
           </Route>
 
           {/* Catch-all */}
