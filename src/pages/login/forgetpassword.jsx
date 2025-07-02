@@ -146,8 +146,14 @@ const ForgotPassword = ({ onClose }) => {
         )}
 
         <div className="text-center mt-3">
-          <button className="btn btn-link" onClick={onClose}>Back to Login</button>
+             <button className="btn btn-link" onClick={() => navigate('/login')}>
+  Back to Login
+</button>
         </div>
+
+
+
+
         <ToastContainer position="top-right" autoClose={3000} />
       </div>
     </div>

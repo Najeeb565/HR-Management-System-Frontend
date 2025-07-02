@@ -21,6 +21,8 @@ const EmployeesLayout = () => {
     { path: `/${companySlug}/employees-dashboard/Employeestask`, icon: 'bi-person-plus', label: 'Task Management' },
         { path: `/${companySlug}/employees-dashboard/Attendancehistory`, icon: 'bi-person-plus', label: 'Attendance History' },
     { path: `/${companySlug}/employees-dashboard/LeaveMangement`, icon: 'bi-person-plus', label: 'Leave Mangement' }
+    { path: '/logout', icon: 'bi-box-arrow-right', label: 'Logout' }
+
 
   ];
 
