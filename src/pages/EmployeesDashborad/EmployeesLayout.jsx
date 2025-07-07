@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Link, useLocation, Outlet, useParams } from 'react-router-dom';
 import { CompanyContext } from '../../context/CompanyContext';
 import { EmployeeContext } from '../../context/EmployeeContext';
+import axios from '../../axios';
 
 const EmployeesLayout = () => {
   const location = useLocation();

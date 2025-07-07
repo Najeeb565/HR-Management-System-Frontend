@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import Attendance from "./attendance/AttendancePage";
 import AttendanceChart from "./attendance/AttendanceChart";
+import GlobalChatBox from "../../components/chat/globalchat";
 import axios from "../../axios";
 import ProfileCard from "./profile/profilecard"
 import { EmployeeContext } from "../../context/EmployeeContext";
@@ -10,6 +11,13 @@ const EmpDashboard = () => {
   const [attendanceHistory, setAttendanceHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showCard, setShowCard] = useState(false);
+
+
+   const currentUser = {
+    name: "Hamza",
+    role: "Employee",
+    _id: "emp123" // Optional, use if needed
+  };
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -116,10 +124,9 @@ const EmpDashboard = () => {
             </div>
           </div>
 
-          {/* Additional Dashboard Widgets can be added below */}
-          {/* <div className="col-12">
-            <OtherDashboardComponent />
-          </div> */}
+           <div className="col-12">
+            <GlobalChatBox currentUser={currentUser} />
+          </div>
         </div>
       )}
     </div>

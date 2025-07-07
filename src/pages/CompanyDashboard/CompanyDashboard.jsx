@@ -4,7 +4,7 @@ import ProfileCard from './profilepage/components/proflecard';
 import { FiUsers, FiUserCheck, FiUserX, FiLayers, FiChevronRight } from 'react-icons/fi';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-
+import GlobalChatBox from "../../components/chat/globalchat";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const CompanyDashboard = () => {
@@ -418,6 +418,9 @@ const StatCard = ({ icon, title, value, color, trend }) => {
           </span>
         </div>
       )}
+       <div className="mb-4">
+      <GlobalChatBox />
+    </div>
     </div>
   );
 };
