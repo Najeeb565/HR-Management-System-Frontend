@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Link, useLocation, Outlet, useParams } from 'react-router-dom';
 import { CompanyContext } from '../../context/CompanyContext';
 import { EmployeeContext } from '../../context/EmployeeContext';
+import axios from '../../axios';
 
 const EmployeesLayout = () => {
   const location = useLocation();
@@ -20,7 +21,7 @@ const EmployeesLayout = () => {
     { path: `/${companySlug}/employees-dashboard`, icon: 'bi-speedometer2', label: 'Employees Dashboard' },
     { path: `/${companySlug}/employees-dashboard/Employeestask`, icon: 'bi-person-plus', label: 'Task Management' },
         { path: `/${companySlug}/employees-dashboard/Attendancehistory`, icon: 'bi-person-plus', label: 'Attendance History' },
-    { path: `/${companySlug}/employees-dashboard/LeaveMangement`, icon: 'bi-person-plus', label: 'Leave Mangement' }
+    { path: `/${companySlug}/employees-dashboard/LeaveMangement`, icon: 'bi-person-plus', label: 'Leave Mangement' },
     { path: '/logout', icon: 'bi-box-arrow-right', label: 'Logout' }
 
 

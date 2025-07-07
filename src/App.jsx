@@ -2,8 +2,10 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from 'react';
 import { Toaster } from 'react-hot-toast';
 import ProtectedRoute from './components/ProtectedRoute'; // ✅ Import here
+import { SocketProvider } from "./context/SocketContext";
 
 // Lazy Imports
+
 const Landing = lazy(() => import("./pages/landing/landing"));
 const Login = lazy(() => import("./pages/login/login"));
 const ForgotPassword = lazy(() => import("./pages/login/forgetpassword"));
@@ -40,6 +42,7 @@ function App() {
     <>
       <Toaster position="top-right" />
       <Suspense fallback={<div style={{ textAlign: "center", paddingTop: "50px" }}>Loading...</div>}>
+      <SocketProvider>
         <Routes>
 
           {/* Public Pages */}
@@ -111,6 +114,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
 
         </Routes>
+        </SocketProvider>
       </Suspense>
     </>
   );

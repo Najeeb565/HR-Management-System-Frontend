@@ -106,6 +106,9 @@ const LoginPage = () => {
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
+        // localStorage.setItem("companyId", data.user.companyId);
+        // console.log("Login response", data);
+
       if (values.role === "admin") {
         localStorage.setItem("admin", JSON.stringify(data.user));
         setCompany(data.user);

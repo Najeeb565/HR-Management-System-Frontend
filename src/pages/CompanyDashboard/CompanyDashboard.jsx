@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import GlobalChatBox from "../../components/chat/globalchat";
 const CompanyDashboard = () => {
   const [stats, setStats] = useState({
     totalEmployees: 0,
@@ -55,7 +55,7 @@ const CompanyDashboard = () => {
       setLoading(false);
     }
   };
-
+    // <GlobalChatBox />
 
   return (
     <div style={{ minHeight: '600px' }}>
@@ -65,6 +65,8 @@ const CompanyDashboard = () => {
         </div>
       )}
       <h1 className="h3 mb-4">Dashboard Overview</h1>
+
+      
 
       <div className="row mb-4">
         <div className="col-xl-3 col-md-6 mb-4">
@@ -123,9 +125,13 @@ const CompanyDashboard = () => {
             </tbody>
           </table>
         </div>
+        
       ) : (
         <p>No department data available.</p>
       )}
+       <div className="mb-4">
+      <GlobalChatBox />
+    </div>
     </div>
   );
 };
