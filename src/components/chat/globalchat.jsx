@@ -1,8 +1,10 @@
 
 import React, { useState, useEffect, useRef, useContext } from "react"; // ✅ useRef added
 import { SocketContext } from "../../context/SocketContext";
-import { Picker } from "emoji-mart";
-import "emoji-mart/css/emoji-mart.css";
+import Picker from "@emoji-mart/react";
+import data from "@emoji-mart/data";
+
+// import "emoji-mart/css/emoji-mart.css";
 import "./globalchat.css";
 
 const GlobalChatBox = ({ currentUser }) => {
@@ -75,9 +77,9 @@ const GlobalChatBox = ({ currentUser }) => {
             timestamp: new Date().toISOString(),
             replyTo: replyToMessage
                 ? {
-                      senderName: replyToMessage.senderName,
-                      content: replyToMessage.content,
-                  }
+                    senderName: replyToMessage.senderName,
+                    content: replyToMessage.content,
+                }
                 : null,
         };
 
@@ -86,10 +88,11 @@ const GlobalChatBox = ({ currentUser }) => {
         setReplyToMessage(null);
     };
 
-    const handleEmojiSelect = (emoji) => {
-        setNewMsg((prev) => prev + emoji.native);
-        setShowEmojiPicker(false);
-    };
+  const handleEmojiSelect = (emoji) => {
+  setNewMsg((prev) => prev + emoji.native);
+  setShowEmojiPicker(false);
+};
+
 
     const formatTime = (timestamp) => {
         return new Date(timestamp).toLocaleTimeString([], {
@@ -126,9 +129,8 @@ const GlobalChatBox = ({ currentUser }) => {
                             {messages.map((msg, i) => (
                                 <div
                                     key={i}
-                                    className={`message-bubble ${
-                                        msg.senderName === currentUser?.name ? "sent" : "received"
-                                    }`}
+                                    className={`message-bubble ${msg.senderName === currentUser?.name ? "sent" : "received"
+                                        }`}
                                 >
                                     <div className="message-header">
                                         <span className="sender-name">{msg.senderName}</span>
@@ -195,12 +197,11 @@ const GlobalChatBox = ({ currentUser }) => {
                 {showEmojiPicker && (
                     <div className="emoji-picker-container">
                         <Picker
-                            set="apple"
-                            title="Pick your emoji"
-                            emoji="point_up"
-                            onSelect={handleEmojiSelect}
+                            data={data}
+                            onEmojiSelect={handleEmojiSelect}
                             theme="light"
                         />
+
                     </div>
                 )}
 

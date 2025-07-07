@@ -102,7 +102,7 @@ const CompanyDashboard = () => {
   };
 
   return (
-    <div className="dashboard-container" style={{ minHeight: '100vh',  }}>
+    <div className="dashboard-container" style={{ minHeight: '100vh', padding: '2rem' }}>
       {/* Header */}
       <div className="dashboard-header" style={{
         display: 'flex',
@@ -110,7 +110,7 @@ const CompanyDashboard = () => {
         alignItems: 'center',
         marginBottom: '2rem'
       }}>
-        <div >
+        <div>
           <h1 style={{ 
             fontSize: '1.75rem',
             fontWeight: '600',
@@ -160,8 +160,8 @@ const CompanyDashboard = () => {
             {showCard && (
               <div style={{
                 position: 'absolute',
-                top: '40px',
-                right: '30px',
+                top: '50px',
+                right: 0,
                 zIndex: 1000,
                 width: '300px'
               }}>
@@ -318,7 +318,7 @@ const CompanyDashboard = () => {
                   {stats.departments.map((dept, i) => (
                     <tr key={i} style={{ 
                       borderBottom: '1px solid #e2e8f0',
-                      '&:last-child': {
+                      ':last-child': {
                         borderBottom: 'none'
                       }
                     }}>
@@ -352,6 +352,17 @@ const CompanyDashboard = () => {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Global Chat Box */}
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '0.5rem',
+        padding: '1.5rem',
+        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+        marginBottom: '2rem'
+      }}>
+        <GlobalChatBox />
       </div>
     </div>
   );
@@ -418,9 +429,6 @@ const StatCard = ({ icon, title, value, color, trend }) => {
           </span>
         </div>
       )}
-       <div className="mb-4">
-      <GlobalChatBox />
-    </div>
     </div>
   );
 };
