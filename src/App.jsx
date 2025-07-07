@@ -23,16 +23,17 @@ const EditEmployee = lazy(() => import("./pages/CompanyDashboard/EditEmployee"))
 const EmployeeList = lazy(() => import("./pages/CompanyDashboard/EmployeeList"));
 const EmployeeProfile = lazy(() => import("./pages/CompanyDashboard/EmployeeProfile"));
 const Companylayout = lazy(() => import("./pages/CompanyDashboard/Companylayout"));
-const Taskmanagement = lazy(() => import("./pages/CompanyDashboard/taskmanagement"));
+const Taskmanagement = lazy(() => import("./pages/CompanyDashboard/taskmanagment/taskmanagement"));
 import AdminLeaveList from './pages/CompanyDashboard/adminleave';
 const Adminprofile = lazy(() => import('./pages/CompanyDashboard/profilepage/profilepage'));
 const Employeeslayout = lazy(() => import("./pages/EmployeesDashborad/EmployeesLayout"));
-const Employeestask = lazy(() => import("./pages/EmployeesDashborad/employeestask"));
+const Employeestask = lazy(() => import("./pages/EmployeesDashborad/taskmanagment/employeestask"));
 const EmployeeDashboard = lazy(() => import("./pages/EmployeesDashborad/Dashboard"));
 const Logout = lazy(() => import("./components/logout"));
 import Leavemangement from './pages/EmployeesDashborad/leavemangement';
 const AttendancePage = lazy(() => import("./pages/EmployeesDashborad/attendance/AttendancePage"));
 const AtttendanceHistory = lazy(() => import("./pages/EmployeesDashborad/attendance/AttendanceHistory"));
+const EmployeesProfile = lazy(() => import("./pages/EmployeesDashborad/profile/EmployeeProfilePage"));
 
 
 function App() {
@@ -51,6 +52,7 @@ function App() {
           <Route path="/RequestSent/:companyId" element={<RequestSent />} />
           <Route path="/company-dashboard/set-admin/:companyId" element={<SetCompanyAdmin />} />
           <Route path="/logout" element={<Logout />} />
+          
 
           {/* Super Admin Login */}
           <Route path="/superadminlogin" element={<Superadminlogin />} />
@@ -103,8 +105,9 @@ function App() {
             <Route index element={<EmployeeDashboard />} />
             <Route path="employeestask" element={<Employeestask />} />
             <Route path="leavemangement" element={<Leavemangement />} />
-                        <Route path="attendance" element={<AttendancePage />} />
+            <Route path="attendance" element={<AttendancePage />} />
             <Route path="attendancehistory" element={<AtttendanceHistory />} />
+            <Route path="profile" element={<EmployeesProfile />} />
           </Route>
 
           {/* Catch-all */}

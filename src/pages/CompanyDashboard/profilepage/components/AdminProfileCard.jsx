@@ -1,5 +1,5 @@
 import React, { useEffect, useState , useContext} from 'react';
-import axios from '../../../../axios';
+import axios from "../../../../axios";
 import { User, Mail, Phone, MapPin, Upload, Edit2, Save } from 'lucide-react';
 import { CompanyContext } from "../../../../context/CompanyContext";
 import { toast } from 'react-hot-toast';
@@ -60,31 +60,58 @@ useEffect(() => {
     reader.readAsDataURL(file);
   };
 
-  const handleSubmit = async () => {
+ const handleSubmit = async () => {
   try {
     const user = JSON.parse(localStorage.getItem("user"));
     const email = user?.email;
 
     const res = await axios.put(`admin/profile/${email}`, formData);
-    const updatedUser = res.data.updatedUser || formData; 
+    let updatedUser = res.data.updatedUser || formData;
 
+    // ✅ Merge existing user data to preserve fields like companyId
+    updatedUser = {
+      ...user,
+      ...updatedUser,
+      name: updatedUser.firstName || updatedUser.name, 
+      role: updatedUser.role?.toLowerCase(),
+    };
+        if (updatedUser.profilePic) {
+      updatedUser.profilePicture = updatedUser.profilePic;
+      delete updatedUser.profilePic;
+    }
+
+
+    delete updatedUser.password;
+    delete updatedUser.otp;
+    delete updatedUser.otpExpire;
+    delete updatedUser.hireDate;
+    delete updatedUser.createdAt;
+    delete updatedUser.updatedAt;
+    delete updatedUser.salary;
+
+    // ✅ Optional: Skip saving base64 image if too large
+    if (updatedUser.profilePic && updatedUser.profilePic.length > 100000) {
+      console.warn("Profile picture too large, skipping storage.");
+      updatedUser.profilePic = null;
+    }
 
     localStorage.setItem("user", JSON.stringify(updatedUser));
 
-    // ✅ Update context/state globally
+    // ✅ Update context if available
     if (typeof setCompany === "function") {
-      setCompany(updatedUser); // 👈 This must come from context
+      setCompany(updatedUser);
     }
 
     setAdmin(updatedUser);
     setEditMode(false);
-
     toast.success("Profile updated successfully!");
 
   } catch (err) {
-    console.error('Failed to update:', err);
+    console.error("Failed to update:", err);
+    toast.error("Profile update failed.");
   }
 };
+
 
 
 
