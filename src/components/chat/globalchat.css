@@ -1,5 +1,5 @@
 .global-chat-container {
-    width: 450px; /* ✅ Add this line to control width */
+    /* width: 450px;  */
     max-width: 100%; /* Optional: responsive support */
     display: flex;
     flex-direction: column;

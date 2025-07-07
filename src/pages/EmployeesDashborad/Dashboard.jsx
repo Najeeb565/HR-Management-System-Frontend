@@ -124,7 +124,7 @@ const EmpDashboard = () => {
             </div>
           </div>
 
-           <div className="col-12">
+           <div className="col-6">
             <GlobalChatBox currentUser={currentUser} />
           </div>
         </div>

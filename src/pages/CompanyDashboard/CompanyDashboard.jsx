@@ -355,13 +355,7 @@ const CompanyDashboard = () => {
       </div>
 
       {/* Global Chat Box */}
-      <div style={{
-        backgroundColor: 'white',
-        borderRadius: '0.5rem',
-        padding: '1.5rem',
-        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-        marginBottom: '2rem'
-      }}>
+      <div className='col-6' >
         <GlobalChatBox />
       </div>
     </div>

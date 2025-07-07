@@ -42,22 +42,33 @@ const GlobalChatBox = ({ currentUser }) => {
         };
         fetchMessages();
 
-        socket.on("chatMessage", (msg) => {
-            if (msg.companyId === companyId) {
-                setMessages((prev) => [...prev, msg]);
-            }
-        });
+       socket.on("chatMessage", (msg) => {
+  if (msg.companyId === companyId) {
+    setMessages((prev) => {
+      const updated = [...prev, msg];
+
+      // Check if this user sent it
+      const currentUser = JSON.parse(localStorage.getItem("user"));
+      const isMyMessage = msg.senderName === currentUser?.name;
+
+      if (isMyMessage) {
+        setTimeout(() => scrollToBottom(), 100); 
+      }
+
+      return updated;
+    });
+
+    console.log("📥 Received socket message:", msg);
+  }
+});
+
 
         return () => {
             socket.off("chatMessage");
         };
     }, [socket]);
 
-    // ✅ Auto scroll on message update
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
-
+  
     const sendMessage = () => {
         if (!newMsg.trim()) return;
 
@@ -65,8 +76,8 @@ const GlobalChatBox = ({ currentUser }) => {
         const companyId = user?.companyId;
 
         const currentUser =
-            JSON.parse(localStorage.getItem("employee")) ||
-            JSON.parse(localStorage.getItem("admin"));
+            JSON.parse(localStorage.getItem("user")) ||
+            JSON.parse(sessionStorage.getItem("user"));
 
         if (!currentUser || !companyId) return;
 
@@ -83,15 +94,16 @@ const GlobalChatBox = ({ currentUser }) => {
                 : null,
         };
 
+        console.log("📤 Emitting chatMessage:", message);
         socket.emit("chatMessage", message);
         setNewMsg("");
         setReplyToMessage(null);
     };
 
-  const handleEmojiSelect = (emoji) => {
-  setNewMsg((prev) => prev + emoji.native);
-  setShowEmojiPicker(false);
-};
+    const handleEmojiSelect = (emoji) => {
+        setNewMsg((prev) => prev + emoji.native);
+        setShowEmojiPicker(false);
+    };
 
 
     const formatTime = (timestamp) => {
