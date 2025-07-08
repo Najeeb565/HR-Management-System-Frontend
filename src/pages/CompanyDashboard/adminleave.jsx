@@ -5,20 +5,29 @@ const AdminLeaveList = () => {
   const [leaves, setLeaves] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/leaves')
+    const user = JSON.parse(localStorage.getItem("user")); // Get admin data
+    const companyId = user?.companyId;
+
+    if (!companyId) return;
+
+    axios.get(`http://localhost:5000/api/leaves?companyId=${companyId}`)
       .then((res) => setLeaves(res.data))
       .catch((err) => console.error(err));
   }, []);
 
-  const updateStatus = async (id, status) => {
-    try {
-      await axios.put(`http://localhost:5000/api/leaves/${id}/status`, { status });
-      const res = await axios.get('http://localhost:5000/api/leaves');
-      setLeaves(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+
+const updateStatus = async (id, status) => {
+  const companyId = JSON.parse(localStorage.getItem("user"))?.companyId;
+
+  try {
+    await axios.put(`http://localhost:5000/api/leaves/${id}/status`, { status });
+    const res = await axios.get(`http://localhost:5000/api/leaves?companyId=${companyId}`);
+    setLeaves(res.data);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 
   return (
     <div className="container mt-5">
@@ -51,13 +60,12 @@ const AdminLeaveList = () => {
                 <td>{leave.reason}</td>
                 <td>
                   <span
-                    className={`badge ${
-                      leave.status === 'Approved'
+                    className={`badge ${leave.status === 'Approved'
                         ? 'bg-success'
                         : leave.status === 'Rejected'
-                        ? 'bg-danger'
-                        : 'bg-warning text-dark'
-                    }`}
+                          ? 'bg-danger'
+                          : 'bg-warning text-dark'
+                      }`}
                   >
                     {leave.status}
                   </span>

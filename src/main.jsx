@@ -6,7 +6,7 @@ import EmployeeProvider from './context/EmployeeContext'
 import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+
     <BrowserRouter> {/* ✅ Wrap router here */}
       <CompanyProvider>
         <EmployeeProvider>
@@ -14,5 +14,4 @@ createRoot(document.getElementById('root')).render(
         </EmployeeProvider>
       </CompanyProvider>
     </BrowserRouter>
-  </StrictMode>
 )

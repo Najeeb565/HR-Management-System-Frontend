@@ -3,104 +3,343 @@ import { Link, useLocation, Outlet } from 'react-router-dom';
 import { useContext } from 'react';
 import { CompanyContext } from '../../context/CompanyContext';
 import { useParams } from 'react-router-dom';
-const Companylayout = () => {
+import { 
+  FiHome, 
+  FiUsers, 
+  FiUserPlus, 
+  FiUser, 
+  FiCheckSquare, 
+  FiCalendar,
+  FiLogOut,
+  FiMenu,
+  FiX,
+  FiChevronLeft,
+  FiChevronRight
+} from 'react-icons/fi';
+
+const CompanyLayout = () => {
   const location = useLocation();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const { company } = useContext(CompanyContext);
   const { companySlug } = useParams();
-  // Debug: Log current route to verify navigation
-  useEffect(() => {
-    console.log('Current route:', location.pathname);
-  }, [location.pathname]);
+
   const menuItems = [
-    { path: `/${companySlug}/company-dashboard`, icon: 'bi-speedometer2', label: 'Dashboard' },
-    { path: `/${companySlug}/company-dashboard/employees`, icon: 'bi-people', label: 'All Employees' },
-    { path: `/${companySlug}/company-dashboard/employees/add`, icon: 'bi-person-plus', label: 'Add Employee' },
-    { path: `/${companySlug}/company-dashboard/AdminProfile`, icon: 'bi-person-plus', label: 'Profile' },
-    { path: `/${companySlug}/company-dashboard/taskmanagement`, icon: 'bi-person-plus', label: 'Task Management' },
-    { path: `/${companySlug}/company-dashboard/leavemangement`, icon: 'bi-person-plus', label: 'Leave Management' },
-    { path: '/logout', icon: 'bi-box-arrow-right', label: 'Logout' }
-
-
-
+    { 
+      path: `/${companySlug}/company-dashboard`, 
+      icon: <FiHome size={18} />, 
+      label: 'Dashboard' 
+    },
+    { 
+      path: `/${companySlug}/company-dashboard/employees`, 
+      icon: <FiUsers size={18} />, 
+      label: 'All Employees' 
+    },
+    { 
+      path: `/${companySlug}/company-dashboard/employees/add`, 
+      icon: <FiUserPlus size={18} />, 
+      label: 'Add Employee' 
+    },
+    { 
+      path: `/${companySlug}/company-dashboard/AdminProfile`, 
+      icon: <FiUser size={18} />, 
+      label: 'Profile' 
+    },
+    { 
+      path: `/${companySlug}/company-dashboard/taskmanagement`, 
+      icon: <FiCheckSquare size={18} />, 
+      label: 'Task Management' 
+    },
+    { 
+      path: `/${companySlug}/company-dashboard/leavemangement`, 
+      icon: <FiCalendar size={18} />, 
+      label: 'Leave Management' 
+    },
+    { 
+      path: '/logout', 
+      icon: <FiLogOut size={18} />, 
+      label: 'Logout' 
+    }
   ];
+
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
+
+  const toggleMobileSidebar = () => {
+    setMobileSidebarOpen(!mobileSidebarOpen);
+  };
+
+  // Style objects
+  const styles = {
+    appContainer: {
+      display: 'flex', 
+      minHeight: '100vh', 
+      backgroundColor: '#f8fafc'
+    },
+    desktopSidebar: {
+      width: sidebarOpen ? '240px' : '80px',
+      backgroundColor: '#ffffff',
+      color: '#64748b',
+      position: 'fixed',
+      height: '100vh',
+      overflowY: 'auto',
+      transition: 'width 0.3s ease',
+      boxShadow: '2px 0 10px rgba(0, 0, 0, 0.05)',
+      zIndex: 100
+    },
+    sidebarHeader: {
+      padding: '1.5rem 1rem',
+      borderBottom: '1px solid #f1f5f9',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between'
+    },
+    navLink: (isActive) => ({
+      display: 'flex',
+      alignItems: 'center',
+      padding: '0.75rem 1rem',
+      margin: '0.25rem 0',
+      borderRadius: '8px',
+      textDecoration: 'none',
+      color: isActive ? '#4f46e5' : '#64748b',
+      backgroundColor: isActive ? '#eef2ff' : 'transparent',
+      transition: 'all 0.2s ease',
+      ':hover': {
+        backgroundColor: '#f1f5f9'
+      }
+    }),
+    mobileSidebar: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '280px',
+      height: '100vh',
+      backgroundColor: '#ffffff',
+      zIndex: 1000,
+      boxShadow: '2px 0 20px rgba(0, 0, 0, 0.1)',
+      overflowY: 'auto'
+    },
+    mainContent: {
+      flex: 1,
+      marginLeft: '240px',
+      transition: 'margin-left 0.3s ease'
+    },
+    mainContentCollapsed: {
+      flex: 1,
+      marginLeft: '80px',
+      transition: 'margin-left 0.3s ease'
+    },
+    mobileHeader: {
+      display: 'none',
+      padding: '1rem',
+      backgroundColor: '#ffffff',
+      borderBottom: '1px solid #e2e8f0',
+      position: 'sticky',
+      top: 0,
+      zIndex: 50
+    },
+    overlay: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      zIndex: 999
+    }
+  };
+
   return (
-    <div className="container-fluid" style={{ display: 'flex', minHeight: '100vh', overflow: 'hidden' }}>
-      {/* Sidebar */}
+    <div style={styles.appContainer}>
+      {/* Desktop Sidebar */}
       <div
-        className="sidebar"
         style={{
-          width: '20%',
-          backgroundColor: '#343A40',
-          color: '#fff',
-          position: 'fixed',
-          height: '100vh',
-          overflowY: 'auto'
+          ...styles.desktopSidebar,
+          display: window.innerWidth > 768 ? 'block' : 'none'
         }}
       >
-        <div className="p-3">
-          <Link to={`/${companySlug}/company-dashboard`} className="brand-logo text-white text-decoration-none">
-            <h4>Welcome, {company?.name}</h4>
-          </Link>
+        <div style={styles.sidebarHeader}>
+          {sidebarOpen ? (
+            <Link 
+              to={`/${companySlug}/company-dashboard`} 
+              style={{ 
+                textDecoration: 'none',
+                color: '#1e293b',
+                fontWeight: '600',
+                fontSize: '1.25rem'
+              }}
+            >
+              {company?.name || 'CompanyHub'}
+            </Link>
+          )
+           : (
+            <div style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '8px',
+              backgroundColor: '#4f46e5',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'white',
+              fontWeight: 'bold',
+              fontSize: '1rem'
+            }}>
+              {company?.name?.charAt(0) || 'C'}
+            </div>
+          )}
+          
+          <button 
+            onClick={toggleSidebar}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#64748b',
+              cursor: 'pointer',
+              padding: '0.25rem'
+            }}
+          >
+            {sidebarOpen ? <FiChevronLeft size={20} /> : <FiChevronRight size={20} />}
+          </button>
         </div>
-        <nav className="nav flex-column mt-4">
+
+        <nav style={{ padding: '1rem 0' }}>
           {menuItems.map((item) => (
             <Link
               key={item.path}
               to={item.path}
-              className={`nav-link ${location.pathname === item.path ? 'active' : ''}`}
-              style={{ color: '#fff', padding: '0.5rem 1rem' }}
-              onClick={() => setSidebarOpen(false)}
+              style={styles.navLink(location.pathname === item.path)}
             >
-              <i className={`${item.icon} me-2`}></i>
-              {item.label}
+              <span style={{ 
+                marginRight: sidebarOpen ? '12px' : '0',
+                color: location.pathname === item.path ? '#4f46e5' : '#64748b'
+              }}>
+                {item.icon}
+              </span>
+              {sidebarOpen && (
+                <span style={{
+                  fontWeight: location.pathname === item.path ? '500' : '400',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}>
+                  {item.label}
+                </span>
+              )}
             </Link>
           ))}
         </nav>
       </div>
+
+      {/* Mobile Sidebar */}
+      {mobileSidebarOpen && (
+        <div
+          style={{
+            ...styles.mobileSidebar,
+            display: window.innerWidth <= 768 ? 'block' : 'none'
+          }}
+        >
+          <div style={styles.sidebarHeader}>
+            <Link 
+              to={`/${companySlug}/company-dashboard`} 
+              style={{ 
+                textDecoration: 'none',
+                color: '#1e293b',
+                fontWeight: '600',
+                fontSize: '1.25rem'
+              }}
+              onClick={() => setMobileSidebarOpen(false)}
+            >
+              {company?.name || 'CompanyHub'}
+            </Link>
+            <button 
+              onClick={toggleMobileSidebar}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#64748b',
+                cursor: 'pointer',
+                padding: '0.25rem'
+              }}
+            >
+              <FiX size={24} />
+            </button>
+          </div>
+
+          <nav style={{ padding: '1rem 0' }}>
+            {menuItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                style={styles.navLink(location.pathname === item.path)}
+                onClick={() => setMobileSidebarOpen(false)}
+              >
+                <span style={{ 
+                  marginRight: '12px',
+                  color: location.pathname === item.path ? '#4f46e5' : '#64748b'
+                }}>
+                  {item.icon}
+                </span>
+                <span style={{
+                  fontWeight: location.pathname === item.path ? '500' : '400'
+                }}>
+                  {item.label}
+                </span>
+              </Link>
+            ))}
+          </nav>
+        </div>
+      )}
+
       {/* Main Content */}
       <div
-        className="main-content"
-        style={{
-          width: '80%',
-          marginLeft: '20%',
-          backgroundColor: '#F8F9FA',
-          minHeight: '100vh',
-          padding: '20px'
-        }}
+        style={sidebarOpen ? styles.mainContent : styles.mainContentCollapsed}
       >
         {/* Mobile Header */}
-        <div className="d-md-none bg-white p-3 border-bottom">
+        <div
+          style={{
+            ...styles.mobileHeader,
+            display: window.innerWidth <= 768 ? 'flex' : 'none'
+          }}
+        >
           <button
-            className="btn btn-outline-secondary"
-            onClick={toggleSidebar}
+            onClick={toggleMobileSidebar}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#64748b',
+              cursor: 'pointer'
+            }}
           >
-            <i className="bi bi-list"></i>
+            <FiMenu size={24} />
           </button>
-          <span className="ms-3 fw-bold">CompanyHub</span>
+          <div style={{
+            fontWeight: '600',
+            color: '#1e293b'
+          }}>
+            {company?.name || 'CompanyHub'}
+          </div>
+          <div style={{ width: '24px' }}></div>
         </div>
+
         {/* Page Content */}
-        <div>
+        <div style={{ 
+          padding: window.innerWidth > 768 ? '2rem' : '1rem'
+        }}>
           <Outlet />
-          {/* Show debug text only if no route content is rendered */}
-          {!React.Children.count(React.Children.toArray(Outlet).find(child => child)) && (
-            <div className="mt-2 text-muted">
-            </div>
-          )}
         </div>
       </div>
-      {/* Sidebar Overlay for Mobile */}
-      {sidebarOpen && (
+
+      {/* Mobile Sidebar Overlay */}
+      {mobileSidebarOpen && window.innerWidth <= 768 && (
         <div
-          className="position-fixed top-0 start-0 w-100 h-100 bg-dark opacity-50 d-md-none"
-          style={{ zIndex: 999 }}
-          onClick={() => setSidebarOpen(false)}
+          style={styles.overlay}
+          onClick={toggleMobileSidebar}
         ></div>
       )}
     </div>
   );
 };
-export default Companylayout;
+
+export default CompanyLayout;

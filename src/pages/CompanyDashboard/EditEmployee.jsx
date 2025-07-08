@@ -19,9 +19,9 @@ const EditEmployee = () => {
     joiningDate: ''
   });
 
-  const roles = ['Employee', 'Manager', 'Admin', 'HR'];
+  const roles = ['Employee', 'Manager',  'HR'];
   const statuses = ['Active', 'Inactive', 'Terminated'];
-  const departments = ['IT', 'HR', 'Finance', 'Marketing', 'Sales', 'Operations', 'Admin'];
+  const departments = ['IT', 'HR', 'Finance', 'Marketing', 'Sales', 'Operations',];
 
   useEffect(() => {
     fetchEmployee();

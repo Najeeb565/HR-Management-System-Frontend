@@ -1,0 +1,290 @@
+.global-chat-container {
+    /* width: 450px;  */
+    max-width: 100%; /* Optional: responsive support */
+    display: flex;
+    flex-direction: column;
+    height: 500px; 
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background-color: #3f51b5;
+    color: white;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.chat-header h5 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.online-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #4caf50;
+    border-radius: 50%;
+}
+
+.chat-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    background-color: #f9f9f9;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    padding: 16px;
+    overflow-y: auto;
+    background-color: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.no-messages {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: #757575;
+}
+
+.no-messages i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    color: #e0e0e0;
+}
+
+
+.message-bubble {
+    max-width: 80%;
+    padding: 12px 16px;
+    border-radius: 8px;
+    position: relative;
+    word-wrap: break-word;
+    margin-bottom: 8px;
+}
+
+.message-bubble.sent {
+   align-self: flex-end;
+    background-color: #3f51b5;
+    color: white;
+    border-bottom-right-radius: 0;
+    margin-left: auto; /* ✅ Replace fixed margin-left with auto */
+    margin-right: 8px;  /* ✅ Slight padding from right side */
+}
+
+.message-bubble.received {
+   align-self: flex-start;
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-bottom-left-radius: 0;
+    margin-right: auto; /* ✅ Replace fixed margin-right with auto */
+    margin-left: 8px;    /* ✅ Slight padding from left side */
+}
+
+/* Rest of your existing CSS remains the same */
+.message-header {
+    display: flex;
+    justify-content: space-between;
+     align-items: center; 
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+    gap: 12px; /* ✅ space between name and time */
+}
+
+.sent .message-header {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.received .message-header {
+    color: #757575;
+}
+.emoji-mart-preview {
+  display: none !important;
+}
+
+.sender-name {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.message-time {
+    opacity: 0.8;
+    font-size: 0.65rem; 
+}
+
+.message-content {
+    line-height: 1.4;
+}
+
+.reply-preview {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-left: 3px solid #3f51b5;
+    padding: 8px;
+    margin: 8px 0;
+    border-radius: 4px;
+}
+
+.sent .reply-preview {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.reply-header {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    margin-bottom: 4px;
+    color: inherit;
+    opacity: 0.8;
+  
+}
+
+.reply-content {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.reply-button {
+    position: absolute;
+    top: 8px;
+    right: -28px;
+    background: none;
+    border: none;
+    color: #757575;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.message-bubble:hover .reply-button {
+    opacity: 1;
+}
+
+.reply-indicator {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background-color: #e3f2fd;
+    border-left: 4px solid #3f51b5;
+    margin: 0 16px;
+    border-radius: 4px;
+}
+
+.reply-indicator .reply-content {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.85rem;
+}
+
+.cancel-reply {
+    background: none;
+    border: none;
+    color: #f44336;
+    cursor: pointer;
+    padding: 4px;
+    margin-left: 8px;
+}
+
+.chat-input-container {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: white;
+    border-top: 1px solid #e0e0e0;
+    position: relative;
+}
+
+.emoji-toggle {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: #757575;
+    cursor: pointer;
+    margin-right: 12px;
+    transition: color 0.2s;
+}
+
+.emoji-toggle:hover {
+    color: #3f51b5;
+}
+
+.emoji-picker-container {
+    position: absolute;
+    bottom: 60px;
+    right: 0;
+    z-index: 1000;
+}
+
+.chat-input {
+    flex-grow: 1;
+    padding: 10px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.chat-input:focus {
+    border-color: #3f51b5;
+}
+
+.send-button {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: #3f51b5;
+    cursor: pointer;
+    margin-left: 12px;
+    transition: color 0.2s;
+}
+
+.send-button:disabled {
+    color: #bdbdbd;
+    cursor: not-allowed;
+}
+
+.send-button:not(:disabled):hover {
+    color: #283593;
+}
+
+/* Scrollbar styling */
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
