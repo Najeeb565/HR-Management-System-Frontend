@@ -11,7 +11,7 @@ import axios from '../../axios';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const CompanyDashboard = () => {
-  const { company } = useContext(CompanyContext);         
+  const { company } = useContext(CompanyContext);
   const [showCard, setShowCard] = useState(false);
   const [birthdays, setBirthdays] = useState([]);
   const [stats, setStats] = useState({
@@ -103,32 +103,109 @@ const CompanyDashboard = () => {
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem' }}>
         <div>
-          <h1>Dashboard Overview</h1>
-          <p>Welcome back, {company?.name || "Admin"}</p>
+          <h1 style={{
+            fontSize: '1.75rem',
+            fontWeight: '600',
+            color: '#2d3748',
+            margin: 0,
+          }}>Dashboard Overview</h1>
+          <p style={{
+            color: '#718096',
+            margin: '0.25rem 0 0',
+            fontSize: '0.875rem'
+          }}>
+            Welcome back, {company?.name || 'Admin'}
+          </p>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <div>{new Date().toLocaleDateString("en-US", {
-            weekday: "long", year: "numeric", month: "long", day: "numeric"
-          })}</div>
-          <img
-            src={company?.profilePicture || "/default-avatar.png"}
-            alt="Profile"
-            onClick={() => setShowCard(!showCard)}
-            style={{
-              width: 40, height: 40, borderRadius: '50%', cursor: 'pointer',
-              objectFit: 'cover', border: '2px solid #e2e8f0'
-            }}
-          />
-          {showCard && <ProfileCard onClose={() => setShowCard(false)} />}
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          <div style={{
+            backgroundColor: '#f8fafc',
+            padding: '0.5rem 1rem',
+            borderRadius: '0.5rem',
+            color: '#64748b',
+            fontSize: '0.875rem',
+            boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+          }}>
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </div>
+
+          <div style={{ position: 'relative' }}>
+            <img
+              src={
+                company?.profilePicture?.startsWith("http")
+                  ? company.profilePicture
+                  : company?.profilePicture
+                    ? `http://localhost:5000/uploads/${company.profilePicture}`
+                    : "/default-avatar.png"
+              }
+              alt="Profile"
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                objectFit: 'cover',
+                cursor: 'pointer',
+                border: '2px solid #e2e8f0'
+              }}
+              onClick={() => setShowCard(!showCard)}
+            />
+
+            {showCard && (
+              <div style={{
+                position: 'absolute',
+                top: '50px',
+                right: 0,
+                zIndex: 1000,
+                width: '300px'
+              }}>
+                <ProfileCard onClose={() => setShowCard(false)} />
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-        <StatCard title="Total Employees" value={stats.totalEmployees} icon={<FiUsers />} color="#4e73df" trend="up" />
-        <StatCard title="Active Employees" value={stats.activeEmployees} icon={<FiUserCheck />} color="#1cc88a" trend="up" />
-        <StatCard title="Inactive Employees" value={stats.inactiveEmployees} icon={<FiUserX />} color="#e74a3b" trend="down" />
-        <StatCard title="Departments" value={stats.departments.length} icon={<FiLayers />} color="#f6c23e" trend="neutral" />
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+        gap: '1.5rem',
+        marginBottom: '2rem'
+      }}>
+        <StatCard
+          icon={<FiUsers size={24} />}
+          title="Total Employees"
+          value={stats.totalEmployees}
+          color="#4e73df"
+          trend="up"
+        />
+        <StatCard
+          icon={<FiUserCheck size={24} />}
+          title="Active Employees"
+          value={stats.activeEmployees}
+          color="#1cc88a"
+          trend="up"
+        />
+        <StatCard
+          icon={<FiUserX size={24} />}
+          title="Inactive Employees"
+          value={stats.inactiveEmployees}
+          color="#e74a3b"
+          trend="down"
+        />
+        <StatCard
+          icon={<FiLayers size={24} />}
+          title="Departments"
+          value={stats.departments.length}
+          color="#f6c23e"
+          trend="neutral"
+        />
       </div>
 
       {/* Department Breakdown and Table */}
@@ -144,28 +221,91 @@ const CompanyDashboard = () => {
           )}
         </div>
 
-        <div style={{ background: 'white', borderRadius: '0.5rem', padding: '1.5rem' }}>
-          <h3>Department Details</h3>
+        {/* Department Table */}
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '0.5rem',
+          padding: '1.5rem',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
+        }}>
+          <h3 style={{
+            fontSize: '1.25rem',
+            fontWeight: '600',
+            color: '#2d3748',
+            margin: '0 0 1.5rem 0'
+          }}>Department Details</h3>
+
           {stats.departments.length > 0 ? (
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr>
-                  <th>Department</th>
-                  <th>Employees</th>
-                  <th>% of Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {stats.departments.map((dept, idx) => (
-                  <tr key={idx}>
-                    <td>{dept._id}</td>
-                    <td>{dept.count}</td>
-                    <td>{((dept.count / stats.totalEmployees) * 100).toFixed(1)}%</td>
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{
+                width: '100%',
+                borderCollapse: 'collapse'
+              }}>
+                <thead>
+                  <tr style={{
+                    borderBottom: '1px solid #e2e8f0',
+                    textAlign: 'left'
+                  }}>
+                    <th style={{
+                      padding: '0.75rem 1rem',
+                      color: '#718096',
+                      fontWeight: '500',
+                      fontSize: '0.75rem',
+                      textTransform: 'uppercase'
+                    }}>Department</th>
+                    <th style={{
+                      padding: '0.75rem 1rem',
+                      color: '#718096',
+                      fontWeight: '500',
+                      fontSize: '0.75rem',
+                      textTransform: 'uppercase'
+                    }}>Employees</th>
+                    <th style={{
+                      padding: '0.75rem 1rem',
+                      color: '#718096',
+                      fontWeight: '500',
+                      fontSize: '0.75rem',
+                      textTransform: 'uppercase'
+                    }}>% of Total</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : <p>No department data</p>}
+                </thead>
+                <tbody>
+                  {stats.departments.map((dept, i) => (
+                    <tr key={i} style={{
+                      borderBottom: '1px solid #e2e8f0',
+                      ':last-child': {
+                        borderBottom: 'none'
+                      }
+                    }}>
+                      <td style={{
+                        padding: '1rem',
+                        color: '#2d3748',
+                        fontWeight: '500'
+                      }}>{dept._id}</td>
+                      <td style={{
+                        padding: '1rem',
+                        color: '#4a5568'
+                      }}>{dept.count}</td>
+                      <td style={{
+                        padding: '1rem',
+                        color: '#4a5568'
+                      }}>{((dept.count / stats.totalEmployees) * 100).toFixed(1)}%</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '200px',
+              color: '#718096'
+            }}>
+              No department data available
+            </div>
+          )}
         </div>
       </div>
 
@@ -230,9 +370,20 @@ const StatCard = ({ title, value, icon, color, trend }) => {
           {icon}
         </div>
       </div>
-      <div style={{ marginTop: '0.75rem', color: trendColors[trend], fontSize: '0.875rem' }}>
-        {trend === 'up' ? '↑ Increased' : trend === 'down' ? '↓ Decreased' : '→ No change'} from last month
-      </div>
+      {trend && (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          marginTop: '0.75rem',
+          fontSize: '0.875rem',
+          color: trendColors[trend]
+        }}>
+          {trend === 'up' ? '↑' : trend === 'down' ? '↓' : '→'}
+          <span style={{ marginLeft: '0.25rem' }}>
+            {trend === 'up' ? 'Increased' : trend === 'down' ? 'Decreased' : 'No change'} from last month
+          </span>
+        </div>
+      )}
     </div>
   );
 };

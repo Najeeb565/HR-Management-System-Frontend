@@ -16,7 +16,11 @@ import {
   Paper,
   Accordion,
   AccordionSummary,
-  AccordionDetails
+  AccordionDetails,
+  Divider,
+  Stack,
+  Avatar,
+  useTheme
 } from '@mui/material';
 import { 
   Add as AddIcon, 
@@ -27,20 +31,22 @@ import {
   Work as WorkIcon,
   CheckCircle as CheckCircleIcon,
   Pending as PendingIcon,
-  Cancel as CancelIcon
+  Cancel as CancelIcon,
+  CalendarToday as CalendarTodayIcon
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import axios from '../../axios';
 import { EmployeeContext } from '../../context/EmployeeContext';
 import dayjs from 'dayjs';
 
-const StatusChip = styled(Chip)(({ theme, status }) => ({
-  fontWeight: 'bold',
+const StatusBadge = styled(Chip)(({ theme, status }) => ({
+  fontWeight: 600,
+  borderRadius: 4,
   backgroundColor: 
     status === 'Approved' ? theme.palette.success.light :
     status === 'Pending' ? theme.palette.warning.light :
     status === 'Rejected' ? theme.palette.error.light :
-    theme.palette.grey[300],
+    theme.palette.grey[200],
   color: 
     status === 'Approved' ? theme.palette.success.dark :
     status === 'Pending' ? theme.palette.warning.dark :
@@ -48,7 +54,16 @@ const StatusChip = styled(Chip)(({ theme, status }) => ({
     theme.palette.grey[800],
 }));
 
+const LeaveCard = styled(Card)(({ theme }) => ({
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    transform: 'translateY(-2px)',
+    boxShadow: theme.shadows[4]
+  }
+}));
+
 const LeaveManagement = () => {
+  const theme = useTheme();
   const employee = useContext(EmployeeContext);
   const [view, setView] = useState('list'); // 'list' or 'form'
   const [leaveType, setLeaveType] = useState('');
@@ -62,7 +77,6 @@ const LeaveManagement = () => {
     try {
       const res = await axios.get(`/leaves?employeeId=${employee?.employee?._id}`);
       setLeaveList(res.data);
-      console.log('Leaves fetched successfully:', res.data);
     } catch (err) {
       console.error('Error fetching leaves:', err);
     }
@@ -109,17 +123,17 @@ const LeaveManagement = () => {
 
   const getStatusIcon = (status) => {
     switch(status) {
-      case 'Approved': return <CheckCircleIcon color="success" />;
-      case 'Pending': return <PendingIcon color="warning" />;
-      case 'Rejected': return <CancelIcon color="error" />;
-      default: return <PendingIcon />;
+      case 'Approved': return <CheckCircleIcon color="success" fontSize="small" />;
+      case 'Pending': return <PendingIcon color="warning" fontSize="small" />;
+      case 'Rejected': return <CancelIcon color="error" fontSize="small" />;
+      default: return <PendingIcon fontSize="small" />;
     }
   };
 
   return (
-    <Box sx={{ p: 3, maxWidth: 1200, margin: '0 auto' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h5" component="h2" sx={{ fontWeight: 'bold' }}>
+    <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: 1200, margin: '0 auto' }}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center" mb={4}>
+        <Typography variant="h5" fontWeight="600">
           Leave Management
         </Typography>
         {view === 'list' && (
@@ -128,31 +142,33 @@ const LeaveManagement = () => {
             startIcon={<AddIcon />}
             onClick={() => setView('form')}
             sx={{ 
-              backgroundColor: '#4a6baf',
-              '&:hover': { backgroundColor: '#3a5a9f' }
+              textTransform: 'none',
+              borderRadius: 2,
+              px: 3,
+              py: 1
             }}
           >
-            Apply for Leave
+            New Leave Request
           </Button>
         )}
-      </Box>
+      </Stack>
 
       {view === 'form' && (
-        <Card sx={{ mb: 4, boxShadow: 3 }}>
+        <LeaveCard sx={{ mb: 4, borderRadius: 2 }}>
           <CardContent>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                New Leave Application
+            <Stack direction="row" justifyContent="space-between" alignItems="center" mb={3}>
+              <Typography variant="h6" fontWeight="600">
+                New Leave Request
               </Typography>
-              <IconButton onClick={() => setView('list')}>
+              <IconButton onClick={() => setView('list')} size="small">
                 <CloseIcon />
               </IconButton>
-            </Box>
+            </Stack>
             
-            <form onSubmit={handleSubmit}>
+            <Box component="form" onSubmit={handleSubmit}>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
-                  <FormControl fullWidth>
+                  <FormControl fullWidth size="small">
                     <InputLabel id="leave-type-label">Leave Type</InputLabel>
                     <Select
                       labelId="leave-type-label"
@@ -173,12 +189,21 @@ const LeaveManagement = () => {
                 </Grid>
                 
                 <Grid item xs={12} md={6}>
-                  <Box sx={{ display: 'flex', gap: 2 }}>
+                  <Stack direction="row" spacing={2}>
                     <TextField
                       fullWidth
                       label="Start Date"
                       type="date"
+                      size="small"
                       InputLabelProps={{ shrink: true }}
+                      InputProps={{
+                        startAdornment: (
+                          <CalendarTodayIcon 
+                            color="action" 
+                            sx={{ mr: 1, fontSize: 20 }} 
+                          />
+                        ),
+                      }}
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
                       required
@@ -187,12 +212,21 @@ const LeaveManagement = () => {
                       fullWidth
                       label="End Date"
                       type="date"
+                      size="small"
                       InputLabelProps={{ shrink: true }}
+                      InputProps={{
+                        startAdornment: (
+                          <CalendarTodayIcon 
+                            color="action" 
+                            sx={{ mr: 1, fontSize: 20 }} 
+                          />
+                        ),
+                      }}
                       value={endDate}
                       onChange={(e) => setEndDate(e.target.value)}
                       required
                     />
-                  </Box>
+                  </Stack>
                   {startDate && endDate && (
                     <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
                       {calculateLeaveDays(startDate, endDate)} day(s)
@@ -203,9 +237,10 @@ const LeaveManagement = () => {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
-                    label="Reason"
+                    label="Reason for Leave"
                     multiline
                     rows={4}
+                    size="small"
                     value={reason}
                     onChange={(e) => setReason(e.target.value)}
                     required
@@ -213,10 +248,11 @@ const LeaveManagement = () => {
                 </Grid>
                 
                 <Grid item xs={12}>
-                  <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+                  <Stack direction="row" justifyContent="flex-end" spacing={2}>
                     <Button 
                       variant="outlined" 
                       onClick={() => setView('list')}
+                      sx={{ borderRadius: 2, px: 3 }}
                     >
                       Cancel
                     </Button>
@@ -224,103 +260,154 @@ const LeaveManagement = () => {
                       type="submit" 
                       variant="contained"
                       sx={{ 
-                        backgroundColor: '#4a6baf',
-                        '&:hover': { backgroundColor: '#3a5a9f' }
+                        borderRadius: 2,
+                        px: 3,
+                        textTransform: 'none'
                       }}
                     >
-                      Submit Application
+                      Submit Request
                     </Button>
-                  </Box>
+                  </Stack>
                 </Grid>
               </Grid>
-            </form>
+            </Box>
           </CardContent>
-        </Card>
+        </LeaveCard>
       )}
 
       {view === 'list' && (
         <Box>
-          <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
-            My Leave Applications
+          <Typography variant="h6" fontWeight="600" mb={3}>
+            My Leave History
           </Typography>
           
           {leaveList.length === 0 ? (
-            <Paper sx={{ p: 3, textAlign: 'center' }}>
-              <Typography color="text.secondary">
-                You haven't submitted any leave applications yet.
+            <Paper 
+              sx={{ 
+                p: 4, 
+                textAlign: 'center',
+                borderRadius: 2,
+                backgroundColor: theme.palette.grey[50]
+              }}
+            >
+              <Avatar sx={{ 
+                bgcolor: theme.palette.grey[200], 
+                color: theme.palette.text.secondary,
+                width: 56, 
+                height: 56,
+                mb: 2,
+                mx: 'auto'
+              }}>
+                <EventIcon fontSize="large" />
+              </Avatar>
+              <Typography variant="body1" color="text.secondary" mb={2}>
+                You haven't submitted any leave requests yet.
               </Typography>
               <Button 
                 variant="contained" 
                 startIcon={<AddIcon />}
                 onClick={() => setView('form')}
-                sx={{ mt: 2 }}
+                sx={{ borderRadius: 2, px: 3 }}
               >
-                Apply for Leave
+                Request Leave
               </Button>
             </Paper>
           ) : (
-            <Box>
+            <Stack spacing={2}>
               {leaveList.map((leave, index) => (
-                <Accordion 
-                  key={index} 
-                  expanded={expanded === `panel${index}`}
-                  onChange={handleAccordionChange(`panel${index}`)}
-                  sx={{ mb: 1, boxShadow: 1 }}
-                >
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    sx={{
-                      '& .MuiAccordionSummary-content': {
-                        alignItems: 'center',
-                        justifyContent: 'space-between'
-                      }
-                    }}
+                <LeaveCard key={index} sx={{ borderRadius: 2 }}>
+                  <Accordion 
+                    expanded={expanded === `panel${index}`}
+                    onChange={handleAccordionChange(`panel${index}`)}
+                    disableGutters
+                    elevation={0}
                   >
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                      {getStatusIcon(leave.status)}
-                      <Typography sx={{ fontWeight: 'bold' }}>{leave.leaveType}</Typography>
-                      <Chip 
-                        label={`${calculateLeaveDays(leave.startDate, leave.endDate)} day(s)`} 
-                        size="small" 
-                        variant="outlined" 
-                      />
-                    </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                      <Typography variant="body2" color="text.secondary">
-                        {dayjs(leave.startDate).format('MMM D')} - {dayjs(leave.endDate).format('MMM D, YYYY')}
-                      </Typography>
-                      <StatusChip label={leave.status} status={leave.status} size="small" />
-                    </Box>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Grid container spacing={2}>
-                      <Grid item xs={12} md={6}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                          <EventIcon color="action" sx={{ mr: 1 }} />
-                          <Typography>
-                            <strong>Dates:</strong> {dayjs(leave.startDate).format('MMMM D, YYYY')} to {dayjs(leave.endDate).format('MMMM D, YYYY')}
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      sx={{
+                        px: 3,
+                        py: 2,
+                        '& .MuiAccordionSummary-content': {
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          my: 0
+                        }
+                      }}
+                    >
+                      <Stack direction="row" alignItems="center" spacing={2}>
+                        <Avatar sx={{ 
+                          bgcolor: theme.palette.grey[100], 
+                          width: 32, 
+                          height: 32,
+                          color: theme.palette.text.primary
+                        }}>
+                          {getStatusIcon(leave.status)}
+                        </Avatar>
+                        <Box>
+                          <Typography fontWeight="600">{leave.leaveType}</Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {dayjs(leave.startDate).format('MMM D')} - {dayjs(leave.endDate).format('MMM D, YYYY')}
                           </Typography>
                         </Box>
-                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                          <WorkIcon color="action" sx={{ mr: 1 }} />
-                          <Typography>
-                            <strong>Type:</strong> {leave.leaveType}
-                          </Typography>
-                        </Box>
+                      </Stack>
+                      <Stack direction="row" alignItems="center" spacing={2}>
+                        <Chip 
+                          label={`${calculateLeaveDays(leave.startDate, leave.endDate)} day(s)`} 
+                          size="small" 
+                          variant="outlined"
+                          sx={{ borderRadius: 1 }}
+                        />
+                        <StatusBadge 
+                          label={leave.status} 
+                          status={leave.status} 
+                          size="small" 
+                        />
+                      </Stack>
+                    </AccordionSummary>
+                    <AccordionDetails sx={{ px: 3, pt: 0, pb: 3 }}>
+                      <Divider sx={{ mb: 2 }} />
+                      <Grid container spacing={2}>
+                        <Grid item xs={12} md={6}>
+                          <Stack spacing={2}>
+                            <Stack direction="row" spacing={2}>
+                              <EventIcon color="action" fontSize="small" />
+                              <Box>
+                                <Typography variant="caption" color="text.secondary">
+                                  Dates
+                                </Typography>
+                                <Typography>
+                                  {dayjs(leave.startDate).format('MMMM D, YYYY')} to {dayjs(leave.endDate).format('MMMM D, YYYY')}
+                                </Typography>
+                              </Box>
+                            </Stack>
+                            <Stack direction="row" spacing={2}>
+                              <WorkIcon color="action" fontSize="small" />
+                              <Box>
+                                <Typography variant="caption" color="text.secondary">
+                                  Leave Type
+                                </Typography>
+                                <Typography>{leave.leaveType}</Typography>
+                              </Box>
+                            </Stack>
+                          </Stack>
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                          <Stack direction="row" spacing={2}>
+                            <DescriptionIcon color="action" fontSize="small" />
+                            <Box>
+                              <Typography variant="caption" color="text.secondary">
+                                Reason
+                              </Typography>
+                              <Typography>{leave.reason}</Typography>
+                            </Box>
+                          </Stack>
+                        </Grid>
                       </Grid>
-                      <Grid item xs={12} md={6}>
-                        <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
-                          <DescriptionIcon color="action" sx={{ mr: 1, mt: 0.5 }} />
-                          <Typography>
-                            <strong>Reason:</strong> {leave.reason}
-                          </Typography>
-                        </Box>
-                      </Grid>
-                    </Grid>
-                  </AccordionDetails>
-                </Accordion>
+                    </AccordionDetails>
+                  </Accordion>
+                </LeaveCard>
               ))}
-            </Box>
+            </Stack>
           )}
         </Box>
       )}

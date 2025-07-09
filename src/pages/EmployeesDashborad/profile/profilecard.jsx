@@ -21,7 +21,7 @@ const EmployeeCard = ({ onClose }) => {
   }
 
   return (
-    <div 
+    <div
       className="card shadow-lg border-0 overflow-hidden"
       style={{
         width: "380px",
@@ -30,40 +30,47 @@ const EmployeeCard = ({ onClose }) => {
     >
       {/* Profile Header with Cover */}
       <div className="position-relative">
-        <div 
-          className="bg-primary bg-opacity-10" 
+        <div
+          className="bg-primary bg-opacity-10"
           style={{ height: "70px" }}
         >
-            <div className="d-flex justify-content-end">
-          <button
-            className="btn btn-sm btn-light rounded-circle m-3"
-            onClick={onClose}
-            title="Close"
-          >
-            <FiX size={14} />
-          </button>
+          <div className="d-flex justify-content-end">
+            <button
+              className="btn btn-sm btn-light rounded-circle m-3"
+              onClick={onClose}
+              title="Close"
+            >
+              <FiX size={14} />
+            </button>
+          </div>
         </div>
-        </div>
-        
+
         <div className="position-absolute top-100 start-50 translate-middle">
           <div className="position-relative">
             <img
-              src={employee?.profilePicture || "/default-avatar.png"}
+              src={
+                employee?.profilePicture?.startsWith("http")
+                  ? employee.profilePicture
+                  : employee?.profilePicture
+                    ? `http://localhost:5000/uploads/${employee.profilePicture}`
+                    : "/default-avatar.png"
+              }
               alt="Profile"
               className="rounded-circle border border-4 border-white shadow"
-              style={{ 
-                width: "100px", 
-                height: "100px", 
-                objectFit: "cover" 
+              style={{
+                width: "100px",
+                height: "100px",
+                objectFit: "cover"
               }}
             />
+
           </div>
         </div>
       </div>
 
       {/* Card Body */}
       <div className="card-body pt-4 pb-3 px-4  ">
-      
+
 
         <div className="text-center mb-4 mt-4">
           <h4 className="mb-1 fw-bold">{employee?.name}</h4>
