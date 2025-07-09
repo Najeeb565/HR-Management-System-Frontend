@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../axios';
 import { toast } from 'react-toastify';
 import {
   Chart as ChartJS,

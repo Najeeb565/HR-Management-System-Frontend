@@ -43,7 +43,6 @@ function CompanyRegisterForm() {
     onSubmit: async (values, { resetForm }) => {
       try {
         const response = await axios.post("http://localhost:5000/api/companies", values);
-        console.log("Server Response:", response.data);
         const companyId = response.data.companyId;
         toast.success("🎉 Registration Request Sent");
         resetForm();
