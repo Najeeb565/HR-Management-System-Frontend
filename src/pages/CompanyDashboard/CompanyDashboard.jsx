@@ -8,7 +8,7 @@ import GlobalChatBox from "../../components/chat/globalchat";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const CompanyDashboard = () => {
-  const { company } = useContext(CompanyContext);         
+  const { company } = useContext(CompanyContext);
   const [showCard, setShowCard] = useState(false);
   const [stats, setStats] = useState({
     totalEmployees: 0,
@@ -111,7 +111,7 @@ const CompanyDashboard = () => {
         marginBottom: '2rem'
       }}>
         <div>
-          <h1 style={{ 
+          <h1 style={{
             fontSize: '1.75rem',
             fontWeight: '600',
             color: '#2d3748',
@@ -145,7 +145,13 @@ const CompanyDashboard = () => {
 
           <div style={{ position: 'relative' }}>
             <img
-              src={company?.profilePicture || "/default-avatar.png"}
+              src={
+                company?.profilePicture?.startsWith("http")
+                  ? company.profilePicture
+                  : company?.profilePicture
+                    ? `http://localhost:5000/uploads/${company.profilePicture}`
+                    : "/default-avatar.png"
+              }
               alt="Profile"
               style={{
                 width: '40px',
@@ -157,6 +163,7 @@ const CompanyDashboard = () => {
               }}
               onClick={() => setShowCard(!showCard)}
             />
+
             {showCard && (
               <div style={{
                 position: 'absolute',
@@ -179,28 +186,28 @@ const CompanyDashboard = () => {
         gap: '1.5rem',
         marginBottom: '2rem'
       }}>
-        <StatCard 
+        <StatCard
           icon={<FiUsers size={24} />}
           title="Total Employees"
           value={stats.totalEmployees}
           color="#4e73df"
           trend="up"
         />
-        <StatCard 
+        <StatCard
           icon={<FiUserCheck size={24} />}
           title="Active Employees"
           value={stats.activeEmployees}
           color="#1cc88a"
           trend="up"
         />
-        <StatCard 
+        <StatCard
           icon={<FiUserX size={24} />}
           title="Inactive Employees"
           value={stats.inactiveEmployees}
           color="#e74a3b"
           trend="down"
         />
-        <StatCard 
+        <StatCard
           icon={<FiLayers size={24} />}
           title="Departments"
           value={stats.departments.length}
@@ -279,33 +286,33 @@ const CompanyDashboard = () => {
             color: '#2d3748',
             margin: '0 0 1.5rem 0'
           }}>Department Details</h3>
-          
+
           {stats.departments.length > 0 ? (
             <div style={{ overflowX: 'auto' }}>
-              <table style={{ 
+              <table style={{
                 width: '100%',
                 borderCollapse: 'collapse'
               }}>
                 <thead>
-                  <tr style={{ 
+                  <tr style={{
                     borderBottom: '1px solid #e2e8f0',
                     textAlign: 'left'
                   }}>
-                    <th style={{ 
+                    <th style={{
                       padding: '0.75rem 1rem',
                       color: '#718096',
                       fontWeight: '500',
                       fontSize: '0.75rem',
                       textTransform: 'uppercase'
                     }}>Department</th>
-                    <th style={{ 
+                    <th style={{
                       padding: '0.75rem 1rem',
                       color: '#718096',
                       fontWeight: '500',
                       fontSize: '0.75rem',
                       textTransform: 'uppercase'
                     }}>Employees</th>
-                    <th style={{ 
+                    <th style={{
                       padding: '0.75rem 1rem',
                       color: '#718096',
                       fontWeight: '500',
@@ -316,22 +323,22 @@ const CompanyDashboard = () => {
                 </thead>
                 <tbody>
                   {stats.departments.map((dept, i) => (
-                    <tr key={i} style={{ 
+                    <tr key={i} style={{
                       borderBottom: '1px solid #e2e8f0',
                       ':last-child': {
                         borderBottom: 'none'
                       }
                     }}>
-                      <td style={{ 
+                      <td style={{
                         padding: '1rem',
                         color: '#2d3748',
                         fontWeight: '500'
                       }}>{dept._id}</td>
-                      <td style={{ 
+                      <td style={{
                         padding: '1rem',
                         color: '#4a5568'
                       }}>{dept.count}</td>
-                      <td style={{ 
+                      <td style={{
                         padding: '1rem',
                         color: '#4a5568'
                       }}>{((dept.count / stats.totalEmployees) * 100).toFixed(1)}%</td>
@@ -417,7 +424,7 @@ const StatCard = ({ icon, title, value, color, trend }) => {
           fontSize: '0.875rem',
           color: trendColors[trend]
         }}>
-          {trend === 'up' ? '↑' : trend === 'down' ? '↓' : '→'} 
+          {trend === 'up' ? '↑' : trend === 'down' ? '↓' : '→'}
           <span style={{ marginLeft: '0.25rem' }}>
             {trend === 'up' ? 'Increased' : trend === 'down' ? 'Decreased' : 'No change'} from last month
           </span>

@@ -7,6 +7,8 @@ import { FiEdit, FiLogOut, FiMail, FiPhone, FiBriefcase, FiX } from "react-icons
 const AdminCard = ({ onClose }) => {
   const { company } = useContext(CompanyContext);
   const navigate = useNavigate();
+  console.log("PROFILE PIC:", company.profilePicture);
+
 
   if (!company) {
     return (
@@ -45,11 +47,17 @@ const AdminCard = ({ onClose }) => {
 
         <div className="position-absolute top-100 start-50 translate-middle">
           <img
-            src={company?.profilePicture || "/default-avatar.png"}
+            src={
+              company?.profilePicture
+                ? `http://localhost:5000/uploads/${company.profilePicture}`
+                : "/default-avatar.png"
+            }
             alt="Admin Profile"
             className="rounded-circle border border-4 border-white shadow"
             style={{ width: "100px", height: "100px", objectFit: "cover" }}
           />
+
+
         </div>
       </div>
 

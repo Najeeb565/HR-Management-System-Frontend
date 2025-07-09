@@ -57,18 +57,25 @@ const EmpDashboard = () => {
   {/* Profile + Date Section */}
   <div className="d-flex flex-column align-items-end position-relative">
     {/* Profile Picture */}
-    <img
-      src={employee?.profilePicture || "/default-avatar.png"}
-      alt="Profile"
-      className="rounded-circle border shadow-sm mb-1"
-      style={{
-        width: "48px",
-        height: "48px",
-        objectFit: "cover",
-        cursor: "pointer"
-      }}
-      onClick={() => setShowCard(!showCard)}
-    />
+  <img
+  src={
+    employee?.profilePicture?.startsWith("http")
+      ? employee.profilePicture
+      : employee?.profilePicture
+      ? `http://localhost:5000/uploads/${employee.profilePicture}`
+      : "/default-avatar.png"
+  }
+  alt="Profile"
+  className="rounded-circle border shadow-sm mb-1"
+  style={{
+    width: "48px",
+    height: "48px",
+    objectFit: "cover",
+    cursor: "pointer"
+  }}
+  onClick={() => setShowCard(!showCard)}
+/>
+
 
     {/* Profile Dropdown Card */}
     {showCard && (

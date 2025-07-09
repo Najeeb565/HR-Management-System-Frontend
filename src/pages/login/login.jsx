@@ -77,12 +77,12 @@ const LoginPage = () => {
     const fullProfile = profileRes.data;
 
     // 🔐 Step 4: Merge login & profile info
-    const fullUser = {
-      ...data.user,
-      ...fullProfile,
-      name: fullProfile.firstName || fullProfile.name,
-      role: fullProfile.role.toLowerCase(),
-    };
+ const fullUser = {
+  ...data.user,
+  ...fullProfile,
+  name: fullProfile.firstName || fullProfile.name,
+  role: fullProfile.role.toLowerCase(),
+};
 
     // 🔐 Step 5: Remove sensitive fields
     delete fullUser.password;

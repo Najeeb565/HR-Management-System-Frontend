@@ -202,7 +202,25 @@ const EmployeeList = () => {
                 <tbody>
                   {filteredEmployees.map((employee) => (
                     <tr key={employee._id}>
-                      <td><img src={employee.profilePicture ? `http://localhost:5000/uploads/${employee.profilePicture}` : 'https://dummyimage.com/50x50/cccccc/000000&text=No+Image'} alt={`${employee.firstName} ${employee.lastName}`} className="employee-avatar" /></td>
+                      <td>
+                        <img
+                          src={
+                            employee.profilePicture
+                              ? `http://localhost:5000/uploads/${employee.profilePicture}`
+                              : 'https://dummyimage.com/50x50/cccccc/000000&text=No+Image'
+                          }
+                          alt={`${employee.firstName} ${employee.lastName}`}
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            borderRadius: "50%",
+                            objectFit: "cover",
+                            border: "2px solid #fff",
+                            boxShadow: "0 0 5px rgba(0,0,0,0.2)",
+                          }}
+                        />
+                      </td>
+
                       <td>{employee.firstName} {employee.lastName}</td>
                       <td>{employee.email}</td>
                       <td><span className={`badge role-badge ${getRoleBadgeClass(employee.role)}`}>{employee.role}</span></td>
