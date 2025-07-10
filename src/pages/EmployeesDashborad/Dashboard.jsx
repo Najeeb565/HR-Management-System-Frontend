@@ -2,9 +2,11 @@ import React, { useEffect, useState, useContext } from "react";
 import Attendance from "./attendance/AttendancePage";
 import AttendanceChart from "./attendance/AttendanceChart";
 import GlobalChatBox from "../../components/chat/globalchat";
+import UpcomingBirthdaysCard from "../../components/birthdaytracker/birthdayTracker";
 import axios from "../../axios";
 import ProfileCard from "./profile/profilecard";
 import { EmployeeContext } from "../../context/EmployeeContext";
+
 
 const EmpDashboard = () => {
   const { employee } = useContext(EmployeeContext);
@@ -80,8 +82,8 @@ const EmpDashboard = () => {
               employee?.profilePicture?.startsWith("http")
                 ? employee.profilePicture
                 : employee?.profilePicture
-                ? `http://localhost:5000/uploads/${employee.profilePicture}`
-                : "/default-avatar.png"
+                  ? `http://localhost:5000/uploads/${employee.profilePicture}`
+                  : "/default-avatar.png"
             }
             alt="Profile"
             className="rounded-circle border shadow-sm mb-1"
@@ -153,48 +155,9 @@ const EmpDashboard = () => {
 
           {/* 🎂 Upcoming Birthdays */}
           <div className="col-xl-6 col-lg-12">
-            <div className="card border-0 shadow-sm h-100">
-              <div className="card-body">
-                <h5 className="card-title">🎂 Upcoming Birthdays</h5>
-                {upcomingBirthdays.length > 0 ? (
-                  <table className="table table-hover">
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Birthday</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {upcomingBirthdays.map((person) => (
-                        <tr key={person._id}>
-                          <td className="d-flex align-items-center gap-3">
-                            <img
-                              src={
-                                person.profilePicture
-                                  ? `http://localhost:5000/uploads/${employee.profilePicture}`
-                                  : "/default-avatar.png"
-                              }
-                              alt={person.name}
-                              className="rounded-circle"
-                              style={{ width: "40px", height: "40px", objectFit: "cover" }}
-                            />
-                            <span>{person.name}</span>
-                          </td>
-                          <td>
-                            {new Date(person.birthday).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                            })}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                ) : (
-                  <p className="text-muted mb-0">No upcoming birthdays.</p>
-                )}
-              </div>
-            </div>
+            <UpcomingBirthdaysCard upcomingBirthdays={upcomingBirthdays} />
+
+            
           </div>
         </div>
       )}

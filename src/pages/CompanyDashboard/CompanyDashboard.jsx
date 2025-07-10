@@ -6,6 +6,7 @@ import { FiUsers, FiUserCheck, FiUserX, FiLayers } from 'react-icons/fi';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import GlobalChatBox from "../../components/chat/globalchat";
+import UpcomingBirthdaysCard from "../../components/birthdaytracker/birthdayTracker";
 import axios from '../../axios';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -13,6 +14,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const CompanyDashboard = () => {
   const { company } = useContext(CompanyContext);
   const [showCard, setShowCard] = useState(false);
+  const [upcomingBirthdays, setUpcomingBirthdays] = useState([]);
   const [stats, setStats] = useState({
     totalEmployees: 0,
     activeEmployees: 0,
@@ -28,7 +30,27 @@ const CompanyDashboard = () => {
 
   }, []);
 
-  
+  useEffect(() => {
+    const fetchBirthdays = async () => {
+      try {
+        const res = await axios.get("/birthdays/upcoming");
+        console.log("✅ Birthday API HIT");
+        console.log("📦 Birthday API Response", res.data);
+
+        const employees = Array.isArray(res.data.employees) ? res.data.employees : [];
+
+        const all = [...employees];
+        console.log("🎂 Combined Birthday List:", all);
+
+        setUpcomingBirthdays(all);
+      } catch (error) {
+        console.error("❌ Error fetching upcoming birthdays:", error);
+      }
+    };
+
+    fetchBirthdays();
+  }, []);
+
   const fetchStats = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
@@ -301,15 +323,25 @@ const CompanyDashboard = () => {
       </div>
 
       {/* Global Chat + Birthdays */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-        {/* Global Chat */}
-        <div style={{ background: 'white', borderRadius: '0.5rem', padding: '1.5rem' }}>
-          <h3>💬 Global Chat</h3>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '2rem',
+        }}
+      >
+        {/* 💬 Global Chat */}
+        <div>
           <GlobalChatBox />
         </div>
 
-      
+        {/* 🎉 Upcoming Birthdays */}
+        <div>
+          <UpcomingBirthdaysCard upcomingBirthdays={upcomingBirthdays} />
+        </div>
       </div>
+
+
     </div>
   );
 };

@@ -38,37 +38,37 @@ const AttendanceCard = () => {
     }
   };
 
-const calculateCurrentHours = (clockInTime) => {
-  if (!clockInTime) return "0h 0m";
-  const start = moment(clockInTime, "HH:mm");
-  const now = moment();
-  const officeEnd = moment().set({ hour: 12, minute: 0, second: 0 }); // 12 PM
+  const calculateCurrentHours = (clockInTime) => {
+    if (!clockInTime) return "0h 0m";
+    const start = moment(clockInTime, "HH:mm");
+    const now = moment();
+    const officeEnd = moment().set({ hour: 12, minute: 0, second: 0 }); // 12 PM
 
-  const endTime = now.isAfter(officeEnd) ? officeEnd : now;
-  const duration = moment.duration(endTime.diff(start));
+    const endTime = now.isAfter(officeEnd) ? officeEnd : now;
+    const duration = moment.duration(endTime.diff(start));
 
-  const hours = Math.floor(duration.asHours());
-  const minutes = duration.minutes();
-  return `${hours}h ${minutes}m`;
-};
+    const hours = Math.floor(duration.asHours());
+    const minutes = duration.minutes();
+    return `${hours}h ${minutes}m`;
+  };
 
 
-const handleClockIn = async () => {
-  try {
-    const clockInTime = moment();
-    const lateThreshold = moment().set({ hour: 5, minute: 0, second: 0 });
+  const handleClockIn = async () => {
+    try {
+      const clockInTime = moment();
+      const lateThreshold = moment().set({ hour: 5, minute: 0, second: 0 });
 
-    if (clockInTime.isAfter(lateThreshold)) {
-      toast.error("You're late! Office starts at 4:00 AM.");
+      if (clockInTime.isAfter(lateThreshold)) {
+        toast.error("You're late! Office starts at 4:00 AM.");
+      }
+
+      const { data } = await axios.post("/attendance/clock-in", { testMode });
+      toast.success(data.message);
+      loadAttendance();
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Clock In failed");
     }
-
-    const { data } = await axios.post("/attendance/clock-in", { testMode });
-    toast.success(data.message);
-    loadAttendance();
-  } catch (err) {
-    toast.error(err.response?.data?.message || "Clock In failed");
-  }
-};
+  };
 
 
   const handleClockOut = async () => {
@@ -173,6 +173,7 @@ const handleClockIn = async () => {
                 <div className="mb-2">
                   <i className="bi bi-check-circle fs-1 text-success"></i>
                 </div>
+
                 <div className="d-flex justify-content-around text-center mb-3">
                   <div>
                     <div className="small text-muted">Check In</div>
@@ -187,12 +188,24 @@ const handleClockIn = async () => {
                     <div className="fw-bold">{todayRecord?.totalHours}</div>
                   </div>
                 </div>
-                <div className="alert alert-success small mb-0">
+
+                <div className={`alert ${todayRecord?.status === "Half Day"
+                    ? "alert-warning"
+                    : todayRecord?.status === "Late"
+                      ? "alert-danger"
+                      : "alert-success"
+                  } small mb-0`}>
                   <i className="bi bi-check2-circle me-1"></i>
-                  Attendance completed for today
+                  Attendance marked as{" "}
+                  <strong>
+                    {todayRecord?.status}
+                  </strong>{" "}
+                  for today
                 </div>
               </>
             )}
+
+
           </div>
         </div>
       </div>

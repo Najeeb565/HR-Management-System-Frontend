@@ -31,17 +31,17 @@ const AttendanceHistory = () => {
 
     // Apply status filter
     if (statusFilter !== "all") {
-      results = results.filter(record => 
+      results = results.filter(record =>
         statusFilter === "present" ? record.status === "Present" :
-        statusFilter === "absent" ? record.status !== "Present" :
-        statusFilter === "late" ? record.clockIn > "23:50" : true
+          statusFilter === "absent" ? record.status !== "Present" :
+            statusFilter === "late" ? record.clockIn > "23:50" : true
       );
     }
 
     // Apply search term
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      results = results.filter(record => 
+      results = results.filter(record =>
         record.date.toLowerCase().includes(term) ||
         (record.clockIn && record.clockIn.toLowerCase().includes(term)) ||
         (record.clockOut && record.clockOut.toLowerCase().includes(term)) ||
@@ -79,38 +79,38 @@ const AttendanceHistory = () => {
                 aria-expanded="false"
               >
                 <FiFilter className="me-1" />
-                {statusFilter === "all" ? "All" : 
-                 statusFilter === "present" ? "Present" :
-                 statusFilter === "absent" ? "Absent" : "Late Arrivals"}
+                {statusFilter === "all" ? "All" :
+                  statusFilter === "present" ? "Present" :
+                    statusFilter === "absent" ? "Absent" : "Late Arrivals"}
               </button>
               <ul className="dropdown-menu" aria-labelledby="filterDropdown">
                 <li>
-                  <button 
-                    className="dropdown-item" 
+                  <button
+                    className="dropdown-item"
                     onClick={() => setStatusFilter("all")}
                   >
                     All Records
                   </button>
                 </li>
                 <li>
-                  <button 
-                    className="dropdown-item" 
+                  <button
+                    className="dropdown-item"
                     onClick={() => setStatusFilter("present")}
                   >
                     Present Only
                   </button>
                 </li>
                 <li>
-                  <button 
-                    className="dropdown-item" 
+                  <button
+                    className="dropdown-item"
                     onClick={() => setStatusFilter("absent")}
                   >
                     Absent Only
                   </button>
                 </li>
                 <li>
-                  <button 
-                    className="dropdown-item" 
+                  <button
+                    className="dropdown-item"
                     onClick={() => setStatusFilter("late")}
                   >
                     Late Arrivals
@@ -140,17 +140,20 @@ const AttendanceHistory = () => {
                   <td>{record.clockOut || "-"}</td>
                   <td>{record.totalHours || "-"}</td>
                   <td>
-                    <span 
-                      className={`badge rounded-pill bg-${
-                        record.status === "Present" ? "success" : 
-                        record.clockIn > "09:30" ? "warning text-dark" : "danger"
-                      }`}
+                    <span
+                      className={`badge rounded-pill ${record.status === "Present" ? "bg-success" :
+                          record.status === "Late" ? "bg-danger" :
+                            record.status === "Half Day" ? "bg-warning text-dark" :
+                              record.status === "Absent" ? "bg-secondary" :
+                                "bg-light text-dark"
+                        }`}
                     >
-                      {record.status === "Present" && record.clockIn > "09:30" ? "Late" : record.status}
+                      {record.status}
                     </span>
                   </td>
                 </tr>
               ))}
+
               {filteredHistory.length === 0 && (
                 <tr>
                   <td colSpan="5" className="text-center py-4 text-muted">
@@ -159,6 +162,7 @@ const AttendanceHistory = () => {
                 </tr>
               )}
             </tbody>
+
           </table>
         </div>
       </div>
