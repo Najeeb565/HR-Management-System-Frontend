@@ -13,31 +13,22 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const CompanyDashboard = () => {
   const { company } = useContext(CompanyContext);
   const [showCard, setShowCard] = useState(false);
-  const [birthdays, setBirthdays] = useState([]);
   const [stats, setStats] = useState({
     totalEmployees: 0,
     activeEmployees: 0,
     inactiveEmployees: 0,
     departments: []
   });
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchStats();
-    fetchBirthdays();
+
   }, []);
 
-  const fetchBirthdays = async () => {
-    try {
-      const res = await axios.get("/birthdays/upcoming");
-      const all = [...res.data.employees, ...res.data.admins];
-      setBirthdays(all);
-    } catch (error) {
-      console.error("Error fetching birthdays:", error);
-    }
-  };
-
+  
   const fetchStats = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
@@ -317,27 +308,7 @@ const CompanyDashboard = () => {
           <GlobalChatBox />
         </div>
 
-        {/* Birthdays beside Chat */}
-        <div style={{ background: 'white', borderRadius: '0.5rem', padding: '1.5rem' }}>
-          <h3>🎂 Upcoming Birthdays</h3>
-          {birthdays.length > 0 ? (
-            <ul style={{ listStyle: 'none', padding: 0 }}>
-              {birthdays.map((person) => (
-                <li key={person._id} style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
-                  <img src={person.profilePicture || "/default-avatar.png"} alt={person.name} style={{
-                    width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover'
-                  }} />
-                  <div>
-                    <strong>{person.name}</strong>
-                    <div style={{ fontSize: '0.875rem', color: '#718096' }}>
-                      {new Date(person.birthday).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : <p>No upcoming birthdays</p>}
-        </div>
+      
       </div>
     </div>
   );

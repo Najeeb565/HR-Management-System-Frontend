@@ -16,18 +16,25 @@ const EmpDashboard = () => {
   const currentUser = {
     name: "Hamza",
     role: "Employee",
-    _id: "emp123", // Optional, use if needed
+    _id: "emp123",
   };
 
-  // 🎂 Fetch Birthday List
+  // 🎂 Fetch Upcoming Birthdays
   useEffect(() => {
     const fetchBirthdays = async () => {
       try {
         const res = await axios.get("/birthdays/upcoming");
-        const all = [...res.data.employees, ...res.data.admins];
+        console.log("✅ Birthday API HIT");
+        console.log("📦 Birthday API Response", res.data);
+
+        const employees = Array.isArray(res.data.employees) ? res.data.employees : [];
+
+        const all = [...employees];
+        console.log("🎂 Combined Birthday List:", all);
+
         setUpcomingBirthdays(all);
       } catch (error) {
-        console.error("Error fetching upcoming birthdays:", error);
+        console.error("❌ Error fetching upcoming birthdays:", error);
       }
     };
 
@@ -40,9 +47,8 @@ const EmpDashboard = () => {
       try {
         const { data } = await axios.get("/attendance/history");
         setAttendanceHistory(data);
-        console.log("Employee Profile Picture:", employee?.profilePicture);
       } catch (error) {
-        console.error("Failed to fetch history", error);
+        console.error("❌ Failed to fetch history", error);
       } finally {
         setIsLoading(false);
       }
@@ -54,43 +60,39 @@ const EmpDashboard = () => {
   const chartData = attendanceHistory.map((record) => {
     const [h, m] = (record.totalHours || "0:0").split(":");
     return {
-      date: record.date.slice(5), // show as MM-DD
+      date: record.date.slice(5),
       hours: parseFloat(h) + parseFloat(m) / 60,
-      originalDate: record.date, // keep full date for tooltips
+      originalDate: record.date,
     };
   });
 
   return (
     <div className="container-fluid px-4 py-3">
       <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap">
-        {/* Title */}
         <div>
           <h2 className="mb-0 fw-semibold text-dark">Employee Dashboard</h2>
         </div>
 
-  {/* Profile + Date Section */}
-  <div className="d-flex flex-column align-items-end position-relative">
-    {/* Profile Picture */}
-  <img
-  src={
-    employee?.profilePicture?.startsWith("http")
-      ? employee.profilePicture
-      : employee?.profilePicture
-      ? `http://localhost:5000/uploads/${employee.profilePicture}`
-      : "/default-avatar.png"
-  }
-  alt="Profile"
-  className="rounded-circle border shadow-sm mb-1"
-  style={{
-    width: "48px",
-    height: "48px",
-    objectFit: "cover",
-    cursor: "pointer"
-  }}
-  onClick={() => setShowCard(!showCard)}
-/>
-
-
+        {/* Profile + Date */}
+        <div className="d-flex flex-column align-items-end position-relative">
+          <img
+            src={
+              employee?.profilePicture?.startsWith("http")
+                ? employee.profilePicture
+                : employee?.profilePicture
+                ? `http://localhost:5000/uploads/${employee.profilePicture}`
+                : "/default-avatar.png"
+            }
+            alt="Profile"
+            className="rounded-circle border shadow-sm mb-1"
+            style={{
+              width: "48px",
+              height: "48px",
+              objectFit: "cover",
+              cursor: "pointer",
+            }}
+            onClick={() => setShowCard(!showCard)}
+          />
           {showCard && (
             <div
               className="position-absolute"
@@ -103,7 +105,6 @@ const EmpDashboard = () => {
               <ProfileCard onClose={() => setShowCard(false)} />
             </div>
           )}
-
           <div className="text-muted small mt-1">
             {new Date().toLocaleDateString("en-US", {
               weekday: "long",
@@ -123,7 +124,7 @@ const EmpDashboard = () => {
         </div>
       ) : (
         <div className="row g-4">
-          {/* Attendance Tracker Card */}
+          {/* Attendance Tracker */}
           <div className="col-xl-6 col-lg-12">
             <div className="card border-0 shadow-sm h-100">
               <div className="card-body">
@@ -132,7 +133,7 @@ const EmpDashboard = () => {
             </div>
           </div>
 
-          {/* Attendance Chart Card */}
+          {/* Attendance Chart */}
           <div className="col-xl-6 col-lg-12">
             <div className="card border-0 shadow-sm h-100">
               <div className="card-body">
@@ -141,7 +142,7 @@ const EmpDashboard = () => {
             </div>
           </div>
 
-          {/* Chat Box */}
+          {/* Global Chat */}
           <div className="col-xl-6 col-lg-12">
             <div className="card border-0 shadow-sm h-100">
               <div className="card-body">
@@ -156,17 +157,39 @@ const EmpDashboard = () => {
               <div className="card-body">
                 <h5 className="card-title">🎂 Upcoming Birthdays</h5>
                 {upcomingBirthdays.length > 0 ? (
-                  <ul className="list-group list-group-flush">
-                    {upcomingBirthdays.map((person) => (
-                      <li key={person._id} className="list-group-item">
-                        <strong>{person.name}</strong> -{" "}
-                        {new Date(person.birthday).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </li>
-                    ))}
-                  </ul>
+                  <table className="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Birthday</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {upcomingBirthdays.map((person) => (
+                        <tr key={person._id}>
+                          <td className="d-flex align-items-center gap-3">
+                            <img
+                              src={
+                                person.profilePicture
+                                  ? `http://localhost:5000/uploads/${employee.profilePicture}`
+                                  : "/default-avatar.png"
+                              }
+                              alt={person.name}
+                              className="rounded-circle"
+                              style={{ width: "40px", height: "40px", objectFit: "cover" }}
+                            />
+                            <span>{person.name}</span>
+                          </td>
+                          <td>
+                            {new Date(person.birthday).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                            })}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 ) : (
                   <p className="text-muted mb-0">No upcoming birthdays.</p>
                 )}
