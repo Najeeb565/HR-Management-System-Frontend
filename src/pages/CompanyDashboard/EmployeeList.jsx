@@ -1,10 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from '../../axios';
 
 const EmployeeList = () => {
-  console.log("EmployeeList component loaded");
   const navigate = useNavigate();
   const { companySlug } = useParams();
 
@@ -19,7 +17,7 @@ const EmployeeList = () => {
   const [showViewModal, setShowViewModal] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
-  const roles = ['Employee', 'Manager', 'Admin', 'HR'];
+  const roles = ['Employee', 'Manager', 'HR'];
   const statuses = ['Active', 'Inactive', 'Terminated'];
 
   useEffect(() => {
@@ -29,10 +27,10 @@ const EmployeeList = () => {
   useEffect(() => {
     filterEmployees();
   }, [employees, searchTerm, selectedRole, selectedStatus]);
+
   const fetchEmployees = async () => {
     try {
       setLoading(true);
-
       const user = JSON.parse(localStorage.getItem("user"));
       const companyId = user?.companyId;
 
@@ -41,7 +39,6 @@ const EmployeeList = () => {
         return;
       }
 
-      // ✅ Send companyId in query params
       const response = await axios.get(`http://localhost:5000/api/employees?companyId=${companyId}`);
 
       if (Array.isArray(response.data)) {
@@ -61,16 +58,20 @@ const EmployeeList = () => {
     }
   };
 
-
   const filterEmployees = () => {
     const term = searchTerm.toLowerCase().trim();
 
     const filtered = employees.filter(emp => {
       const firstName = emp.firstName?.toLowerCase() || '';
       const lastName = emp.lastName?.toLowerCase() || '';
+      const email = emp.email?.toLowerCase() || '';
       const roleMatch = selectedRole ? emp.role === selectedRole : true;
       const statusMatch = selectedStatus ? emp.status === selectedStatus : true;
-      const searchMatch = term === '' || firstName.startsWith(term) || lastName.startsWith(term);
+      const searchMatch =
+        term === '' ||
+        firstName.includes(term) ||
+        lastName.includes(term) ||
+        email.includes(term);
 
       return roleMatch && statusMatch && searchMatch;
     });
@@ -87,7 +88,6 @@ const EmployeeList = () => {
     setSelectedEmployee(employee);
     setShowViewModal(true);
   };
-
 
   const handleDeleteConfirm = async () => {
     const token = JSON.parse(localStorage.getItem("user"))?.token;
@@ -107,7 +107,6 @@ const EmployeeList = () => {
       alert('Error deleting employee');
     }
   };
-
 
   const getRoleBadgeClass = (role) => {
     const classes = {
@@ -137,6 +136,7 @@ const EmployeeList = () => {
       </div>
     );
   }
+
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -145,7 +145,6 @@ const EmployeeList = () => {
           <i className="bi bi-person-plus me-2"></i>
           Add New Employee
         </Link>
-
       </div>
 
       <div className="card dashboard-card mb-4">
@@ -321,5 +320,3 @@ const EmployeeList = () => {
 };
 
 export default EmployeeList;
-
-

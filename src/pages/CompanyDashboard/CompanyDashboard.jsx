@@ -1,10 +1,13 @@
+// CompanyDashboard.jsx
 import React, { useState, useEffect, useContext } from 'react';
 import { CompanyContext } from "../../context/CompanyContext";
 import ProfileCard from './profilepage/components/proflecard';
-import { FiUsers, FiUserCheck, FiUserX, FiLayers, FiChevronRight } from 'react-icons/fi';
+import { FiUsers, FiUserCheck, FiUserX, FiLayers } from 'react-icons/fi';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import GlobalChatBox from "../../components/chat/globalchat";
+import axios from '../../axios';
+
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const CompanyDashboard = () => {
@@ -16,13 +19,16 @@ const CompanyDashboard = () => {
     inactiveEmployees: 0,
     departments: []
   });
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchStats();
+
   }, []);
 
+  
   const fetchStats = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
@@ -35,7 +41,7 @@ const CompanyDashboard = () => {
         return;
       }
 
-      const response = await fetch(`http://localhost:5000/api/employees/stats?companyId=${user.companyId}`, {
+      const response = await fetch(`http://localhost:5000/api/employees/stats?companyId=${companyId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -44,7 +50,6 @@ const CompanyDashboard = () => {
       });
 
       const data = await response.json();
-
       if (data) {
         setStats(data);
       } else {
@@ -58,30 +63,13 @@ const CompanyDashboard = () => {
     }
   };
 
-  // Prepare data for department chart
   const departmentChartData = {
     labels: stats.departments.map(dept => dept._id),
     datasets: [
       {
         data: stats.departments.map(dept => dept.count),
-        backgroundColor: [
-          '#4e73df',
-          '#1cc88a',
-          '#36b9cc',
-          '#f6c23e',
-          '#e74a3b',
-          '#858796',
-          '#5a5c69'
-        ],
-        hoverBackgroundColor: [
-          '#2e59d9',
-          '#17a673',
-          '#2c9faf',
-          '#dda20a',
-          '#be2617',
-          '#6c6e7e',
-          '#3a3c4a'
-        ],
+        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796'],
+        hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf', '#dda20a', '#be2617', '#6c6e7e'],
         hoverBorderColor: "rgba(234, 236, 244, 1)",
       }
     ]
@@ -102,14 +90,9 @@ const CompanyDashboard = () => {
   };
 
   return (
-    <div className="dashboard-container" style={{ minHeight: '100vh', padding: '2rem' }}>
+    <div style={{ padding: '2rem', minHeight: '100vh' }}>
       {/* Header */}
-      <div className="dashboard-header" style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '2rem'
-      }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem' }}>
         <div>
           <h1 style={{
             fontSize: '1.75rem',
@@ -216,60 +199,16 @@ const CompanyDashboard = () => {
         />
       </div>
 
-      {/* Main Content */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '2rem',
-        marginBottom: '2rem'
-      }}>
-        {/* Department Breakdown */}
-        <div style={{
-          backgroundColor: 'white',
-          borderRadius: '0.5rem',
-          padding: '1.5rem',
-          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
-        }}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '1.5rem'
-          }}>
-            <h3 style={{
-              fontSize: '1.25rem',
-              fontWeight: '600',
-              color: '#2d3748',
-              margin: 0
-            }}>Department Breakdown</h3>
-            <button style={{
-              backgroundColor: 'transparent',
-              border: 'none',
-              color: '#4e73df',
-              fontWeight: '500',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.25rem'
-            }}>
-              View all <FiChevronRight />
-            </button>
-          </div>
-
+      {/* Department Breakdown and Table */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
+        <div style={{ background: 'white', borderRadius: '0.5rem', padding: '1.5rem' }}>
+          <h3>Department Breakdown</h3>
           {stats.departments.length > 0 ? (
             <div style={{ height: '300px' }}>
               <Doughnut data={departmentChartData} options={departmentChartOptions} />
             </div>
           ) : (
-            <div style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '200px',
-              color: '#718096'
-            }}>
-              No department data available
-            </div>
+            <p>No department data</p>
           )}
         </div>
 
@@ -361,16 +300,21 @@ const CompanyDashboard = () => {
         </div>
       </div>
 
-      {/* Global Chat Box */}
-      <div className='col-6' >
-        <GlobalChatBox />
+      {/* Global Chat + Birthdays */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+        {/* Global Chat */}
+        <div style={{ background: 'white', borderRadius: '0.5rem', padding: '1.5rem' }}>
+          <h3>💬 Global Chat</h3>
+          <GlobalChatBox />
+        </div>
+
+      
       </div>
     </div>
   );
 };
 
-// Reusable Stat Card Component
-const StatCard = ({ icon, title, value, color, trend }) => {
+const StatCard = ({ title, value, icon, color, trend }) => {
   const trendColors = {
     up: '#10b981',
     down: '#ef4444',
@@ -382,36 +326,17 @@ const StatCard = ({ icon, title, value, color, trend }) => {
       backgroundColor: 'white',
       borderRadius: '0.5rem',
       padding: '1.5rem',
-      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-      borderLeft: `4px solid ${color}`
+      borderLeft: `4px solid ${color}`,
+      boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
     }}>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'flex-start'
-      }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <div>
-          <div style={{
-            color: '#64748b',
-            fontSize: '0.875rem',
-            fontWeight: '500',
-            marginBottom: '0.5rem'
-          }}>{title}</div>
-          <div style={{
-            color: '#1e293b',
-            fontSize: '1.5rem',
-            fontWeight: '700'
-          }}>{value}</div>
+          <p style={{ margin: 0, fontSize: '0.875rem', color: '#64748b' }}>{title}</p>
+          <h2 style={{ margin: 0 }}>{value}</h2>
         </div>
         <div style={{
-          backgroundColor: `${color}10`,
-          width: '48px',
-          height: '48px',
-          borderRadius: '12px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: color
+          width: '40px', height: '40px', background: `${color}20`, color: color,
+          borderRadius: '12px', display: 'flex', justifyContent: 'center', alignItems: 'center'
         }}>
           {icon}
         </div>
