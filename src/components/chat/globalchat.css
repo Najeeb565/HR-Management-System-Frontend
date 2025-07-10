@@ -1,5 +1,5 @@
 .global-chat-container {
-    /* width: 450px;  */
+    width: 100%; 
     max-width: 100%; /* Optional: responsive support */
     display: flex;
     flex-direction: column;
@@ -8,6 +8,7 @@
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     overflow: hidden;
+    /* flex-grow: 1; */
     font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
 }
 
@@ -165,6 +166,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.emoji-mart-preview {
+  display: none !important;
+}
 
 .reply-button {
     position: absolute;
@@ -288,3 +292,8 @@
 .chat-messages::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
 }
+
+
+
+
+

@@ -1,13 +1,11 @@
 
-import React, { useState, useEffect, useRef, useContext } from "react"; // ✅ useRef added
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { SocketContext } from "../../context/SocketContext";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
-
-// import "emoji-mart/css/emoji-mart.css";
 import "./globalchat.css";
 
-const GlobalChatBox = ({ currentUser }) => {
+const GlobalChatBox = () => {
     const socket = useContext(SocketContext);
     const [messages, setMessages] = useState([]);
     const [newMsg, setNewMsg] = useState("");
@@ -15,16 +13,20 @@ const GlobalChatBox = ({ currentUser }) => {
     const [replyToMessage, setReplyToMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    const messagesEndRef = useRef(null); // ✅ Ref for scrolling
+    const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
+    const user = JSON.parse(localStorage.getItem("user")); // ✅ consistent use
+    const companyId = user?.companyId;
+
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("user"));
-        const companyId = user?.companyId;
-        if (!companyId) return;
+        if (!companyId) {
+            console.error("No companyId found");
+            return;
+        }
 
         socket.emit("joinCompanyRoom", companyId);
 
@@ -33,78 +35,65 @@ const GlobalChatBox = ({ currentUser }) => {
                 setIsLoading(true);
                 const res = await fetch(`http://localhost:5000/api/chat?companyId=${companyId}`);
                 const data = await res.json();
-                if (Array.isArray(data)) setMessages(data);
+                if (Array.isArray(data)) {
+                    setMessages(data);
+                    setTimeout(scrollToBottom, 100);
+                }
             } catch (error) {
                 console.error("Failed to fetch messages:", error);
             } finally {
                 setIsLoading(false);
             }
         };
+
         fetchMessages();
 
-       socket.on("chatMessage", (msg) => {
-  if (msg.companyId === companyId) {
-    setMessages((prev) => {
-      const updated = [...prev, msg];
-
-      // Check if this user sent it
-      const currentUser = JSON.parse(localStorage.getItem("user"));
-      const isMyMessage = msg.senderName === currentUser?.name;
-
-      if (isMyMessage) {
-        setTimeout(() => scrollToBottom(), 100); 
-      }
-
-      return updated;
-    });
-
-    console.log("📥 Received socket message:", msg);
-  }
-});
-
+        socket.on("chatMessage", (msg) => {
+            if (msg.companyId === companyId) {
+                setMessages((prev) => [...prev, msg]);
+                if (String(msg.senderId) === String(user?._id)) {
+                    setTimeout(scrollToBottom, 100);
+                }
+            }
+        });
 
         return () => {
             socket.off("chatMessage");
         };
     }, [socket]);
 
-  
     const sendMessage = () => {
         if (!newMsg.trim()) return;
 
-        const user = JSON.parse(localStorage.getItem("user"));
-        const companyId = user?.companyId;
-
-        const currentUser =
-            JSON.parse(localStorage.getItem("user")) ||
-            JSON.parse(sessionStorage.getItem("user"));
-
-        if (!currentUser || !companyId) return;
+        if (!user || !companyId) {
+            console.error("User or companyId missing");
+            return;
+        }
 
         const message = {
             content: newMsg,
-            senderName: currentUser.name,
+            senderName: user.name,
+            senderId: user._id,
             companyId,
             timestamp: new Date().toISOString(),
             replyTo: replyToMessage
                 ? {
-                    senderName: replyToMessage.senderName,
-                    content: replyToMessage.content,
-                }
+                      senderName: replyToMessage.senderName,
+                      content: replyToMessage.content,
+                  }
                 : null,
         };
 
-        console.log("📤 Emitting chatMessage:", message);
         socket.emit("chatMessage", message);
         setNewMsg("");
         setReplyToMessage(null);
+        scrollToBottom();
     };
 
     const handleEmojiSelect = (emoji) => {
         setNewMsg((prev) => prev + emoji.native);
         setShowEmojiPicker(false);
     };
-
 
     const formatTime = (timestamp) => {
         return new Date(timestamp).toLocaleTimeString([], {
@@ -138,42 +127,44 @@ const GlobalChatBox = ({ currentUser }) => {
                         </div>
                     ) : (
                         <>
-                            {messages.map((msg, i) => (
-                                <div
-                                    key={i}
-                                    className={`message-bubble ${msg.senderName === currentUser?.name ? "sent" : "received"
-                                        }`}
-                                >
-                                    <div className="message-header">
-                                        <span className="sender-name">{msg.senderName}</span>
-                                        <span className="message-time">{formatTime(msg.timestamp)}</span>
-                                    </div>
-
-                                    {msg.replyTo && (
-                                        <div className="reply-preview">
-                                            <div className="reply-header">
-                                                <i className="bi bi-reply-fill"></i>
-                                                <span>Replying to {msg.replyTo.senderName}</span>
-                                            </div>
-                                            <div className="reply-content">{msg.replyTo.content}</div>
+                            {messages.map((msg, i) => {
+                                const isSent = String(msg.senderId) === String(user?._id);
+                                return (
+                                    <div
+                                        key={i}
+                                        className={`message-bubble ${isSent ? "sent" : "received"}`}
+                                    >
+                                        <div className="message-header">
+                                            <span className="sender-name">{msg.senderName}</span>
+                                            <span className="message-time">
+                                                {formatTime(msg.timestamp)}
+                                            </span>
                                         </div>
-                                    )}
 
-                                    <div className="message-content">{msg.content}</div>
+                                        {msg.replyTo && (
+                                            <div className="reply-preview">
+                                                <div className="reply-header">
+                                                    <i className="bi bi-reply-fill"></i>
+                                                    <span>Replying to {msg.replyTo.senderName}</span>
+                                                </div>
+                                                <div className="reply-content">{msg.replyTo.content}</div>
+                                            </div>
+                                        )}
 
-                                    {msg.senderName !== currentUser?.name && (
-                                        <button
-                                            className="reply-button"
-                                            onClick={() => setReplyToMessage(msg)}
-                                            title="Reply to this message"
-                                        >
-                                            <i className="bi bi-reply"></i>
-                                        </button>
-                                    )}
-                                </div>
-                            ))}
+                                        <div className="message-content">{msg.content}</div>
 
-                            {/* ✅ Anchor for scroll to bottom */}
+                                        {!isSent && (
+                                            <button
+                                                className="reply-button"
+                                                onClick={() => setReplyToMessage(msg)}
+                                                title="Reply to this message"
+                                            >
+                                                <i className="bi bi-reply"></i>
+                                            </button>
+                                        )}
+                                    </div>
+                                );
+                            })}
                             <div ref={messagesEndRef} />
                         </>
                     )}
@@ -208,12 +199,7 @@ const GlobalChatBox = ({ currentUser }) => {
 
                 {showEmojiPicker && (
                     <div className="emoji-picker-container">
-                        <Picker
-                            data={data}
-                            onEmojiSelect={handleEmojiSelect}
-                            theme="light"
-                        />
-
+                        <Picker data={data} onEmojiSelect={handleEmojiSelect} theme="light"  previewPosition="none" />
                     </div>
                 )}
 
