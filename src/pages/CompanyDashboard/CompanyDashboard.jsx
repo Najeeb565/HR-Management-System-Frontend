@@ -8,6 +8,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import GlobalChatBox from "../../components/chat/globalchat";
 import UpcomingBirthdaysCard from "../../components/birthdaytracker/birthdayTracker";
 import axios from '../../axios';
+import NotificationBell from '../../components/notification/notification';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -15,7 +16,9 @@ const CompanyDashboard = () => {
   const { company } = useContext(CompanyContext);
   const [showCard, setShowCard] = useState(false);
   const [upcomingBirthdays, setUpcomingBirthdays] = useState([]);
+   const admin = JSON.parse(localStorage.getItem("user"));
   const [stats, setStats] = useState({
+     
     totalEmployees: 0,
     activeEmployees: 0,
     inactiveEmployees: 0,
@@ -131,57 +134,58 @@ const CompanyDashboard = () => {
           </p>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-          <div style={{
-            backgroundColor: '#f8fafc',
-            padding: '0.5rem 1rem',
-            borderRadius: '0.5rem',
-            color: '#64748b',
-            fontSize: '0.875rem',
-            boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
-          }}>
-            {new Date().toLocaleDateString("en-US", {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </div>
+    <div className="d-flex flex-column align-items-end position-relative" style={{ gap: '0.25rem' }}>
+  
+  {/* 🔔 Bell and 👤 Profile side by side */}
+  <div className="d-flex align-items-center" style={{ gap: '1rem' }}>
+    <NotificationBell userId={admin._id} token={localStorage.getItem("token")} />
 
-          <div style={{ position: 'relative' }}>
-            <img
-              src={
-                company?.profilePicture?.startsWith("http")
-                  ? company.profilePicture
-                  : company?.profilePicture
-                    ? `http://localhost:5000/uploads/${company.profilePicture}`
-                    : "/default-avatar.png"
-              }
-              alt="Profile"
-              style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                objectFit: 'cover',
-                cursor: 'pointer',
-                border: '2px solid #e2e8f0'
-              }}
-              onClick={() => setShowCard(!showCard)}
-            />
+    <img
+      src={
+        company?.profilePicture?.startsWith("http")
+          ? company.profilePicture
+          : company?.profilePicture
+            ? `http://localhost:5000/uploads/${company.profilePicture}`
+            : "/default-avatar.png"
+      }
+      alt="Profile"
+      className="rounded-circle border shadow-sm"
+      style={{
+        width: "48px",
+        height: "48px",
+        objectFit: "cover",
+        cursor: "pointer",
+      }}
+      onClick={() => setShowCard(!showCard)}
+    />
+  </div>
 
-            {showCard && (
-              <div style={{
-                position: 'absolute',
-                top: '50px',
-                right: 0,
-                zIndex: 1000,
-                width: '300px'
-              }}>
-                <ProfileCard onClose={() => setShowCard(false)} />
-              </div>
-            )}
-          </div>
-        </div>
+  {/* 👇 Dropdown */}
+  {showCard && (
+    <div
+      className="position-absolute"
+      style={{
+        top: "55px",
+        right: 0,
+        zIndex: 1050,
+      }}
+    >
+      <ProfileCard onClose={() => setShowCard(false)} />
+    </div>
+  )}
+
+  {/* 📅 Date below bell/profile */}
+  <div className="text-muted small">
+    {new Date().toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })}
+  </div>
+</div>
+
+
       </div>
 
       {/* Stats Cards */}

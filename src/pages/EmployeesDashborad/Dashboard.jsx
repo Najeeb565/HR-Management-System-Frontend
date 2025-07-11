@@ -6,6 +6,7 @@ import UpcomingBirthdaysCard from "../../components/birthdaytracker/birthdayTrac
 import axios from "../../axios";
 import ProfileCard from "./profile/profilecard";
 import { EmployeeContext } from "../../context/EmployeeContext";
+import NotificationBell from "../../components/notification/notification";
 
 
 const EmpDashboard = () => {
@@ -77,24 +78,48 @@ const EmpDashboard = () => {
 
         {/* Profile + Date */}
         <div className="d-flex flex-column align-items-end position-relative">
-          <img
-            src={
-              employee?.profilePicture?.startsWith("http")
-                ? employee.profilePicture
-                : employee?.profilePicture
-                  ? `http://localhost:5000/uploads/${employee.profilePicture}`
-                  : "/default-avatar.png"
-            }
-            alt="Profile"
-            className="rounded-circle border shadow-sm mb-1"
-            style={{
-              width: "48px",
-              height: "48px",
-              objectFit: "cover",
-              cursor: "pointer",
-            }}
-            onClick={() => setShowCard(!showCard)}
-          />
+          {/* Row: Bell + Profile */}
+          <div className="d-flex align-items-center gap-3">
+            {/* 🔔 Bell */}
+            <NotificationBell userId={employee._id} token={localStorage.getItem("token")}
+              style={{
+                cursor: "pointer",
+                
+                
+              }} />
+
+            {/* 👤 Profile Picture */}
+            <img
+              src={
+                employee?.profilePicture?.startsWith("http")
+                  ? employee.profilePicture
+                  : employee?.profilePicture
+                    ? `http://localhost:5000/uploads/${employee.profilePicture}`
+                    : "/default-avatar.png"
+              }
+              alt="Profile"
+              className="rounded-circle border shadow-sm"
+              style={{
+                width: "48px",
+                height: "48px",
+                objectFit: "cover",
+                cursor: "pointer",
+              }}
+              onClick={() => setShowCard(!showCard)}
+            />
+          </div>
+
+          {/* 📅 Date Below */}
+          <div className="text-muted small mt-1">
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })}
+          </div>
+
+          {/* 👇 Dropdown ProfileCard */}
           {showCard && (
             <div
               className="position-absolute"
@@ -107,15 +132,8 @@ const EmpDashboard = () => {
               <ProfileCard onClose={() => setShowCard(false)} />
             </div>
           )}
-          <div className="text-muted small mt-1">
-            {new Date().toLocaleDateString("en-US", {
-              weekday: "long",
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-            })}
-          </div>
         </div>
+
       </div>
 
       {isLoading ? (
@@ -157,7 +175,7 @@ const EmpDashboard = () => {
           <div className="col-xl-6 col-lg-12">
             <UpcomingBirthdaysCard upcomingBirthdays={upcomingBirthdays} />
 
-            
+
           </div>
         </div>
       )}

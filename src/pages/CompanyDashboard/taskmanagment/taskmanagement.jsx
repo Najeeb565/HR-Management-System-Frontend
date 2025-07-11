@@ -76,8 +76,11 @@ const TaskManagement = () => {
       taskTitle,
       description,
       status: 'pending',
-      companyId: JSON.parse(localStorage.getItem("user")).companyId
+      companyId: JSON.parse(localStorage.getItem("user")).companyId,
+      createdBy: JSON.parse(localStorage.getItem("user"))._id,
+    
     };
+    console.log(taskData);
 
     try {
       if (editMode) {

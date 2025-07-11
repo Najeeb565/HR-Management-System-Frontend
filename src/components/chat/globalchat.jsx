@@ -37,7 +37,6 @@ const GlobalChatBox = () => {
                 const data = await res.json();
                 if (Array.isArray(data)) {
                     setMessages(data);
-                    setTimeout(scrollToBottom, 100);
                 }
             } catch (error) {
                 console.error("Failed to fetch messages:", error);
