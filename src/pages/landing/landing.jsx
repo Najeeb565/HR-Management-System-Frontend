@@ -48,7 +48,7 @@ const Landing = () => {
     {
       name: "John Doe",
       role: "HR Manager",
-      quote: "HRMPro has transformed our team management. It's intuitive and saves us hours weekly!",
+      quote: "WorkNest has transformed our team management. It's intuitive and saves us hours weekly!",
 
     },
     {
@@ -93,7 +93,7 @@ const Landing = () => {
       <nav>
         <div className={styles.navbar}>
           <div className={styles.navbarbrand}>
-            <a href="/" className={styles.brand}>HRMPro</a>
+            <a href="/" className={styles.brand}>WorkNest</a>
           </div>
           <div className={styles.navlinks}>
             <a href="#about" className={styles.navlinks}>About</a>
@@ -113,7 +113,7 @@ const Landing = () => {
 
       {/* Hero Section */}
       <section className={styles.herosection}>
-        <h1>Empower Your HR with HRMPro</h1>
+        <h1>Empower Your HR with WorkNest</h1>
         <p>Streamline employee management, boost productivity, and simplify HR tasks with our all-in-one solution.</p>
         <div className={styles.herobtnwrapper}>
           <Link to="/CompanyRegisterForm" className={styles.registorcompany}>
@@ -141,7 +141,7 @@ const Landing = () => {
 
       {/* About Us */}
       <section id='about' className={styles.about}>
-        <h2 className="text-center mb-5 fw-bold">About HRMPro</h2>
+        <h2 className="text-center mb-5 fw-bold">About WorkNest</h2>
         <div className={`container ${styles.aboutcontainer}`}>
           <div className={styles.aboutbg}>
             <img src={herosection} alt="" width={"100%"} height={"100%"} />
@@ -149,7 +149,7 @@ const Landing = () => {
           <div className={styles.aboutcontent} >
             <h3 className="fw-bold">Our Mission</h3>
             <p className="text-muted">
-              HRMPro is a final-year project by student developers, designed to simplify HR for small and medium-sized businesses.
+              WorkNest is a final-year project by student developers, designed to simplify HR for small and medium-sized businesses.
               We provide intuitive tools for employee onboarding, task management, and more, helping teams grow efficiently.
             </p>
             <Link to="/CompanyRegisterForm" className={`btn-outline-secondary btn mt-3 btn-lg ${styles.joinbtn}`}>Join Us Today</Link>
@@ -162,7 +162,7 @@ const Landing = () => {
       {/* Features */}
       <section id="features" className={styles.features}>
         <div className="container">
-          <h2 className="text-center mb-5 fw-bold">Why Choose HRMPro?</h2>
+          <h2 className="text-center mb-5 fw-bold">Why Choose WorkNest?</h2>
           <div className="row g-4">
             {features.map((feature, index) => (
               <div className="col-md-4" key={index}>
@@ -265,7 +265,7 @@ const Landing = () => {
         <div className="container">
           <div className="row">
             <div className="col-md-4">
-              <h5 className="fw-bold">HRMPro</h5>
+              <h5 className="fw-bold">WorkNest</h5>
               <p>Simplifying HR management for businesses of all sizes.</p>
             </div>
             <div className="col-md-4">
@@ -279,12 +279,12 @@ const Landing = () => {
             </div>
             <div className="col-md-4">
               <h5 className="fw-bold">Contact</h5>
-              <p>Email: support@hrmpro.com</p>
+              <p>Email: support@WorkNest.com</p>
               <p>Phone: (123) 456-7890</p>
             </div>
           </div>
           <div className="text-center mt-4">
-            <p>© 2025 HRMPro. All rights reserved.</p>
+            <p>© 2025 WorkNest. All rights reserved.</p>
           </div>
         </div>
       </footer>

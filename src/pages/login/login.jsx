@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useContext } from 'react';
 import { CompanyContext } from '../../context/CompanyContext';
 import { EmployeeContext } from "../../context/EmployeeContext";
-import axios from "../../axios";
+import axios from "axios";
 
 
 
@@ -81,7 +81,7 @@ const LoginPage = () => {
   ...data.user,
   ...fullProfile,
   name: fullProfile.firstName || fullProfile.name,
-  role: fullProfile.role.toLowerCase(),
+  // role: fullProfile.role.toLowerCase(),
 };
 
     // 🔐 Step 5: Remove sensitive fields
