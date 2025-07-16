@@ -9,6 +9,8 @@ import GlobalChatBox from "../../components/chat/globalchat";
 import UpcomingBirthdaysCard from "../../components/birthdaytracker/birthdayTracker";
 import axios from '../../axios';
 import NotificationBell from '../../components/notification/notification';
+import AIChatbox from "../../components/aIchatbox/AIChatbox";
+
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -343,6 +345,8 @@ const CompanyDashboard = () => {
         <div>
           <UpcomingBirthdaysCard upcomingBirthdays={upcomingBirthdays} />
         </div>
+                  <AIChatbox />
+        
       </div>
 
 

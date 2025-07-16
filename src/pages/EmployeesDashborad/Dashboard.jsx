@@ -7,6 +7,7 @@ import axios from "../../axios";
 import ProfileCard from "./profile/profilecard";
 import { EmployeeContext } from "../../context/EmployeeContext";
 import NotificationBell from "../../components/notification/notification";
+import AIChatbox from "../../components/aIchatbox/AIChatbox";
 
 
 const EmpDashboard = () => {
@@ -177,6 +178,7 @@ const EmpDashboard = () => {
 
 
           </div>
+          <AIChatbox />
         </div>
       )}
     </div>
