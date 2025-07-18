@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import ProtectedRoute from './components/ProtectedRoute'; // ✅ Import here
 import { SocketProvider } from "./context/SocketContext";
 
+
 // Lazy Imports
 
 const Landing = lazy(() => import("./pages/landing/landing"));
@@ -44,6 +45,7 @@ function App() {
       <Toaster position="top-right" />
       <Suspense fallback={<div style={{ textAlign: "center", paddingTop: "50px" }}>Loading...</div>}>
       <SocketProvider>
+   
         <Routes>
 
           {/* Public Pages */}
@@ -118,6 +120,7 @@ function App() {
 
         </Routes>
         </SocketProvider>
+
       </Suspense>
     </>
   );
