@@ -18,9 +18,9 @@ const CompanyDashboard = () => {
   const { company } = useContext(CompanyContext);
   const [showCard, setShowCard] = useState(false);
   const [upcomingBirthdays, setUpcomingBirthdays] = useState([]);
-   const admin = JSON.parse(localStorage.getItem("user"));
+  const admin = JSON.parse(localStorage.getItem("user"));
   const [stats, setStats] = useState({
-     
+
     totalEmployees: 0,
     activeEmployees: 0,
     inactiveEmployees: 0,
@@ -72,14 +72,20 @@ const CompanyDashboard = () => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          // 'Authorization': `Bearer ${token}`
         }
       });
 
       const data = await response.json();
       if (data) {
-        setStats(data);
-      } else {
+        setStats({
+          totalEmployees: data.totalEmployees || 0,
+          activeEmployees: data.activeEmployees || 0,
+          inactiveEmployees: data.inactiveEmployees || 0,
+          departments: Array.isArray(data.departments) ? data.departments : []
+        });
+      }
+      else {
         setError("No data returned from server");
       }
     } catch (error) {
@@ -91,16 +97,17 @@ const CompanyDashboard = () => {
   };
 
   const departmentChartData = {
-    labels: stats.departments.map(dept => dept._id),
+    labels: stats?.departments?.map(dept => dept._id) || [],
     datasets: [
       {
-        data: stats.departments.map(dept => dept.count),
+        data: stats?.departments?.map(dept => dept.count) || [],
         backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796'],
         hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf', '#dda20a', '#be2617', '#6c6e7e'],
         hoverBorderColor: "rgba(234, 236, 244, 1)",
       }
     ]
   };
+
 
   const departmentChartOptions = {
     maintainAspectRatio: false,
@@ -136,56 +143,56 @@ const CompanyDashboard = () => {
           </p>
         </div>
 
-    <div className="d-flex flex-column align-items-end position-relative" style={{ gap: '0.25rem' }}>
-  
-  {/* 🔔 Bell and 👤 Profile side by side */}
-  <div className="d-flex align-items-center" style={{ gap: '1rem' }}>
-    <NotificationBell userId={admin._id} token={localStorage.getItem("token")} />
+        <div className="d-flex flex-column align-items-end position-relative" style={{ gap: '0.25rem' }}>
 
-    <img
-      src={
-        company?.profilePicture?.startsWith("http")
-          ? company.profilePicture
-          : company?.profilePicture
-            ? `http://localhost:5000/uploads/${company.profilePicture}`
-            : "/default-avatar.png"
-      }
-      alt="Profile"
-      className="rounded-circle border shadow-sm"
-      style={{
-        width: "48px",
-        height: "48px",
-        objectFit: "cover",
-        cursor: "pointer",
-      }}
-      onClick={() => setShowCard(!showCard)}
-    />
-  </div>
+          {/* 🔔 Bell and 👤 Profile side by side */}
+          <div className="d-flex align-items-center" style={{ gap: '1rem' }}>
+            <NotificationBell userId={admin._id} token={localStorage.getItem("token")} />
 
-  {/* 👇 Dropdown */}
-  {showCard && (
-    <div
-      className="position-absolute"
-      style={{
-        top: "55px",
-        right: 0,
-        zIndex: 1050,
-      }}
-    >
-      <ProfileCard onClose={() => setShowCard(false)} />
-    </div>
-  )}
+            <img
+              src={
+                company?.profilePicture?.startsWith("http")
+                  ? company.profilePicture
+                  : company?.profilePicture
+                    ? `http://localhost:5000/uploads/${company.profilePicture}`
+                    : "/default-avatar.png"
+              }
+              alt="Profile"
+              className="rounded-circle border shadow-sm"
+              style={{
+                width: "48px",
+                height: "48px",
+                objectFit: "cover",
+                cursor: "pointer",
+              }}
+              onClick={() => setShowCard(!showCard)}
+            />
+          </div>
 
-  {/* 📅 Date below bell/profile */}
-  <div className="text-muted small">
-    {new Date().toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    })}
-  </div>
-</div>
+          {/* 👇 Dropdown */}
+          {showCard && (
+            <div
+              className="position-absolute"
+              style={{
+                top: "55px",
+                right: 0,
+                zIndex: 1050,
+              }}
+            >
+              <ProfileCard onClose={() => setShowCard(false)} />
+            </div>
+          )}
+
+          {/* 📅 Date below bell/profile */}
+          <div className="text-muted small">
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })}
+          </div>
+        </div>
 
 
       </div>
@@ -221,7 +228,7 @@ const CompanyDashboard = () => {
         <StatCard
           icon={<FiLayers size={24} />}
           title="Departments"
-          value={stats.departments.length}
+          value={stats?.departments?.length || 0}
           color="#f6c23e"
           trend="neutral"
         />
@@ -231,7 +238,7 @@ const CompanyDashboard = () => {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
         <div style={{ background: 'white', borderRadius: '0.5rem', padding: '1.5rem' }}>
           <h3>Department Breakdown</h3>
-          {stats.departments.length > 0 ? (
+          {stats?.departments?.length > 0 ? (
             <div style={{ height: '300px' }}>
               <Doughnut data={departmentChartData} options={departmentChartOptions} />
             </div>
@@ -345,8 +352,8 @@ const CompanyDashboard = () => {
         <div>
           <UpcomingBirthdaysCard upcomingBirthdays={upcomingBirthdays} />
         </div>
-                  <AIChatbox />
-        
+        <AIChatbox />
+
       </div>
 
 

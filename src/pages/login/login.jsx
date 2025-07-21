@@ -67,34 +67,44 @@ const LoginPage = () => {
       ? `/admin/profile/${email}`
       : `/profile/${email}`;
 
-    // 🔐 Step 3: Get full profile
-    const profileRes = await axios.get(endpoint, {
-      headers: {
-        Authorization: `Bearer ${data.token}`,
-      },
-    });
+    // 🔐 Step 3: Get full profile (with proper error handling)
+    let fullProfile;
+    try {
+      const profileRes = await axios.get(`http://localhost:5000/api${endpoint}`, {
+        headers: {
+          Authorization: `Bearer ${data.token}`,
+          'Accept': 'application/json' // Explicitly request JSON
+        },
+        responseType: 'json'
+      });
 
-    const fullProfile = profileRes.data;
+      // Validate response
+      if (!profileRes.data || typeof profileRes.data !== 'object') {
+        throw new Error("Invalid profile data received");
+      }
+      fullProfile = profileRes.data;
+    } catch (profileError) {
+      console.error("Profile fetch failed:", profileError);
+      throw new Error("Could not load user profile");
+    }
 
     // 🔐 Step 4: Merge login & profile info
- const fullUser = {
-  ...data.user,
-  ...fullProfile,
-  name: fullProfile.firstName || fullProfile.name,
-  // role: fullProfile.role.toLowerCase(),
-};
+    const fullUser = {
+      ...data.user,
+      ...fullProfile,
+      name: fullProfile.firstName || fullProfile.name || data.user.name,
+      role: role // Ensure role is consistently lowercase
+    };
 
-    // 🔐 Step 5: Remove sensitive fields
-    delete fullUser.password;
-    delete fullUser.otp;
-    delete fullUser.otpExpire;
-    delete fullUser.hireDate;
-    delete fullUser.createdAt;
-    delete fullUser.updatedAt;
-    delete fullUser.salary;
+    // 🔐 Step 5: Remove sensitive fields (improved version)
+    const sensitiveFields = [
+      'password', 'otp', 'otpExpire', 
+      'hireDate', 'createdAt', 'updatedAt', 
+      'salary', 'ssn' // Add any other sensitive fields
+    ];
+    sensitiveFields.forEach(field => delete fullUser[field]);
 
-
-    
+    console.log("User object to store:", fullUser); // Debug log
 
     // 🔐 Step 6: Save to localStorage
     localStorage.setItem("user", JSON.stringify(fullUser));
@@ -126,7 +136,11 @@ const LoginPage = () => {
 
   } catch (error) {
     console.error("Login error:", error);
-    toast.error("Something went wrong!");
+    // Clear any partial auth data on failure
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    
+    toast.error(error.message || "Login failed. Please try again.");
     setShowForgotPassword(true);
   }
 }
