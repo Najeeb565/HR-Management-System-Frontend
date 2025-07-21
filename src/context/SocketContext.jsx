@@ -1,5 +1,6 @@
-import { createContext } from "react";
+import { createContext , useContext} from "react";
 import { io } from "socket.io-client";
+
 
 export const SocketContext = createContext();
 
@@ -13,3 +14,8 @@ export const SocketProvider = ({ children }) => (
     {children}
   </SocketContext.Provider>
 );
+export const useSocket = () => useContext(SocketContext);
+
+
+
+
