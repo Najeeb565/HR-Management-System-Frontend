@@ -1,5 +1,4 @@
 
-// notification.jsx
 import React, { useEffect, useState } from "react";
 import axios from "../../axios";
 import styles from "./notification.module.css";
@@ -13,14 +12,20 @@ const NotificationDropdown = ({ userId }) => {
 
   const { refreshNotifications } = useNotification();
   const socket = useSocket();
- 
 
+  // 👇 Calculate unread notifications
+  const unreadNotifications = notifications.filter((n) => !n.isRead);
+
+  // 👇 Fetch all notifications on mount or refresh
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
         const { data } = await axios.get(`/notifications/${userId}`);
+        const processedData = Array.isArray(data)
+          ? data.map((n) => ({ ...n, isRead: false }))
+          : [];
 
-        setNotifications(Array.isArray(data) ? data : []);
+        setNotifications(processedData);
       } catch (error) {
         console.error("❌ Error fetching notifications:", {
           message: error.message,
@@ -36,6 +41,7 @@ const NotificationDropdown = ({ userId }) => {
     }
   }, [userId, refreshNotifications]);
 
+  // 👇 Handle new incoming socket notifications
   useEffect(() => {
     if (!socket || !userId) {
       console.log("Socket or userId missing:", { socket, userId });
@@ -43,10 +49,13 @@ const NotificationDropdown = ({ userId }) => {
     }
 
     socket.emit("join", userId);
+
     const handleNewNotification = (newNotification) => {
       if (newNotification.recipientId === userId) {
-
-        setNotifications((prev) => [newNotification, ...prev]);
+        setNotifications((prev) => [
+          { ...newNotification, isRead: false },
+          ...prev,
+        ]);
       } else {
         console.log("Notification ignored, recipientId mismatch:", {
           received: newNotification.recipientId,
@@ -72,6 +81,17 @@ const NotificationDropdown = ({ userId }) => {
     };
   }, [socket, userId]);
 
+  // 👇 Toggle dropdown and mark notifications as read
+  const toggleDropdown = () => {
+    setOpen(!open);
+    if (!open) {
+      setNotifications((prev) =>
+        prev.map((n) => ({ ...n, isRead: true }))
+      );
+    }
+  };
+
+  // 👇 Clear all notifications
   const handleClearNotifications = async () => {
     try {
       const response = await axios.delete(`/notifications/${userId}`);
@@ -88,10 +108,10 @@ const NotificationDropdown = ({ userId }) => {
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.iconWrapper} onClick={() => setOpen(!open)}>
+      <div className={styles.iconWrapper} onClick={toggleDropdown}>
         <Bell size={28} />
-        {notifications.length > 0 && (
-          <span className={styles.badge}>{notifications.length}</span>
+        {unreadNotifications.length > 0 && (
+          <span className={styles.badge}>{unreadNotifications.length}</span>
         )}
       </div>
 
