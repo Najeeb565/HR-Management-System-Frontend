@@ -59,10 +59,16 @@ const AdminProfilePage = () => {
       const email = user?.email;
 
       const data = new FormData();
+
       Object.entries(formData).forEach(([key, value]) => {
-        if (key !== "profilePic" && value !== undefined) {
-          data.append(key, value);
+        if (key === "profilePic") return;
+
+        // ✅ Skip null, undefined, or empty strings for date fields
+        if ((key === "otpExpire" || key === "birthday" || key === "hireDate") && (!value || value === "null")) {
+          return; // Don't append anything; backend will ignore it
         }
+
+        data.append(key, value);
       });
 
       if (formData.profilePic instanceof File) {
@@ -86,7 +92,6 @@ const AdminProfilePage = () => {
         delete updatedUser.profilePic;
       }
 
-      // Remove sensitive fields
       delete updatedUser.password;
       delete updatedUser.otp;
       delete updatedUser.otpExpire;
