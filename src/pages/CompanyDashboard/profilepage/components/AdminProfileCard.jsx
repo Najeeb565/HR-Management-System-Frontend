@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from "../../../../axios";
-import { 
-  User, Mail, Phone, MapPin, Upload, Edit2, Save, 
-  Briefcase, Calendar, DollarSign, ChevronDown, 
+import {
+  User, Mail, Phone, MapPin, Upload, Edit2, Save,
+  Briefcase, Calendar, DollarSign, ChevronDown,
   ChevronUp, Shield, Info, Clock, Award
 } from 'lucide-react';
 import { CompanyContext } from "../../../../context/CompanyContext";
@@ -59,12 +59,18 @@ const AdminProfilePage = () => {
       const email = user?.email;
 
       const data = new FormData();
-      Object.entries(formData).forEach(([key, value]) => {
-        if (key !== "profilePic" && value !== undefined) {
-          data.append(key, value);
-        }
-      });
 
+      Object.entries(formData).forEach(([key, value]) => {
+        if (key === "profilePic") return;
+
+       
+        if ((key === "otpExpire" || key === "birthday" || key === "hireDate") && (!value || value === "null")) {
+          return; 
+        }
+
+        data.append(key, value);
+      });
+ 
       if (formData.profilePic instanceof File) {
         data.append("profilePic", formData.profilePic);
       }
@@ -74,7 +80,7 @@ const AdminProfilePage = () => {
       });
 
       let updatedUser = res.data.updatedUser || res.data;
-      updatedUser = {
+      updatedUser = {     
         ...user,
         ...updatedUser,
         name: updatedUser.firstName || updatedUser.name,
@@ -86,12 +92,12 @@ const AdminProfilePage = () => {
         delete updatedUser.profilePic;
       }
 
-      // Remove sensitive fields
       delete updatedUser.password;
       delete updatedUser.otp;
       delete updatedUser.otpExpire;
 
       localStorage.setItem("user", JSON.stringify(updatedUser));
+      
 
       if (typeof setCompany === "function") {
         setCompany(updatedUser);
@@ -149,15 +155,15 @@ const AdminProfilePage = () => {
                   }
                   alt="Profile"
                   className="rounded-circle border border-3 border-primary"
-                  style={{ 
-                    width: 150, 
-                    height: 150, 
+                  style={{
+                    width: 150,
+                    height: 150,
                     objectFit: 'cover',
                     boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
                   }}
                 />
                 {editMode && (
-                  <label 
+                  <label
                     className="position-absolute bottom-0 end-0 bg-primary rounded-circle p-2 cursor-pointer"
                     style={{ transform: 'translate(25%, 25%)' }}
                     title="Change photo"
@@ -232,7 +238,7 @@ const AdminProfilePage = () => {
         <div className="col-lg-8">
           {/* Personal Information Section */}
           <div className="card shadow-sm mb-4">
-            <div 
+            <div
               className="card-header bg-light d-flex justify-content-between align-items-center cursor-pointer"
               onClick={() => toggleSection('personal')}
             >
@@ -305,7 +311,7 @@ const AdminProfilePage = () => {
 
           {/* Employment Details Section */}
           <div className="card shadow-sm mb-4">
-            <div 
+            <div
               className="card-header bg-light d-flex justify-content-between align-items-center cursor-pointer"
               onClick={() => toggleSection('employment')}
             >
@@ -351,7 +357,7 @@ const AdminProfilePage = () => {
 
           {/* System Access Section */}
           <div className="card shadow-sm">
-            <div 
+            <div
               className="card-header bg-light d-flex justify-content-between align-items-center cursor-pointer"
               onClick={() => toggleSection('access')}
             >
